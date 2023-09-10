@@ -17,24 +17,23 @@ public class userControl{
 
     @GetMapping
     public ArrayList<userModel> readDB(){
-        return myService.readDB();
+        return myService.readUsers();
     }
 
     @PostMapping(value="/add")
-    public userModel setAppoint(@RequestBody userModel newAppoint){
-
-        return myService.setAppoint(newAppoint);
+    public userModel setUser(@RequestBody userModel newAppoint){
+        return myService.setUser(newAppoint);
     }
 
     @DeleteMapping(path="/delete/{id}")
-    public String deleteAppoint(@PathVariable int id){
-        return myService.deleteAppoint(id);
+    public String deleteAppoint(@PathVariable long id){
+        return myService.deleteUser(id);
     }
 
     @PutMapping(path="/update/{id}")
-    public userModel changeAppoint(@PathVariable int id, @RequestBody userModel newAppoint){
+    public userModel changeAppoint(@PathVariable long id, @RequestBody userModel newAppoint){
 
-        return myService.setAppoint(myService.changeAppoint(id, newAppoint));
+        return myService.setUser(myService.changeUser(id, newAppoint));
     }
 
 }

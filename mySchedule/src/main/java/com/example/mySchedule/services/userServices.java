@@ -2,22 +2,22 @@ package com.example.mySchedule.services;
 
 
 import com.example.mySchedule.models.userModel;
-import com.example.mySchedule.repositories.Repo;
+import com.example.mySchedule.repositories.RepoUser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 
-
+@Service
 public class userServices{
     @Autowired
-    Repo myRepo;
+    RepoUser myRepo;
 
-
-    public ArrayList<userModel> readDB() {
+    public ArrayList<userModel> readUsers() {
         return (ArrayList<userModel>) myRepo.findAll();
     }
 
-    public userModel setAppoint(userModel newAppoint) {
+    public userModel setUser(userModel newAppoint) {
         try{
             return myRepo.save(newAppoint);
         }
@@ -25,10 +25,9 @@ public class userServices{
             e.printStackTrace();
             return null;
         }
-
     }
 
-    public String deleteAppoint(int id) {
+    public String deleteUser(long id) {
         try{
             myRepo.deleteById(id);
             return "record "+id+" deleted";
@@ -39,17 +38,17 @@ public class userServices{
         }
     }
 
-    public userModel changeAppoint(int id, userModel newAppoint) {
+    public userModel changeUser(long id, userModel newAppoint) {
         try{
-            userModel myAppoint = myRepo.findById(id).get();
+            userModel myUser = myRepo.findById(id).get();
+            myUser.setId(newAppoint.getId());
+            myUser.setAlias(newAppoint.getAlias());
+            myUser.setEmail(newAppoint.getEmail());
+            myUser.setName(newAppoint.getName());
+            myUser.setNotes(newAppoint.getNotes());
+            myUser.setPassword(newAppoint.getPassword());
 
-            myAppoint.setId(newAppoint.getId());
-            myAppoint.setName(newAppoint.getName());
-            myAppoint.setAppoDate(newAppoint.getAppoDate());
-            myAppoint.setAppoStart(newAppoint.getAppoStart());
-            myAppoint.setNotes(newAppoint.getNotes());
-
-            return myAppoint;
+            return myUser;
 
         }
         catch(Exception e){
