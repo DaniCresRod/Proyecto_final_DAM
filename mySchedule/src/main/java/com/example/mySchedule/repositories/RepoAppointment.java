@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public interface RepoAppointment extends JpaRepository<appointmentModel, Long> {
 
-    @Query(value = "SELECT EXISTS(SELECT * FROM Appointments WHERE  ", nativeQuery = true )
+    @Query(value = "SELECT EXISTS(SELECT * FROM appointments WHERE   ", nativeQuery = true )
     int findRepeatedAppo(@Param("myAppo")appointmentModel targetAppo);
 
 }

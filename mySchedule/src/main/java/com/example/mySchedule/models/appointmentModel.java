@@ -1,5 +1,6 @@
 package com.example.mySchedule.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -32,5 +33,6 @@ public class appointmentModel {
 
     @ManyToOne()
     @JoinColumn(name = "user_id")
+    @JsonBackReference  //evita el stockOverFlow
     private userModel userID;
 }

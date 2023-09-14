@@ -8,21 +8,28 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 
 @RestController
-@RequestMapping("/chart")
+@RequestMapping("/user")
 @CrossOrigin("*")
 public class userControl{
 
     @Autowired
     userServices myService;
 
+    //Devuelve todos los usuarios y citas de cada uno
     @GetMapping
     public ArrayList<userModel> readDB(){
         return myService.readUsers();
     }
 
+    //Devuelve el usuario seleccionado
+    @GetMapping(path="/{id}")
+    public userModel readAUser(@PathVariable long id){
+        return myService.readAUser(id);
+    }
+
     @PostMapping(value="/add")
-    public userModel setUser(@RequestBody userModel newAppoint){
-        return myService.setUser(newAppoint);
+    public String saveUser(@RequestBody userModel newUser){
+        return myService.saveUser(newUser);
     }
 
     @DeleteMapping(path="/delete/{id}")
@@ -31,9 +38,9 @@ public class userControl{
     }
 
     @PutMapping(path="/update/{id}")
-    public userModel changeAppoint(@PathVariable long id, @RequestBody userModel newAppoint){
+    public String changeAppoint(@PathVariable long id, @RequestBody userModel newUser){
 
-        return myService.setUser(myService.changeUser(id, newAppoint));
+        return myService.changeUser(id, newUser);
     }
 
 }

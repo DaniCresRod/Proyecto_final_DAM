@@ -1,11 +1,13 @@
 package com.example.mySchedule.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter                 //Lombok: Todos los getters
@@ -41,6 +43,7 @@ public class userModel {
     @Column(name="Price")
     private int price;
 
-    @OneToMany(mappedBy = "Users",cascade = CascadeType.ALL, orphanRemoval = true)
-    private ArrayList<appointmentModel> appointmentsList;
+    @OneToMany(mappedBy = "userID",cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties("user")
+    private List<appointmentModel> appointmentsList;
 }

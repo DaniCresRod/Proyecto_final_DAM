@@ -17,43 +17,63 @@ public class userServices{
         return (ArrayList<userModel>) myRepo.findAll();
     }
 
-    public userModel setUser(userModel newAppoint) {
-        try{
-            return myRepo.save(newAppoint);
-        }
-        catch(Exception e){
-            e.printStackTrace();
-            return null;
-        }
+    public String saveUser(userModel newUser) {
+        userModel retrievedUser=myRepo.findByEmail(newUser.getEmail());
+        if(retrievedUser==null){
+
+            retrievedUser=myRepo.findByNif(newUser.getNif());
+            if(retrievedUser==null){
+                try{
+                    retrievedUser=myRepo.save(newUser);
+                    return retrievedUser.getAlias()+" guardado con exito";
+                }
+                catch(Exception e){
+                    e.printStackTrace();
+                    return "Error: No se pudo guardar el registro";
+                }
+            }else return "El NIF "+newUser.getNif()+" ya esta asignado a "+retrievedUser.getAlias();
+        }else return "El email "+newUser.getEmail()+" ya esta asignado a "+retrievedUser.getAlias();
     }
 
     public String deleteUser(long id) {
+        if(myRepo.existsById(id)){
+            try{
+                myRepo.deleteById(id);
+                return "record "+id+" deleted";
+            }
+            catch(Exception e){
+                e.printStackTrace();
+                return "Can not delete record";
+            }
+        }
+        return "El usuario no existe o no se encuentra";
+    }
+
+    public String changeUser(long id, userModel newUser) {
         try{
-            myRepo.deleteById(id);
-            return "record "+id+" deleted";
+            userModel myUser = myRepo.findById(id).get();
+            myUser.setId(newUser.getId());
+            myUser.setAlias(newUser.getAlias());
+            myUser.setEmail(newUser.getEmail());
+            myUser.setName(newUser.getName());
+            myUser.setNotes(newUser.getNotes());
+            myUser.setPassword(newUser.getPassword());
+
+            myRepo.save(myUser);
+
+            return myUser.getAlias()+" fue modificado satisfactoriamente";
+
         }
         catch(Exception e){
             e.printStackTrace();
-            return "Can not delete record";
+            return "El registro no se pudo modificar";
         }
     }
 
-    public userModel changeUser(long id, userModel newAppoint) {
-        try{
-            userModel myUser = myRepo.findById(id).get();
-            myUser.setId(newAppoint.getId());
-            myUser.setAlias(newAppoint.getAlias());
-            myUser.setEmail(newAppoint.getEmail());
-            myUser.setName(newAppoint.getName());
-            myUser.setNotes(newAppoint.getNotes());
-            myUser.setPassword(newAppoint.getPassword());
-
-            return myUser;
-
+    public userModel readAUser(long id) {
+        if(myRepo.existsById(id)){
+            return myRepo.findById(id).orElse(null);
         }
-        catch(Exception e){
-            e.printStackTrace();
-            return null;
-        }
+        return null;
     }
 }
