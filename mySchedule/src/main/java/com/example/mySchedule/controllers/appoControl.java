@@ -5,6 +5,9 @@ import com.example.mySchedule.services.appoServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.util.List;
+
 @RestController
 @RequestMapping("/appo")
 @CrossOrigin("*")
@@ -17,6 +20,12 @@ public class appoControl {
     @PostMapping(value="/add")
     public appointmentModel setAppointment(@RequestBody appointmentModel newAppo){
         return myService.setAppoint(newAppo);
+    }
+
+    @GetMapping(path="/{date}")
+    public List<appointmentModel> getApposByDate(@PathVariable String date){
+        LocalDate localDate = LocalDate.parse(date);
+        return myService.readAppoints(localDate);
     }
 
 

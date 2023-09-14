@@ -33,14 +33,15 @@ public class userControl{
     }
 
     @DeleteMapping(path="/delete/{id}")
-    public String deleteAppoint(@PathVariable long id){
+    public String deleteUser(@PathVariable long id){
         return myService.deleteUser(id);
     }
 
     @PutMapping(path="/update/{id}")
-    public String changeAppoint(@PathVariable long id, @RequestBody userModel newUser){
-
+    public String changeUser(@PathVariable long id, @RequestBody userModel newUser){
         return myService.changeUser(id, newUser);
     }
+
+
 
 }

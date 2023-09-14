@@ -6,15 +6,18 @@ import com.example.mySchedule.repositories.RepoAppointment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class appoServices {
     @Autowired
     RepoAppointment myRepoAppo;
 
-    public ArrayList<appointmentModel> readAppoints(){
-        return (ArrayList<appointmentModel>) myRepoAppo.findAll();
+    public List<appointmentModel> readAppoints(LocalDate date){
+        List<appointmentModel> milista=myRepoAppo.findRepeatedAppoDate(date);
+        return milista;
     }
     //public appointmentModel readOneAppoint(userModel theUser){
     //    return myRepoAppo.findById(id);
