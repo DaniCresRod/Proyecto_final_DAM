@@ -1,5 +1,13 @@
 package com.example.mySchedule.services;
 
+//-------------------------|0|----------------------
+// Esta clase establece los metodos para la interaccion de una llamada http
+// con la bas de datos.
+//
+// @Author: Daniel Crespo Rodriguez
+// @Date: sept'23
+//-------------------------->o<----------------------
+
 import com.example.mySchedule.models.appointmentModel;
 import com.example.mySchedule.models.userModel;
 import com.example.mySchedule.repositories.RepoAppointment;
@@ -15,16 +23,20 @@ public class appoServices {
     @Autowired
     RepoAppointment myRepoAppo;
 
+    //Devuelve todas las citas de ese dia
     public List<appointmentModel> readAppoints(LocalDate date){
-        List<appointmentModel> milista=myRepoAppo.findRepeatedAppoDate(date);
-        return milista;
+        return myRepoAppo.findAppoByDate(date);
     }
-    //public appointmentModel readOneAppoint(userModel theUser){
-    //    return myRepoAppo.findById(id);
-    //}
 
-    public appointmentModel setAppoint(appointmentModel newAppo){
-        return myRepoAppo.save(newAppo);
+    //Salvar una cita nueva si no hay otra ya
+    public List<appointmentModel> setAppoint(appointmentModel newAppo){
+        List<appointmentModel> myList = myRepoAppo.findRepeatedAppoHour(newAppo.getAppoStart());
+        if(myList.size()==0){
+            myRepoAppo.save(newAppo);
+            myList.add(newAppo);
+            return  myList;
+        }
+        return myList;
     }
 
     public appointmentModel upgradeAppoint(appointmentModel newAppo){

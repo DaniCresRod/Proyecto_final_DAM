@@ -18,7 +18,7 @@ public class appoControl {
 
 
     @PostMapping(value="/add")
-    public appointmentModel setAppointment(@RequestBody appointmentModel newAppo){
+    public List<appointmentModel> setAppointment(@RequestBody appointmentModel newAppo){
         return myService.setAppoint(newAppo);
     }
 
