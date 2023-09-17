@@ -24,6 +24,9 @@ public class userModel {
     @Column(name="Name")
     private String name;
 
+    @Column(name="Apellido1")
+    private String surname1;
+
     @Column(name="Alias")
     private String alias;
 

@@ -14,7 +14,9 @@ import com.example.mySchedule.repositories.RepoAppointment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Time;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,9 +30,9 @@ public class appoServices {
         return myRepoAppo.findAppoByDate(date);
     }
 
-    //Salvar una cita nueva si no hay otra ya
+    //Salvar una cita nueva, si no hay otra ya
     public List<appointmentModel> setAppoint(appointmentModel newAppo){
-        List<appointmentModel> myList = myRepoAppo.findRepeatedAppoHour(newAppo.getAppoStart());
+        List<appointmentModel> myList = myRepoAppo.findRepeatedAppoHour(newAppo);
         if(myList.size()==0){
             myRepoAppo.save(newAppo);
             myList.add(newAppo);
@@ -39,13 +41,50 @@ public class appoServices {
         return myList;
     }
 
-    public appointmentModel upgradeAppoint(appointmentModel newAppo){
-        //verificar que existe la tarea previamente
-        myRepoAppo.findById(newAppo.getId());
-        //verificar que no se repite
+    //Cambiar una cita
+    public List<appointmentModel> updateAppoint(appointmentModel newAppo){
+        try{
+            //verificar que existe la tarea
+            appointmentModel oldAppo=myRepoAppo.findById(newAppo.getId()).get();
 
-        //guardar la tarea
+            //Recoger la lista de citas con horario incompatible con la nueva cita
+            List<appointmentModel> myList = myRepoAppo.findRepeatedAppoHour(newAppo);
 
-        return myRepoAppo.save(newAppo);
+            //Si no hay horarios incompatibles
+            if(myList.size()==0){
+                //Hacer los cambios
+                oldAppo.setAppoDate(newAppo.getAppoDate());
+                oldAppo.setAppoStart(newAppo.getAppoStart());
+                oldAppo.setNotes(oldAppo.getNotes()+
+                        "\n"+
+                        "Se cambia la cita del "+oldAppo.getAppoDate()+" al "+newAppo.getAppoDate()+" el día "+LocalDate.now()+
+                        "\n"+
+                        newAppo.getNotes());
+                myRepoAppo.save(oldAppo);
+                myList.add(oldAppo);
+            }
+            return myList;
+        }
+        catch(Exception e){
+            return null;
+        }
+    }
+
+    public String deleteAppo(long id) {
+        try{
+            //verificar que existe la tarea
+            appointmentModel theAppo=myRepoAppo.findById(id).get();
+
+            myRepoAppo.deleteById(id);
+
+            return "La cita de "+theAppo.getUserID().getAlias()+
+                    " para el "+theAppo.getAppoDate()+
+                    " a las "+theAppo.getAppoStart()+
+                    " se ha borrado satisfactoriamente.";
+
+        }
+        catch(Exception e){
+            return "Hubo un error y no se pudo borrar: "+e.getMessage();
+        }
     }
 }

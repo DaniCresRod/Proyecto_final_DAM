@@ -17,16 +17,31 @@ public class appoControl {
     appoServices myService;
 
 
+    //Cita nueva
     @PostMapping(value="/add")
     public List<appointmentModel> setAppointment(@RequestBody appointmentModel newAppo){
         return myService.setAppoint(newAppo);
     }
 
+    //Saber las citas que hay un dia determinado (por fecha)
     @GetMapping(path="/{date}")
     public List<appointmentModel> getApposByDate(@PathVariable String date){
         LocalDate localDate = LocalDate.parse(date);
         return myService.readAppoints(localDate);
     }
+
+    //Cambiar una cita
+    @PutMapping(path="/update")
+    public List<appointmentModel> updateAppo(@RequestBody appointmentModel newAppo){
+        return myService.updateAppoint(newAppo);
+    }
+
+    //Borrar una cita
+    @DeleteMapping(path = "/delete/{id}")
+    public String deleteAppo(@PathVariable long id){
+        return myService.deleteAppo(id);
+    }
+
 
 
 
