@@ -1,20 +1,46 @@
 package com.example.mySchedule.services;
 
 
+import com.example.mySchedule.DTOs.DTOBasicInfo;
+import com.example.mySchedule.models.appointmentModel;
 import com.example.mySchedule.models.userModel;
 import com.example.mySchedule.repositories.RepoUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collections;
+
+import static java.time.temporal.ChronoUnit.*;
 
 @Service
 public class userServices{
     @Autowired
     RepoUser myRepo;
 
-    public ArrayList<userModel> readUsers() {
-        return (ArrayList<userModel>) myRepo.findAll();
+    public ArrayList<DTOBasicInfo> readUsers() {
+        ArrayList<DTOBasicInfo> basicInfo = new ArrayList<>();
+        for (userModel eachUser : (ArrayList<userModel>) myRepo.findAll()){
+
+            long difference=1000000;
+            LocalDate nextDate=null;
+            LocalTime nextDateStart=null;
+
+            for (appointmentModel eachAppo: eachUser.getAppointmentsList()){
+                if((eachAppo.getAppoDate().isAfter(LocalDate.now())) && (DAYS.between(eachAppo.getAppoDate(),LocalDate.now())<difference)){
+                    difference=DAYS.between(eachAppo.getAppoDate(),LocalDate.now());
+                    nextDate=eachAppo.getAppoDate();
+                    nextDateStart=eachAppo.getAppoStart();
+                }
+            }
+
+            DTOBasicInfo userBasicInfo=new DTOBasicInfo(eachUser.getId(),eachUser.getName(), eachUser.getAlias(), nextDate, nextDateStart );
+            basicInfo.add(userBasicInfo);
+        }
+        Collections.sort(basicInfo);
+        return basicInfo;
     }
 
     public String saveUser(userModel newUser) {

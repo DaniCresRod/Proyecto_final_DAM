@@ -36,7 +36,7 @@ header { border: 2px solid black;
   margin-bottom: 1vh;
 }
 
-main{border: 1px solid black;
+main{
   width: 80vw;
   height: 83vh;
 }

@@ -8,6 +8,7 @@ package com.example.mySchedule.controllers;
 // @Date: sept'23
 //-------------------------->o<----------------------
 
+import com.example.mySchedule.DTOs.DTOBasicInfo;
 import com.example.mySchedule.models.userModel;
 import com.example.mySchedule.services.userServices;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ public class userControl{
 
     //Devuelve todos los usuarios y citas de cada uno
     @GetMapping
-    public ArrayList<userModel> readDB(){
+    public ArrayList<DTOBasicInfo> readDB(){
         return myService.readUsers();
     }
 

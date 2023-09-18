@@ -3,8 +3,8 @@ import axiosConnection from '../httpCommon';
 export default({
 
     //Interactuar con la tabla users
-    getUserById(id){
-        return axiosConnection.get(`/user/${id}`);
+    async getUserById(id){
+        return await axiosConnection.get(`/user/${id}`);
     },
 
     getAllUsers(){
