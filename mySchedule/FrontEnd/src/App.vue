@@ -5,14 +5,15 @@ import HelloWorld from './components/HelloWorld.vue'
 
 <template>
   <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
+    <img alt="Brand Logo" class="logo" src="@/assets/Images/brainLogo.png" width="125" height="125" />
 
     <div class="wrapper">
-      <HelloWorld msg="You did it!" />
+      <HelloWorld msg="Mi clínica" />
 
       <nav>
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/about">About</RouterLink>
+        <RouterLink to="/allApointment">Próximas citas</RouterLink>
       </nav>
     </div>
   </header>
@@ -23,33 +24,54 @@ import HelloWorld from './components/HelloWorld.vue'
 </template>
 
 <style scoped>
-header { border: 2px solid black;
+header { 
   line-height: 1.5;
   height: 15vh;
-  overflow: scroll;
+  overflow: hidden;
   width: 80vw;
   position:sticky;
   top:0;
   left:0;
   z-index: 2;
 
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  border:2px solid black;
+  
+  background-color: #FEE2C7;
+  border-radius: 0 0 15px 15px;
+
   margin-bottom: 1vh;
+}
+
+header img{
+  height: 12vh;
+  aspect-ratio: 1 / 1;
+  
 }
 
 main{
   width: 80vw;
   height: 83vh;
+  
 }
 
 .logo {
   display: block;
-  margin: 0 auto;
+  /* margin: 0 auto; */
 }
+
+div{
+  margin-right: 2vw;
+}
+
 
 nav {
   width: 100%;
   font-size: 12px;  
-  margin-top: 2rem;
+  margin-top: 1rem;
 }
 
 nav a.router-link-exact-active {

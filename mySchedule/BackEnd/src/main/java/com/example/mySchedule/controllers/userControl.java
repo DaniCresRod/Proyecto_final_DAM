@@ -24,7 +24,7 @@ public class userControl{
     @Autowired
     userServices myService;
 
-    //Devuelve todos los usuarios y citas de cada uno
+    //Devuelve todos los usuarios y la SIGUIENTE cita de cada uno (DTO)
     @GetMapping
     public ArrayList<DTOBasicInfo> readDB(){
         return myService.readUsers();

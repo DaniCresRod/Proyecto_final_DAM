@@ -1,9 +1,9 @@
 <script setup>
-import TheWelcome from '../components/TheWelcome.vue'
+import AllAppoComponent from '../components/AllAppointmentComponent.vue'
 </script>
 
 <template>
   <main>
-    <TheWelcome />
+    <AllAppoComponent />
   </main>
 </template>
