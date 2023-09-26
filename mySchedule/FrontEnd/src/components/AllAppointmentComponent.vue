@@ -5,8 +5,11 @@ import axiosConnection from '../services/DataServices'
 import { ref, onBeforeMount, watch} from 'vue'
 
 const props=defineProps({
-    myfilter:String, 
-    myfilterdate:String
+    myfilter:{
+      type:String,
+      default:""}, 
+    myfilterdate:String,
+    myfilterNoAppos:Boolean,
 })
 
 const emit=defineEmits(['nullappocustomers'])
@@ -16,20 +19,18 @@ const myFilteredResponse=ref([]);
 const nullApos=ref();
 
 async function getInfo(){
-    let response = await axiosConnection.getAllUsers();
-    myResponse.value=await response.data;
-    myFilteredResponse.value=myResponse.value;
-    console.log(myResponse.value);
+  let response = await axiosConnection.getAllUsers();
+  myResponse.value=await response.data;
+  myFilteredResponse.value=myResponse.value;
+  console.log(myResponse.value);
 
-    //filterByDate(myResponse);
+  MyFilter(myResponse);
 
-    nullApos.value=myResponse.value.filter(x=>{
-      return x.nextAppoDate===null
-    }).length.toString();
+  nullApos.value=myResponse.value.filter(x=>{
+    return x.nextAppoDate===null
+  }).length;
 
-    console.log(nullApos.value);   
-    emit('nullappocustomers', nullApos.value);     
-
+  emit('nullappocustomers', nullApos.value);   
 }
 
 onBeforeMount(() => {  
@@ -37,31 +38,30 @@ onBeforeMount(() => {
       
 });
 
-watch(()=> props.myfilter, ()=>{
-  if(props.myfilter===""){
-    MyFilter(myResponse);
-  }
-  else{
-    MyFilter(myFilteredResponse);
-  }  
-})
+watch(()=> props.myfilterdate, ()=>MyFilter(myResponse));
+watch(()=> props.myfilterNoAppos, ()=>MyFilter(myResponse));
+watch(()=> props.myfilter, ()=>MyFilter(myResponse));
 
-watch(()=> props.myfilterdate, ()=>filterByDate(myResponse));
-
-//Filtra según la fecha y el nombre que hayamos indicado
+//Filtra según la fecha, el nombre y la visibilidad que hayamos indicado
 function MyFilter(theObjectArray){
   myFilteredResponse.value=(theObjectArray.value).filter(x=>{
-    return (((x.nextAppoDate)>(props.myfilterdate))&&((x.name.toLowerCase()).includes(props.myfilter.toLowerCase())||(x.alias.toLowerCase()).includes(props.myfilter.toLowerCase())));
+    if(props.myfilterNoAppos){ 
+      if((props.myfilter==="")){
+        return (x.nextAppoDate===null);
+      }
+      else{
+        return ((x.nextAppoDate===null) && ((x.name.toLowerCase()).includes(props.myfilter.toLowerCase())||(x.alias.toLowerCase()).includes(props.myfilter.toLowerCase())));
+      }      
+    }
+    else{
+      if(props.myfilter!==""){
+        return (((x.nextAppoDate)>(props.myfilterdate))&&((x.name.toLowerCase()).includes(props.myfilter.toLowerCase())||(x.alias.toLowerCase()).includes(props.myfilter.toLowerCase())));
+      }
+      else{
+        return ((x.nextAppoDate)>(props.myfilterdate));
+      }
+    }
   });
-
-}
-
-//Filtra solo por fecha
-function filterByDate(theObjectArray){
-  myFilteredResponse.value=(theObjectArray.value).filter(x=>{
-    if(x.nextAppoDate!=null){
-    return ((x.nextAppoDate)>(props.myfilterdate));
-    }})
 }
 
 </script>

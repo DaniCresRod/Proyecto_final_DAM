@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onBeforeMount } from 'vue';
-import dateWorks from '../services/DateServices'
+import dateWorks from '../services/DateServices';
+import ProgramAppoComponent from '../components/ProgramAppoComponent.vue';
 
 const props=defineProps({
     userBasicInfo:Object
@@ -37,7 +38,7 @@ onBeforeMount(() => {
         Próxima cita: <span>{{ weekDay }}, {{ dateDDMMYYYY }}</span>
     </p>
     <p v-else class="NullDateProp">
-        <span >Sin cita programada</span>
+        <span >Sin cita programada: </span><ProgramAppoComponent :userInfo="props.userBasicInfo"/>
     </p>
     <p v-if="props.userBasicInfo.nextAppoStart!==null">
         de <span>{{appoStart}}</span> a <span>{{ appoFinish }}</span>
@@ -49,10 +50,11 @@ onBeforeMount(() => {
 <style scoped>
 .userCard{border:2px solid black;
     width: 100%;
-    height: 13vh;    
-    aspect-ratio: 1.5/1;
+    /* height: 13vh;     */
+    max-height: fit-content;
+    /* aspect-ratio: 1.5/1; */
     border-radius: 15px;
-    padding: 2.5vh 3vw ;
+    padding: 1vh 3vw ;
     background-color: bisque;
     box-shadow: 3px 3px 3px black;
 
@@ -77,6 +79,10 @@ hr{
 .NullDateProp{
     color:red;
     margin: 1vh auto;
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 </style>

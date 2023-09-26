@@ -1,9 +1,11 @@
 <script setup>
-import NextAppoComponent from '../components/NextAppointmentComponent.vue'
-import { ref, onBeforeMount} from 'vue'
+import NextAppoComponent from '../components/AllAppointmentComponent.vue'
+import { ref } from 'vue'
 
 const wordFilter=ref();
 const dateNow= new Date(Date.now());
+const NoAppoFilter=ref(false);
+const viewOrNot=ref("ver");
 
 const dateFilter = ref(dateNow.getFullYear() + "-" 
 + (dateNow.getMonth() + 1).toString().padStart(2,'0') + "-" 
@@ -19,67 +21,89 @@ function resetName(){
   wordFilter.value="";
 }
 
-onBeforeMount(() => {
-  console.log("hola");
-})
-
 const nullAppoCustomers = ref('');
 
 function handleNullAppoCustomers(value) {
-  nullAppoCustomers.value = value;
-  console.log(nullAppoCustomers.value);
+  nullAppoCustomers.value = value; 
 }
 
-
-// watch(props, ()=>{
-//   console.log(props.nullappocustomers);
-// })
+function viewNoAppo(){
+  NoAppoFilter.value=!NoAppoFilter.value;
+  if(viewOrNot.value==="ver") viewOrNot.value="X";
+  else viewOrNot.value="ver";
+}
 
 </script>
 
 <template>
   <main>
-    <div>
-      <span v-if="nullAppoCustomers !== ''">Hay {{ nullAppoCustomers }} pacientes sin cita programada</span>
-      <input class="searchBox" type="date"  v-model="dateFilter"/>
-      <span class="resetX" @click="resetDate()">x</span>
-      <input class="searchBox" type="text" placeholder="Buscar paciente..." v-model="wordFilter"/>
-      <span class="resetX" @click="resetName()">x</span>
-      
-    </div>
+    <section>
+      <div v-if="nullAppoCustomers>0">
+        <span class="NoAppoCust" >Hay {{ nullAppoCustomers }} pacientes sin cita programada </span>
+        <input class="NoAppoCust viewButton" type="Button" :value="viewOrNot" @click="viewNoAppo()"/>
+      </div>
+      <div>
+        <input class="searchBox" type="date"  v-model="dateFilter"/>
+        <span class="resetX" @click="resetDate()">x</span>
+      </div>
+      <div>
+        <input class="searchBox" type="text" placeholder="Buscar paciente..." v-model="wordFilter"/>
+        <span class="resetX" @click="resetName()">x</span>
+      </div>      
+    </section>
 
-    <NextAppoComponent :myfilter="wordFilter" :myfilterdate="dateFilter" @nullappocustomers="handleNullAppoCustomers"/>
+    <NextAppoComponent :myfilter="wordFilter" :myfilterdate="dateFilter" :myfilterNoAppos="NoAppoFilter" @nullappocustomers="handleNullAppoCustomers"/>
   </main>
 </template>
 
 <style scoped>
-div{
+section{
   margin: 0 auto;
   padding: 2vh 2vw;
   display: flex;
   justify-content: flex-end;
   align-items: baseline;
+  flex-wrap: wrap;
+}
+
+div{
+  display: flex;
+  justify-content: flex-end;
+  align-items: baseline;
+  margin-top: 1vh;
 }
 
 .searchBox{
   border-radius: 10px;
   padding: 0.5vh 1.5vw ;
   margin-left: 1.5vw;
+  height: 5vh;
 }
 
 .resetX{
   font-weight: bolder;
   margin-left: 0.5vw;
   border:1px solid transparent;
+  padding: 0.5vh 0.5vw;
 }
 
 .resetX:hover{
   background-color: white;
   border-radius: 15px;
-  border:1px solid black; 
-  line-height: 1vh;
+  border:1px solid black;
   background-size: 3%;
-  cursor: pointer;
-  
+  cursor: pointer;  
+  padding: 0.5vh 0.5vw;
+}
+
+.NoAppoCust{
+  font-size: smaller;
+  font-weight: bold;
+}
+
+.viewButton{
+  border-radius: 15px;
+  margin-left: 1vw;
+  margin-right: 1em;
 }
 </style>
