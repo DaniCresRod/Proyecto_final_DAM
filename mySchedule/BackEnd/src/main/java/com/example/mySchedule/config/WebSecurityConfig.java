@@ -1,5 +1,6 @@
 package com.example.mySchedule.config;
 
+import com.example.mySchedule.jwt.AuthTokenFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

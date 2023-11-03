@@ -30,7 +30,7 @@ public class userModel implements UserDetails {
     @Column(name = "Nif", unique = true)
     private String nif;
 
-    @Column(name="Name")
+    @Column(name="Nombre")
     private String name;
 
     @Column(name="Apellido1")
@@ -66,7 +66,7 @@ public class userModel implements UserDetails {
     @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        String myRol=UserType.User.toString();
+        String myRol=UserType.Usuario.toString();
         if(this.getRol()!=null){
             myRol= this.getRol().toString();
         }
@@ -111,6 +111,6 @@ public class userModel implements UserDetails {
     public enum UserType
     {
         Admin,
-        User
+        Usuario
     }
 }

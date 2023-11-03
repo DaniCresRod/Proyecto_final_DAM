@@ -15,6 +15,6 @@ public interface RepoUser extends JpaRepository<userModel, Long> {
     @Query(value="SELECT * FROM users WHERE nif=:userNif", nativeQuery = true)
     public userModel findByNif(@Param("userNif") String userNif);
 
-    @Query("SELECT u FROM UserModel u WHERE u.userName = :userName")
+    @Query("SELECT u FROM userModel u WHERE u.name = :userName")
     Optional<userModel> findByUsername(@Param("userName") String userName);
 }

@@ -41,8 +41,4 @@ public class appoControl {
     public String deleteAppo(@PathVariable long id){
         return myService.deleteAppo(id);
     }
-
-
-
-
 }

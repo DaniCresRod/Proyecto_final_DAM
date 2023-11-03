@@ -2,7 +2,7 @@ package com.example.mySchedule.controllers;
 
 //-------------------------|0|----------------------
 // Esta clase establece los metodos para la interaccion de una llamada http
-// con la bas de datos.
+// con la base de datos.
 //
 // @Author: Daniel Crespo Rodriguez
 // @Date: sept'23
@@ -53,7 +53,4 @@ public class userControl{
     public String changeUser(@PathVariable long id, @RequestBody userModel newUser){
         return myService.changeUser(id, newUser);
     }
-
-
-
 }
