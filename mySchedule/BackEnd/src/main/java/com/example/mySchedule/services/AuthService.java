@@ -2,6 +2,7 @@ package com.example.mySchedule.services;
 
 import com.example.mySchedule.DTOs.AuthResponse;
 import com.example.mySchedule.DTOs.LoginRequest;
+import com.example.mySchedule.models.userModel;
 import com.example.mySchedule.repositories.RepoUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +32,8 @@ public class AuthService {
                 )
         );
 
-        UserModel myUser = userRepository.findByUsername(incomingUserName).orElseThrow();
-        UserDetails user = (UserDetails) userRepository.findByUsername(incomingUserName).orElseThrow();
+        userModel myUser = repoUser.findByUsername(incomingUserName).orElseThrow();
+        UserDetails user = repoUser.findByUsername(incomingUserName).orElseThrow();
 
         String myToken = jwtService.getTokenService(user);
 

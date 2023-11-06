@@ -1,28 +1,54 @@
 <script setup>
 import mainView from './views/MainView.vue'
 import { ref } from 'vue'
+import axiosConnection from '../src/services/DataServices'
 
 const isLogged=ref(false);
 const isAdmin=ref(false);
 
-function toggleImg(){
-  if(document.getElementById("myPassword").type=="password"){
-    const myImage=document.getElementById("modoPassword");
+const userName=ref("");
+const userPass=ref("");
+
+function ToggleImg(){
+  if(document.getElementById("logInPassword").type=="password"){
+    const myImage=document.getElementById("logInPassword");
     myImage.src="/src/assets/Images/iconoMostrar.png";  
-    document.getElementById("myPassword").type="text"; 
+    document.getElementById("logInPassword").type="text"; 
   }
   else{
-    const myImage=document.getElementById("modoPassword");
+    const myImage=document.getElementById("logInPassword");
     myImage.src="/src/assets/Images/iconoOculto.png";  
-    document.getElementById("myPassword").type="password";
+    document.getElementById("logInPassword").type="password";
   }
+}
+
+async function LogIn(){
+  document.getElementById("emailError").classList.add("invisible");
+  document.getElementById("requiredError").classList.add("invisible");
+
+  if(userName.value!=="" && userPass.value!==""){
+    const regExEmail=new RegExp('[A-Za-z0-9]+@[A-Za-z0-9]+\.[A-Za-z0-9]{2,3}');   //Revisar si tiene formato de email
+  
+    if(regExEmail.test(userName.value)){
+      const logData={username:userName.value, password:userPass.value};
+
+      const response=await axiosConnection.getLogged(logData);    
+      console.log(response.data);                                               //Envía la información para hacer Log In
+    }
+    else{
+      document.getElementById("emailError").classList.remove("invisible");
+    }
+  }
+  else{
+    document.getElementById("requiredError").classList.remove("invisible");
+  }    
 }
 
 </script>
 
 <template>
     <header>
-    <img alt="Brand Logo" class="logo" src="@/assets/Images/brainLogo.png" width="125" height="125" />
+    <img alt="Brand Logo" class="logo" src="@/assets/Images/brainLogo.png"  />
 
     <div class="wrapper">
 
@@ -48,18 +74,21 @@ function toggleImg(){
   <form class="logInForm" v-else>
     <fieldset>
       <label for="logInEmail">Email <abbr title="Campo Requerido" aria-label="required">*</abbr></label>
-      <input type="text" name="logInEmail" id="myEmail">
+      <input type="text" name="logInEmail" id="logInEmail" v-model="userName">
     </fieldset>
 
     <fieldset>
       <label for="logInPassword">Contraseña <abbr title="Campo Requerido" aria-label="required">*</abbr></label>
       <div class="passwordBound">
-        <input type="password" name="logInPassword" id="myPassword">
-        <img id="modoPassword" src="@/assets/Images/iconoOculto.png" alt="Mostrar u ocultar contraseña" @click="toggleImg()"/>
+        <input type="password" name="logInPassword" id="logInPassword" v-model="userPass">
+        <img id="modoPassword" src="@/assets/Images/iconoOculto.png" alt="Mostrar u ocultar contraseña" @click="ToggleImg()"/>
       </div>      
     </fieldset>
 
-    <input id="btnLogIn" type="button" value="Log In">    
+    <p class="invisible emailError" id="emailError">El formato de email no es correcto</p>
+    <p class="invisible emailError" id="requiredError">Faltan campos por rellenar</p>
+
+    <input id="btnLogIn" type="button" value="Log In" @click="LogIn()">    
     
   </form>
 
@@ -70,6 +99,15 @@ function toggleImg(){
 </template>
 
 <style>
+.invisible{
+  display:none;
+}
+
+.emailError{
+  color:red;
+  align-self: center;
+}
+
 #btnLogIn{
   height: 6vh;
   min-height: 25px;

@@ -1,6 +1,10 @@
 import axiosConnection from '../httpCommon';
 
 export default({
+    //Interactuar con el login
+    async getLogged(logData){
+        return await axiosConnection.post(`/auth`, logData);
+    },
 
     //Interactuar con la tabla users
     async getUserById(id){

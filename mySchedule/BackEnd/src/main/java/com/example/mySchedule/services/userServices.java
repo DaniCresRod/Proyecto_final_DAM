@@ -7,7 +7,7 @@ import com.example.mySchedule.models.userModel;
 import com.example.mySchedule.repositories.RepoUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import org.springframework.security.crypto.password.PasswordEncoder;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -19,6 +19,8 @@ import static java.time.temporal.ChronoUnit.*;
 public class userServices{
     @Autowired
     RepoUser myRepo;
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     public ArrayList<DTOBasicInfo> readUsers() {
         ArrayList<DTOBasicInfo> basicInfo = new ArrayList<>();
@@ -44,12 +46,20 @@ public class userServices{
     }
 
     public String saveUser(userModel newUser) {
+        //Se revisa si ya existe el usuario en la base de datos (Por Email)
         userModel retrievedUser=myRepo.findByEmail(newUser.getEmail());
         if(retrievedUser==null){
-
+            //Se revisa si ya existe el usuario en la base de datos (Por NIF)
             retrievedUser=myRepo.findByNif(newUser.getNif());
             if(retrievedUser==null){
                 try{
+                    //Se encripta la contraseña
+                    String encodedPassword = passwordEncoder.encode(newUser.getPassword());
+                    newUser.setPassword(encodedPassword);
+
+                    //Se asigna por defecto el tipo de rol de usuario a "Usuario"
+                    if(newUser.getRol()==null) newUser.setRol(userModel.UserType.Usuario);
+
                     retrievedUser=myRepo.save(newUser);
                     return retrievedUser.getAlias()+" guardado con exito";
                 }
