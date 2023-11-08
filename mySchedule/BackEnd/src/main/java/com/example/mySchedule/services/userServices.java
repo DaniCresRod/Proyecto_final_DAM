@@ -50,7 +50,8 @@ public class userServices{
         userModel retrievedUser=myRepo.findByEmail(newUser.getEmail());
         if(retrievedUser==null){
             //Se revisa si ya existe el usuario en la base de datos (Por NIF)
-            retrievedUser=myRepo.findByNif(newUser.getNif());
+//            retrievedUser=myRepo.findByNif(newUser.getNif());
+            retrievedUser=myRepo.findByUserNif(newUser.getNif()).orElse(null);
             if(retrievedUser==null){
                 try{
                     //Se encripta la contraseña

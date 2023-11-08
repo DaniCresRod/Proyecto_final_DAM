@@ -1,10 +1,10 @@
 <script setup>
 import mainView from './views/MainView.vue'
 import { ref, watch } from 'vue'
-import {LogIn} from '../src/services/LogInOkService'
+import {LogIn, checkLogIn} from '../src/services/LogInOkService'
 
 //window.localStorage.clear();
-
+checkLogIn();
 const isLogged=ref(false);
 const isAdmin=ref(false);
 const logType=ref([]);
@@ -24,7 +24,7 @@ function ToggleImg(){
   }
 }
 
-watch(logType, async ()=>{
+watch(logType, async ()=>{  
   [isLogged.value, isAdmin.value]= await logType.value;
 })
 

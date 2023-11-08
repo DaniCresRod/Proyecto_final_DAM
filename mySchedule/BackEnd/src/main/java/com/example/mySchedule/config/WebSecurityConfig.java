@@ -31,8 +31,9 @@ public class WebSecurityConfig {
                 .csrf(csrf -> csrf.disable())                                   //Eliminar la proteccion csrf (si no, no consigo que acepte POST)
                 .authorizeHttpRequests((authz) -> authz
                         .requestMatchers(HttpMethod.OPTIONS).permitAll()
-                        .requestMatchers("/auth/login").permitAll()
-                        .anyRequest().permitAll()
+                        .requestMatchers(HttpMethod.POST,"/auth").permitAll()
+                        //.anyRequest().permitAll()
+                        .anyRequest().authenticated()
                 )
                 .httpBasic(withDefaults());
 

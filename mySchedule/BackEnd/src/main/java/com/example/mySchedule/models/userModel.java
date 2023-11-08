@@ -62,7 +62,7 @@ public class userModel implements UserDetails {
     @JsonIgnoreProperties("userID")
     private List<appointmentModel> appointmentsList;
 
-    //Si el usuario no tiene un rol asignado previamente, se le asigna el rol "User" por defecto
+    //Si el usuario no tiene un rol asignado previamente, se le asigna el rol "Usuario" por defecto
     @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -75,15 +75,11 @@ public class userModel implements UserDetails {
         return roles;
     }
 
-//    @Override
-//    public String getPassword() {
-//        return this.getPassword();
-//    }
-
+    //Usare el nif como identificador del User de UserDetails, porque es unico
     @JsonIgnore
     @Override
     public String getUsername() {
-        return this.getName();
+        return this.getNif();
     }
 
     @JsonIgnore

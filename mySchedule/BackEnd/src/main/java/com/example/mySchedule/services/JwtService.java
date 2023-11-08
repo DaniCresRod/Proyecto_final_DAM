@@ -29,6 +29,7 @@ public class JwtService {
         return getToken(new HashMap<>(),user);
     }
 
+    //Genera el token para enviar
     public String getToken(Map<String, Object> claims, UserDetails user){
         return Jwts
                 .builder()
@@ -46,7 +47,6 @@ public class JwtService {
     }
 
     public String getUsernameFromToken(String token) {
-
         return getClaim(token, Claims::getSubject);
     }
 

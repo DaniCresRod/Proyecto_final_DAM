@@ -22,9 +22,6 @@ import java.io.IOException;
 @Component
 @RequiredArgsConstructor
 public class AuthTokenFilter extends OncePerRequestFilter{
-    //private final JwtService jwtService;
-    //private final UserDetailsService userDetailsService;
-    //private final LogService loggedUser;
 
     @Autowired
     RepoUser userRepository;
@@ -43,7 +40,7 @@ public class AuthTokenFilter extends OncePerRequestFilter{
         //Necesita que los devuelva añadiendo las cabeceras, si no no se reconocen)
         if ("OPTIONS".equals(request.getMethod())) {
             response.setHeader("Access-Control-Allow-Origin", "*");
-            response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+            response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
             response.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type");
             response.setHeader("Access-Control-Max-Age", "3600");
             return;
@@ -57,12 +54,16 @@ public class AuthTokenFilter extends OncePerRequestFilter{
             return;
         }
 
-        username = jwtService.getUsernameFromToken(token);
+        try {
+            username = jwtService.getUsernameFromToken(token);
+        } catch (io.jsonwebtoken.MalformedJwtException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().write("Token JWT malformado: " + e.getMessage());
+            return;
+        }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-
-            //loggedUser.setLoggedUser(userRepository.findByUsername(username).orElse(null));
 
             if (jwtService.isTokenValid(token, userDetails)) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
@@ -78,7 +79,7 @@ public class AuthTokenFilter extends OncePerRequestFilter{
         filterChain.doFilter(request, response);
     }
 
-    private String getTokenFromRequest(HttpServletRequest request) {
+    public String getTokenFromRequest(HttpServletRequest request) {
         final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
         if (StringUtils.hasText(authHeader) && authHeader.startsWith("Bearer ")) {

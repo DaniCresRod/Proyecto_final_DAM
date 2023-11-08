@@ -4,6 +4,7 @@ package com.example.mySchedule.controllers;
 import com.example.mySchedule.DTOs.AuthResponse;
 import com.example.mySchedule.DTOs.LoginRequest;
 import com.example.mySchedule.services.AuthService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,19 @@ public class AuthController {
     {
         try{
             return ResponseEntity.ok(authService.login(request));
+        }
+        catch(Exception e){
+            System.out.println("Excepcion en AuthController");
+            System.out.println(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Hubo un error durante el inicio de sesión: " + e.getMessage());
+        }
+    }
+
+    @GetMapping
+    public ResponseEntity<?> checkAliveToken(HttpServletRequest request){
+        try{
+            return ResponseEntity.ok(authService.isAlive(request));
+
         }
         catch(Exception e){
             System.out.println("Excepcion en AuthController");

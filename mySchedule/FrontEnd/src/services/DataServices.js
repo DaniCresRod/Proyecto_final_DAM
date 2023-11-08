@@ -14,6 +14,17 @@ export default({
         }        
     },
 
+    async getAlive(){
+        try{
+            let response=await axiosConnection.get('/auth');
+            return response.data;
+        }
+        catch(e){console.log(e);
+            window.localStorage.clear();
+            return e.code;
+        }
+    },
+
     //Interactuar con la tabla users
     async getUserById(id){
         return await axiosConnection.get(`/user/${id}`);

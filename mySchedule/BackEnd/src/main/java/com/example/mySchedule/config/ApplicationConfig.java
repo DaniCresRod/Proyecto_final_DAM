@@ -41,11 +41,11 @@ public class ApplicationConfig {
     @Bean
     public UserDetailsService userDetailsService(){
         return username-> {
-            userModel userModel = userRepository.findByUsername(username)
+            userModel userModel = userRepository.findByUserNif(username)
                     .orElseThrow(() -> new UsernameNotFoundException("No existe el usuario"));
 
             return User.builder()
-                    .username(userModel.getName())
+                    .username(userModel.getNif())
                     .password(userModel.getPassword())
                     .roles(userModel.getRol().toString())
                     .build();
