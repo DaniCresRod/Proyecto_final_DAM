@@ -1,48 +1,32 @@
 <script setup>
 import mainView from './views/MainView.vue'
-import { ref } from 'vue'
-import axiosConnection from '../src/services/DataServices'
+import { ref, watch } from 'vue'
+import {LogIn} from '../src/services/LogInOkService'
+
+//window.localStorage.clear();
 
 const isLogged=ref(false);
 const isAdmin=ref(false);
+const logType=ref([]);
 
 const userName=ref("");
 const userPass=ref("");
 
 function ToggleImg(){
-  if(document.getElementById("logInPassword").type=="password"){
-    const myImage=document.getElementById("logInPassword");
+  const myImage=document.getElementById("imgModePassword");
+  if(document.getElementById("logInPassword").type=="password"){    
     myImage.src="/src/assets/Images/iconoMostrar.png";  
     document.getElementById("logInPassword").type="text"; 
   }
-  else{
-    const myImage=document.getElementById("logInPassword");
+  else{    
     myImage.src="/src/assets/Images/iconoOculto.png";  
     document.getElementById("logInPassword").type="password";
   }
 }
 
-async function LogIn(){
-  document.getElementById("emailError").classList.add("invisible");
-  document.getElementById("requiredError").classList.add("invisible");
-
-  if(userName.value!=="" && userPass.value!==""){
-    const regExEmail=new RegExp('[A-Za-z0-9]+@[A-Za-z0-9]+\.[A-Za-z0-9]{2,3}');   //Revisar si tiene formato de email
-  
-    if(regExEmail.test(userName.value)){
-      const logData={username:userName.value, password:userPass.value};
-
-      const response=await axiosConnection.getLogged(logData);    
-      console.log(response.data);                                               //Envía la información para hacer Log In
-    }
-    else{
-      document.getElementById("emailError").classList.remove("invisible");
-    }
-  }
-  else{
-    document.getElementById("requiredError").classList.remove("invisible");
-  }    
-}
+watch(logType, async ()=>{
+  [isLogged.value, isAdmin.value]= await logType.value;
+})
 
 </script>
 
@@ -81,14 +65,13 @@ async function LogIn(){
       <label for="logInPassword">Contraseña <abbr title="Campo Requerido" aria-label="required">*</abbr></label>
       <div class="passwordBound">
         <input type="password" name="logInPassword" id="logInPassword" v-model="userPass">
-        <img id="modoPassword" src="@/assets/Images/iconoOculto.png" alt="Mostrar u ocultar contraseña" @click="ToggleImg()"/>
+        <img id="imgModePassword" src="@/assets/Images/iconoOculto.png" alt="Mostrar u ocultar contraseña" @click="ToggleImg()"/>
       </div>      
     </fieldset>
+      
+    <p class="invisible logInError" id="logInError"></p>
 
-    <p class="invisible emailError" id="emailError">El formato de email no es correcto</p>
-    <p class="invisible emailError" id="requiredError">Faltan campos por rellenar</p>
-
-    <input id="btnLogIn" type="button" value="Log In" @click="LogIn()">    
+    <input id="btnLogIn" type="button" value="Log In" @click="logType=LogIn(userName,userPass)">    
     
   </form>
 
@@ -103,7 +86,7 @@ async function LogIn(){
   display:none;
 }
 
-.emailError{
+.logInError{
   color:red;
   align-self: center;
 }
@@ -124,7 +107,7 @@ async function LogIn(){
   flex-direction: row;
 }
 
-#modoPassword{
+#imgModePassword{
   height: 2.5vh;
   margin-left: 2vw;
   min-height: 20px;

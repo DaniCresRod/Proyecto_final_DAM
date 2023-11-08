@@ -3,7 +3,15 @@ import axiosConnection from '../httpCommon';
 export default({
     //Interactuar con el login
     async getLogged(logData){
-        return await axiosConnection.post(`/auth`, logData);
+        let response;
+        try{
+            response=await axiosConnection.post(`/auth`, logData);
+            return response.data;
+        }
+        catch(e){
+            if((typeof(e.response)!=="undefined") && (e.response.status===400)) return "userOrPasswordError";
+            else return "ConnectionError";
+        }        
     },
 
     //Interactuar con la tabla users

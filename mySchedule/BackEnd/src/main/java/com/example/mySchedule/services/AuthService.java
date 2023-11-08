@@ -41,6 +41,8 @@ public class AuthService {
                 .builder()
                 .userId(myUser.getId())
                 .token(myToken)
+                .userName(myUser.getName())
+                .userRole(myUser.getRol().toString())
                 .build();
     }
 }
