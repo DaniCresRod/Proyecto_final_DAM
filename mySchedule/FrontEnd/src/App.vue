@@ -1,10 +1,10 @@
 <script setup>
 import mainView from './views/MainView.vue'
-import { ref, watch } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 import {LogIn, checkLogIn} from '../src/services/LogInOkService'
 
 //window.localStorage.clear();
-checkLogIn();
+
 const isLogged=ref(false);
 const isAdmin=ref(false);
 const logType=ref([]);
@@ -26,6 +26,12 @@ function ToggleImg(){
 
 watch(logType, async ()=>{  
   [isLogged.value, isAdmin.value]= await logType.value;
+})
+
+onMounted(async () => {
+  //Revisa si hay almacenado un valor valido en el token
+isLogged.value=await checkLogIn();
+  
 })
 
 </script>
@@ -55,6 +61,7 @@ watch(logType, async ()=>{
   </header>
 
   <mainView v-if="isLogged"/>
+
   <form class="logInForm" v-else>
     <fieldset>
       <label for="logInEmail">Email <abbr title="Campo Requerido" aria-label="required">*</abbr></label>

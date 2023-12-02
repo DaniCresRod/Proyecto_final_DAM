@@ -50,16 +50,18 @@ export async function checkLogIn(){
   let myToken=window.localStorage.getItem("userToken");
   if(myToken!==null){
     let response=await axiosConnection.getAlive();
-
     if(response!=="ERR_NETWORK"){
+      //Aqui llega con token válido
       window.localStorage.setItem("userId", response.userId);
       window.localStorage.setItem("userName", response.userName);
       window.localStorage.setItem("userRol", response.userRole);
-      //router.push();
+      
+      return true;
     }
     else console.log("ERR_NETWORK");
   }
   else console.log("Token null");
+  return false;
 }
 
 // function changeMainPageView(isAdmin){

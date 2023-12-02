@@ -50,6 +50,8 @@ public class AuthService {
                 .build();
     }
 
+    //En funcion de un token que se haya enviado, se revisa si este es valido
+    //Se usa para loggear automaticamente en el mismo ordenador
     public AuthResponse isAlive(HttpServletRequest request){
         final String token = authTokenFilter.getTokenFromRequest(request);
         final String username = jwtService.getUsernameFromToken(token);
