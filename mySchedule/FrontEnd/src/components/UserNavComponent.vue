@@ -67,12 +67,11 @@ section{border: 1px solid var(--color-border);
         } 
         
         li:hover{
-            background-color: white !important;
-            color:var(--color-text) !important;
+            background-color: var(--color-background-text) !important;
+            color:var(--color-text1) !important;
         }        
     } 
     ul:hover li {
-            background-color: var(--color-background-text2);
             color: var(--color-text2);
     }
 }

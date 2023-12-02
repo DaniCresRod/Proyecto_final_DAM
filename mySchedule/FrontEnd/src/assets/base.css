@@ -26,6 +26,7 @@
   --color-background: var(--vt-c-white);
   --color-background-soft: var(--vt-c-white-soft);
   --color-background-mute: var(--vt-c-white-mute);
+  --color-background-text: #FFF5DB;
   --color-background-text2: hsla(160, 100%, 37%, 0.2);
 
   --color-border: #8A7196;
