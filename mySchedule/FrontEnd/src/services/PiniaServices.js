@@ -7,6 +7,7 @@ export const myUserStore=defineStore('userData', {
             nif:'',
             name:'',
             surname1:'',
+            surname2:'',
             alias:'',
             email:'',
             password:'',
@@ -21,7 +22,7 @@ export const myUserStore=defineStore('userData', {
             notes:'',
             userID:{}
        },
-       AllUsers:'',
+       AllUsers:[],
     }),
 });
 

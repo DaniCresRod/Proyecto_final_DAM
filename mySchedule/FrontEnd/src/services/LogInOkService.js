@@ -1,5 +1,4 @@
 import axiosConnection from './DataServices'
-import router from "../router/index.js"
 
 export function StoreUserData(userEmail, token, userId, userName, userRol){    
   window.localStorage.setItem("userEmail", userEmail);
@@ -24,13 +23,12 @@ export async function LogIn(userName, userPass){
   userName=(userName.toLowerCase()).trim();                                     //email en minusculas y sin espacios
 
   if(userName!=="" && userPass!==""){
-    const regExEmail=new RegExp('[a-z0-9]+@[a-z0-9]+\.[a-z0-9]{2,3}');          //Revisar si tiene formato de email
+    const regExEmail=new RegExp('[a-z0-9]+@[a-z0-9]+.[a-z0-9]{2,3}');          //Revisar si tiene formato de email
   
     if(regExEmail.test(userName)){
       const logData={username:userName, password:userPass};
 
       const response=await axiosConnection.getLogged(logData);
-      console.log(response);
       if(response==="userOrPasswordError") ShowLogInErrorMessage("Usuario o contraseña incorrectos");
       else if(response==="logInError") ShowLogInErrorMessage("No se pudo conectar");                                 
       
@@ -54,8 +52,7 @@ export async function checkLogIn(){
       //Aqui llega con token válido
       window.localStorage.setItem("userId", response.userId);
       window.localStorage.setItem("userName", response.userName);
-      window.localStorage.setItem("userRol", response.userRole);
-      
+      window.localStorage.setItem("userRol", response.userRole);      
       return true;
     }
     else console.log("ERR_NETWORK");

@@ -1,28 +1,37 @@
 <script setup>
-//import { ref } from 'vue'
-import { RouterView } from 'vue-router'
-import UserNavComponent from '../components/UserNavComponent.vue';
+import { onBeforeMount } from 'vue'
+import router from '../router/index.js';
+// import { RouterView } from 'vue-router'
+// import mainUserView from './MainUserView.vue';
+// import mainAdminView from './MainAdminView.vue';
 
-//const isAdmin=ref(false);
+
+
+
+onBeforeMount(() => {
+  const userRol = window.localStorage.getItem("userRol");
+  if (userRol === "Admin") {
+    router.push({ name: 'adminView' }); // Utiliza el nombre de la ruta definido en router.js
+  } else {
+    router.push({ name: 'userView' }); // Utiliza el nombre de la ruta definido en router.js
+  }
+
+})
+
 </script>
 
 <template> 
-  <main>
-    <UserNavComponent />
-    <!-- <RouterView /> -->
+  <main>    
+    <RouterView/>       
   </main>
   
 </template>
 
 <style scoped>
 
-main{border: 1px solid black;
+main{
   width: 80vw;
-  height: 80vh; 
-  
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  height: 80vh;  
 }
 
 </style>

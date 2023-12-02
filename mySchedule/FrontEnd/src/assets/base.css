@@ -26,12 +26,15 @@
   --color-background: var(--vt-c-white);
   --color-background-soft: var(--vt-c-white-soft);
   --color-background-mute: var(--vt-c-white-mute);
+  --color-background-text2: hsla(160, 100%, 37%, 0.2);
 
-  --color-border: var(--vt-c-divider-light-2);
+  --color-border: #8A7196;
   --color-border-hover: var(--vt-c-divider-light-1);
 
   --color-heading: var(--vt-c-text-light-1);
-  --color-text: var(--vt-c-text-light-1);
+  --color-text: #8A7196;
+  --color-text2: #AFD3C7;
+  --color-text2-hover: #273631;
 
   --section-gap: 160px;
 }

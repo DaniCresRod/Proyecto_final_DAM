@@ -1,12 +1,12 @@
 <script setup>
-import mainView from './views/MainView.vue'
-import { ref, watch, onMounted } from 'vue'
+import mainView from './views/MainView.vue';
+import { ref, watch, onBeforeMount } from 'vue'
 import {LogIn, checkLogIn} from '../src/services/LogInOkService'
 
 //window.localStorage.clear();
 
 const isLogged=ref(false);
-const isAdmin=ref(false);
+const isAdmin=ref(window.localStorage.getItem("userRol")==="Admin");
 const logType=ref([]);
 
 const userName=ref("");
@@ -25,13 +25,12 @@ function ToggleImg(){
 }
 
 watch(logType, async ()=>{  
-  [isLogged.value, isAdmin.value]= await logType.value;
+  [isLogged.value, isAdmin.value] = await logType.value;
 })
 
-onMounted(async () => {
+onBeforeMount(async () => {
   //Revisa si hay almacenado un valor valido en el token
-isLogged.value=await checkLogIn();
-  
+  isLogged.value=await checkLogIn();  
 })
 
 </script>
@@ -43,13 +42,13 @@ isLogged.value=await checkLogIn();
     <div class="wrapper">
 
       <nav v-if="isAdmin && isLogged">
-        <RouterLink to="/">Home</RouterLink>
+        <RouterLink to="/AdminView">Home</RouterLink>
         <RouterLink to="/newAppointment">Nueva Cita</RouterLink>
         <RouterLink to="/allApointment">Próximas citas</RouterLink>
         <RouterLink to="/allApointment">LogOut</RouterLink>
       </nav>      
       <nav v-else-if="isLogged">
-        <RouterLink to="/">Mi Cita</RouterLink>
+        <RouterLink to="/UserView">Mi Cita</RouterLink>
         <RouterLink to="/newAppointment">Mis Facturas</RouterLink>
         <RouterLink to="/allApointment">LogOut</RouterLink>
       </nav>
@@ -60,7 +59,8 @@ isLogged.value=await checkLogIn();
     </div>
   </header>
 
-  <mainView v-if="isLogged"/>
+  <!-- En funcion del estado del login tendremos una pagina de inicio u otra -->
+  <mainView v-if="isLogged" />
 
   <form class="logInForm" v-else>
     <fieldset>
@@ -162,7 +162,7 @@ isLogged.value=await checkLogIn();
 header { 
   line-height: 1.5;
   min-height: fit-content;
-  /* height: 20vh;   */
+  max-height: 25vh;   
   overflow: hidden;
   width: 80vw;
   position:sticky;

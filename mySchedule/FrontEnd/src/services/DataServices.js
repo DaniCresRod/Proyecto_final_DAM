@@ -30,8 +30,8 @@ export default({
         return await axiosConnection.get(`/user/${id}`);
     },
 
-    getAllUsers(){
-        return axiosConnection.get(`/user`);
+    async getAllUsers(){        
+        return axiosConnection.get('/user');
     },
 
     deleteById(id){
