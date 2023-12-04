@@ -73,29 +73,6 @@ div{
   margin-top: 1vh;
 }
 
-.searchBox{
-  border-radius: 10px;
-  padding: 0.5vh 1.5vw ;
-  margin-left: 1.5vw;
-  height: 5vh;
-}
-
-.resetX{
-  font-weight: bolder;
-  margin-left: 0.5vw;
-  border:1px solid transparent;
-  padding: 0.5vh 0.5vw;
-}
-
-.resetX:hover{
-  background-color: white;
-  border-radius: 15px;
-  border:1px solid black;
-  background-size: 3%;
-  cursor: pointer;  
-  padding: 0.5vh 0.5vw;
-}
-
 .NoAppoCust{
   font-size: smaller;
   font-weight: bold;

@@ -174,7 +174,7 @@ header {
   justify-content: space-between;
   align-items: center;
 
-  border-bottom: 7px solid  #8B7198;
+  border-bottom: 7px solid  var(--color-text);
 
   /* border:2px solid black; */
   

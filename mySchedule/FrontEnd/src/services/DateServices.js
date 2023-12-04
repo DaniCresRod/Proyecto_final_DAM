@@ -22,6 +22,20 @@ export default({
         return EndHour.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
     },
 
+    setTextAsTime(formattedString){
+        let [hour, min]=(formattedString).split(':');
+
+        let myHour=new Date();
+
+        myHour.setHours(hour, min, 0);
+        
+        return myHour;
+    },
+
+    setTimeAsText(theDate){
+        return theDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    },
+
     changeFormatToDate(date){
         let [year, month, day]=date.split("-");
         return day+"/"+(month)+"/"+year;

@@ -28,5 +28,7 @@ div{
     flex-direction: row;
     justify-content: space-around;
     align-items: center;
+    
+    margin-top: 2vh;
 }
 </style>
