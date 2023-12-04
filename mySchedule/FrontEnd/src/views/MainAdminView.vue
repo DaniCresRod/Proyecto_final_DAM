@@ -1,5 +1,6 @@
 <script setup>
 import UserNavComponent from '../components/UserNavComponent.vue';
+import UserAppointmentCalendar from '../components/UserAppointmentCalendar.vue';
 import axiosConnection from "../services/DataServices.js";
 import { myUserStore } from "../services/PiniaServices";
 import { onBeforeMount } from 'vue'
@@ -15,13 +16,17 @@ onBeforeMount(async() => {
 
 </script>
 <template>
-    <UserNavComponent/>
+    <div>
+        <UserNavComponent/>
+        <UserAppointmentCalendar/>
+    </div>    
 </template>
 
 <style scoped>
-template{
+div{
     display: flex;
     flex-direction: row;
     justify-content: space-around;
+    align-items: center;
 }
 </style>

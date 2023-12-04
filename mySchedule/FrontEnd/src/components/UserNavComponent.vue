@@ -19,7 +19,7 @@ async function LoadSelectedUser(user){
 watch(()=> myStore.AllUsers, ()=>{
     allUsersBasicInfo.value=myStore.AllUsers;
     console.log(allUsersBasicInfo.value);
-    LoadSelectedUser(myStore.AllUsers[0].id);
+    // LoadSelectedUser(myStore.AllUsers[0].id);
 });
 
 </script>
@@ -71,9 +71,9 @@ section{border: 1px solid var(--color-border);
             color:var(--color-text1) !important;
         }        
     } 
-    ul:hover li {
-            color: var(--color-text2);
-    }
+    // ul:hover li {
+    //     color: var(--color-text2);
+    // }
 }
 
 </style>
