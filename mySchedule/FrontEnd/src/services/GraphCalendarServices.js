@@ -1,14 +1,12 @@
 import DateServices from "./DateServices";
+import moment from 'moment';
 
 
 const today=new Date(Date.now());
 
 let numberOfToday=today.getDay();
 
-
-
-
-function GetNumberOfDaysInMonth(theDate){
+function getNumberOfDaysInMonth(theDate){
     const theMonth=theDate.getMonth();
     const theYear=theDate.getFullYear();
 
@@ -16,16 +14,11 @@ function GetNumberOfDaysInMonth(theDate){
 }
 
 //Define un array rellenado con los dias de la semana y los horarios
-export function DefineCalendarBasics(sessionMinutes, timeWindows, customTimeArray){    
-    let weeklyArray=[];
+export function defineCalendarBasics(sessionMinutes, timeWindows, customTimeArray){    
+    
     let weeklyArray2=[];
-    weeklyArray2=["Inicio", "Fin", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado", "Domingo"];
-    
-    weeklyArray2.forEach((item,index)=>{
-        weeklyArray[index]=new CalendarDay(index, item);
-    })
-    console.log(weeklyArray);
-    
+    let weeklyArray=["Inicio", "Fin", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado", "Domingo"];
+            
     if(customTimeArray===null){
         let startWorkHour=DateServices.setTextAsTime(timeWindows[0]);
         let finishWorkHour=DateServices.setTextAsTime(timeWindows[timeWindows.length-1]);
@@ -53,9 +46,19 @@ export function DefineCalendarBasics(sessionMinutes, timeWindows, customTimeArra
             );
         }
     }
-    return(weeklyArray);
+
+    weeklyArray.forEach((item,index)=>{
+        weeklyArray2[index]=new CalendarDay(index, item);
+    });
+
+    do{   
+        weeklyArray2.push("");
+    } while(weeklyArray2.length % 9 !== 0  );
+
+    return(weeklyArray2);
 }
 
+//Clase padre para los objetos que iran en las casillas del calendario
 class CalendarDay{
     constructor(index, tag){
         this.index=index;
@@ -63,7 +66,8 @@ class CalendarDay{
     }
 }
 
-class CalendarDayBooked extends CalendarDay{
+//Clase que hereda de CalendarDay para las citas
+export class CalendarDayBooked extends CalendarDay{
     
     constructor(index, currentDay, appoTime, userId, user, userAlias){
         super(index, user+" "+userAlias);
@@ -73,4 +77,55 @@ class CalendarDayBooked extends CalendarDay{
         this.user=user;
         this.userAlias=userAlias;
     }
+}
+
+//Uso por primera vez la libreria moment.js (https://momentjs.com/)
+export function appoIsInRange(dateFilter, userAppoDate){
+    const weekDayName = DateServices.getDayFromDate(dateFilter);
+    let rangeUp;
+    let rangeDown;
+
+    switch (weekDayName){
+        case "Lunes": 
+            rangeUp=6;
+            rangeDown=0;
+            break;
+        case "Martes":
+            rangeUp=5;
+            rangeDown=1;
+            break;
+        case "Miercoles":
+            rangeUp=4;
+            rangeDown=2;
+            break;
+        case "Jueves":
+            rangeUp=3;
+            rangeDown=3;
+            break;
+        case "Viernes":
+            rangeUp=2;
+            rangeDown=4;
+            break;
+        case "Sabado":
+            rangeUp=1;
+            rangeDown=5;
+            break;
+        case "Domingo":
+            rangeUp=0;
+            rangeDown=6;
+            break;
+    }
+    let userDate=moment(userAppoDate);
+    let selectedDate=moment(dateFilter);
+    console.log(selectedDate.format('YYYY-MM-DD'));
+    console.log(userDate.format('YYYY-MM-DD'));
+    console.log(rangeUp);
+    // console.log(selectedDate.add(rangeUp,'days').format('YYYY-MM-DD'));
+    // console.log(selectedDate.subtract(rangeDown, 'days').format('YYYY-MM-DD'));
+
+    if(userDate.isBetween(selectedDate.clone().subtract(rangeDown, 'days').format('YYYY-MM-DD'), selectedDate.clone().add(rangeUp,'days').format('YYYY-MM-DD'), null, [])){
+       
+        return true;
+    } 
+    else return false;
 }

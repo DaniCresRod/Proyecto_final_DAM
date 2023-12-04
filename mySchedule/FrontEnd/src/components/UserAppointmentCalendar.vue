@@ -1,39 +1,34 @@
 <script setup>
 import { ref, watch } from 'vue';
 import { myUserStore } from '../services/PiniaServices';
-import {DefineCalendarBasics} from '../services/GraphCalendarServices'
+import {defineCalendarBasics, appoIsInRange} from '../services/GraphCalendarServices'
 
 const myMonthlyArray=ref([]);
 const myStore=myUserStore();
 
-let currentDate=new Date(Date.now());
+const dateNow= new Date(Date.now());
 
 //Construye el array que se mostrará en el calendario
-function BuildCalendarArray(currentDate){
+function buildCalendarArray(dateNow){
     let sessionMinutes=90;
     let timeWindows=["08:00", "21:00"];
-    myMonthlyArray.value=DefineCalendarBasics(sessionMinutes, timeWindows, null);
+    myMonthlyArray.value=defineCalendarBasics(sessionMinutes, timeWindows, null);
+
+    console.log(myMonthlyArray.value);
 
     myStore.AllUsers.forEach((eachUser)=>{
-        if((new Date(eachUser.nextAppoDate).getMonth()===currentDate.getMonth()) &&
-        (new Date(eachUser.nextAppoDate).getFullYear()===currentDate.getFullYear())){
-            console.log(("hola"));
-            
-        }
-        else{
-            console.log("no");
-        }
-        
+        let esono=appoIsInRange(dateFilter.value,eachUser.nextAppoDate);
+        console.log(esono);
+              
     })
-
 }
 
 watch(()=> myStore.AllUsers, ()=>{
-    console.log(currentDate.getMonth());
-    BuildCalendarArray(currentDate);
+    console.log(dateNow.getMonth());
+    buildCalendarArray(dateNow);
 });
 
-const dateNow= new Date(Date.now());
+
 const dateFilter = ref(dateNow.getFullYear() + "-" 
 + (dateNow.getMonth() + 1).toString().padStart(2,'0') + "-" 
 + dateNow.getDate().toString().padStart(2,'0'));
@@ -53,7 +48,9 @@ function resetDate(){
         <span class="resetX" @click="resetDate()">x</span>
       </div>
         <div>
-            <p v-for="(item,index) in myMonthlyArray" :key="item">{{ myMonthlyArray[index].tag }}</p>                      
+            <p v-for="(item,index) in myMonthlyArray" :key="item">
+                <span v-if="myMonthlyArray[index]">{{ myMonthlyArray[index].tag }}</span>
+            </p>                      
         </div>
     </section>
 </template>

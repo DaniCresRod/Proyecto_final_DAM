@@ -1,8 +1,8 @@
 <script setup>
 import UserInfo from '../components/UserInfoComponent.vue'
-// import {PiniaStore} from '../services/PiniaServices'
 import axiosConnection from '../services/DataServices'
 import { ref, onBeforeMount, watch} from 'vue'
+import DateServices from '../services/DateServices';
 
 const props=defineProps({
     myfilter:{
@@ -58,7 +58,15 @@ function MyFilter(theObjectArray){
         return (((x.nextAppoDate)>(props.myfilterdate))&&((x.name.toLowerCase()).includes(props.myfilter.toLowerCase())||(x.alias.toLowerCase()).includes(props.myfilter.toLowerCase())));
       }
       else{
-        return ((x.nextAppoDate)>(props.myfilterdate));
+        // if((x.nextAppoStart!==null) && (DateServices.setTextAsTime(x.nextAppoStart).getHours()<=(new Date).getHours())){
+        //   console.log(DateServices.setTextAsTime( x.nextAppoStart));
+        //   console.log(DateServices.setTextAsTime(x.nextAppoStart).getHours());
+        // console.log((new Date).getHours());
+        // console.log(((x.nextAppoDate)>=(props.myfilterdate)) && (DateServices.setTextAsTime(x.nextAppoStart).getHours()<(new Date).getHours()));
+          
+        // }
+        
+        return (((x.nextAppoDate)>=(props.myfilterdate)));
       }
     }
   });

@@ -26,12 +26,12 @@ public class userServices{
         ArrayList<DTOBasicInfo> basicInfo = new ArrayList<>();
         for (userModel eachUser : (ArrayList<userModel>) myRepo.findAll()){
 
-            long difference=1000000;
+            long difference=-1000000000;
             LocalDate nextDate=null;
             LocalTime nextDateStart=null;
 
             for (appointmentModel eachAppo: eachUser.getAppointmentsList()){
-                if((eachAppo.getAppoDate().isAfter(LocalDate.now())) && (DAYS.between(eachAppo.getAppoDate(),LocalDate.now())<difference)){
+                if((!eachAppo.getAppoDate().isBefore(LocalDate.now())) && (DAYS.between(eachAppo.getAppoDate(),LocalDate.now())>difference)){
                     difference=DAYS.between(eachAppo.getAppoDate(),LocalDate.now());
                     nextDate=eachAppo.getAppoDate();
                     nextDateStart=eachAppo.getAppoStart();
