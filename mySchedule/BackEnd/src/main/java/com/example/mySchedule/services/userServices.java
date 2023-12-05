@@ -4,6 +4,7 @@ package com.example.mySchedule.services;
 import com.example.mySchedule.DTOs.DTOBasicInfo;
 import com.example.mySchedule.models.appointmentModel;
 import com.example.mySchedule.models.userModel;
+import com.example.mySchedule.repositories.RepoAppointment;
 import com.example.mySchedule.repositories.RepoUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import static java.time.temporal.ChronoUnit.*;
 
@@ -19,6 +21,8 @@ import static java.time.temporal.ChronoUnit.*;
 public class userServices{
     @Autowired
     RepoUser myRepo;
+    @Autowired
+    RepoAppointment AppoRepo;
     @Autowired
     PasswordEncoder passwordEncoder;
 
@@ -112,5 +116,49 @@ public class userServices{
             return myRepo.findById(id).orElse(null);
         }
         return null;
+    }
+
+    public ArrayList<DTOBasicInfo> readUsersAtDate(LocalDate date) {
+        ArrayList<DTOBasicInfo> basicInfo = new ArrayList<>();
+        LocalDate startDate= findMondayInTheWeekOf(date);
+        LocalDate finishDate= startDate.plusDays(6);
+
+        List<appointmentModel> miArray= AppoRepo.findAppoBetweenDates(startDate, finishDate);
+
+        for (appointmentModel eachAppo : miArray){
+            userModel theUser=myRepo.findById(eachAppo.getUserID().getId()).orElse(null);
+
+            DTOBasicInfo userBasicInfo=new DTOBasicInfo(theUser.getId(),theUser.getName(), theUser.getAlias(), eachAppo.getAppoDate(), eachAppo.getAppoStart() );
+            basicInfo.add(userBasicInfo);
+        }
+        return basicInfo;
+    }
+
+    //Busca el comienzo de la semana (Lunes) de una fecha dada
+    private LocalDate findMondayInTheWeekOf(LocalDate date) {
+        LocalDate startDay=date;
+        switch(date.getDayOfWeek()){
+            case MONDAY :
+                break;
+            case TUESDAY:
+                startDay=date.minusDays(1);
+                break;
+            case WEDNESDAY:
+                startDay=date.minusDays(2);
+                break;
+            case THURSDAY:
+                startDay=date.minusDays(3);
+                break;
+            case FRIDAY:
+                startDay=date.minusDays(4);
+                break;
+            case SATURDAY:
+                startDay=date.minusDays(5);
+                break;
+            case SUNDAY:
+                startDay=date.minusDays(6);
+                break;
+        }
+        return startDay;
     }
 }

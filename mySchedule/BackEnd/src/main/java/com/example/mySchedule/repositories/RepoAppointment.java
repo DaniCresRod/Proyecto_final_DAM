@@ -25,4 +25,7 @@ public interface RepoAppointment extends JpaRepository<appointmentModel, Long> {
             "AND start BETWEEN DATE_ADD(STR_TO_DATE(:#{#myAppo.getAppoStart()}, '%H:%i:%s'), INTERVAL -75 MINUTE) " +
             "AND DATE_ADD(STR_TO_DATE(:#{#myAppo.getAppoStart()}, '%H:%i:%s'), INTERVAL 75 MINUTE))", nativeQuery = true)
     boolean findRepeatedAppoHourWithUserID(@Param("myAppo")appointmentModel targetAppo);
+
+    @Query(value = "SELECT * FROM appointments WHERE date BETWEEN :startDate AND :endDate", nativeQuery = true )
+    List<appointmentModel> findAppoBetweenDates(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 }

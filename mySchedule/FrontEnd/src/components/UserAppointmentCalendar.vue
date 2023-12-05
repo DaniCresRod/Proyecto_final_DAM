@@ -18,8 +18,6 @@ function buildCalendarArray(dateNow){
     let timeWindows=["08:00", "21:00"];
     myWeeklyArray.value=defineCalendarBasics(sessionMinutes, timeWindows, null);
 
-    console.log(myWeeklyArray.value);
-
     myStore.AllUsers.forEach((eachUser)=>{
         let isInWeek=appoIsInRange(dateFilter.value,eachUser.nextAppoDate);
 
@@ -34,13 +32,10 @@ function buildCalendarArray(dateNow){
             }
             else{
                 oddApposArray.value.push(userWithAppoThisWeek);
-            } 
-            console.log(oddApposArray.value);           
+            }          
         }
               
     })
-
-    console.log(myWeeklyArray.value);
 }
 
 const dateFilter = ref(dateNow.getFullYear() + "-" 
@@ -54,12 +49,10 @@ function resetDate(){
 }
 
 watch(()=> myStore.AllUsers, ()=>{
-    console.log(dateNow.getMonth());
     buildCalendarArray(dateNow);
 });
 
 watch(()=> dateFilter.value, ()=>{
-    console.log(dateNow.getMonth());
     buildCalendarArray(dateNow);
 });
 
@@ -118,13 +111,17 @@ p{border:1px solid black;
 .p_outOfSchedule{
     border:none;
     text-align: left;
-    padding-top: 1vh;
+    /* padding-top: 1vh; */
     padding-left: 1vw;
     font-weight:normal;
 }
 
 .article_outOfSchedule{
     margin-top: 1.5vh;
+}
+
+.article_outOfSchedule .p_outOfSchedule:first-of-type{
+    padding-top: 1vh;
 }
 
 </style>

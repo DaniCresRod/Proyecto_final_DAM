@@ -14,6 +14,7 @@ import com.example.mySchedule.services.userServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 @RestController
@@ -52,5 +53,11 @@ public class userControl{
     @PutMapping(path="/update/{id}")
     public String changeUser(@PathVariable long id, @RequestBody userModel newUser){
         return myService.changeUser(id, newUser);
+    }
+
+    //Devuelve la info basica de todos los usuarios y todas las citas de cada uno en la semana de la fecha dada
+    @GetMapping(path="/date/{date}")
+    public ArrayList<DTOBasicInfo> readDBatDate(@PathVariable LocalDate date){
+        return myService.readUsersAtDate(date);
     }
 }

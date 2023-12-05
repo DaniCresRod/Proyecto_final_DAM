@@ -161,20 +161,14 @@ export function getIndexInMyWeeklyArray(userWithAppo, theArray){
             column=0;
             break;
     }
-    console.log(weekDayName);
-    console.log(column);
 
     const appoTime = DateServices.removeSeconds(userWithAppo.nextAppoStart);
-    console.log(appoTime);
+    
     for(let i=1;i<theArray.length/9;i++){
         if(appoTime===theArray[i*9].tag){
             row=i;
             break;
-        }
-        
+        }        
     }
-
-    console.log(row);
-
     return (column)+(row*9);
 }
