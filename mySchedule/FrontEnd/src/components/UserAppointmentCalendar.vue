@@ -1,6 +1,7 @@
 <script setup>
-import { ref, watch } from 'vue';
+import { ref, watch, onBeforeMount } from 'vue';
 import { myUserStore } from '../services/PiniaServices';
+import DataServices from '../services/DataServices';
 import {defineCalendarBasics, appoIsInRange, getIndexInMyWeeklyArray, CalendarDayBooked} from '../services/GraphCalendarServices'
 
 const myStore=myUserStore();
@@ -11,18 +12,19 @@ const oddApposArray=ref([]);
 const dateNow= new Date(Date.now());
 
 //Construye el array que se mostrará en el calendario
-function buildCalendarArray(dateNow){
+async function buildCalendarArray(theDate){
     oddApposArray.value=[];
 
     let sessionMinutes=90;
     let timeWindows=["08:00", "21:00"];
     myWeeklyArray.value=defineCalendarBasics(sessionMinutes, timeWindows, null);
-
-    myStore.AllUsers.forEach((eachUser)=>{
+    
+    let arrayOfUsers=await DataServices.getAllUsersInTheWeekOf(theDate);
+    
+    arrayOfUsers.data.forEach((eachUser)=>{    
         let isInWeek=appoIsInRange(dateFilter.value,eachUser.nextAppoDate);
 
         if (isInWeek){
-            console.log(eachUser);
             let myIndex=getIndexInMyWeeklyArray(eachUser, myWeeklyArray.value);
             let userWithAppoThisWeek = new CalendarDayBooked(myIndex,eachUser.nextAppoDate, eachUser.nextAppoStart, eachUser.id, eachUser.name, eachUser.alias);
 
@@ -33,9 +35,10 @@ function buildCalendarArray(dateNow){
             else{
                 oddApposArray.value.push(userWithAppoThisWeek);
             }          
-        }
-              
-    })
+        }              
+    });
+    console.log(myWeeklyArray.value);
+    console.log(oddApposArray.value);
 }
 
 const dateFilter = ref(dateNow.getFullYear() + "-" 
@@ -48,13 +51,14 @@ function resetDate(){
 + dateNow.getDate().toString().padStart(2,'0');
 }
 
-watch(()=> myStore.AllUsers, ()=>{
-    buildCalendarArray(dateNow);
-});
 
 watch(()=> dateFilter.value, ()=>{
-    buildCalendarArray(dateNow);
-});
+    console.log(dateFilter.value);
+    buildCalendarArray(dateFilter.value);
+}),
+onBeforeMount(() => {
+    buildCalendarArray(dateFilter.value)
+})
 
 </script>
 

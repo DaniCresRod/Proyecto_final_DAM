@@ -34,6 +34,10 @@ export default({
         return axiosConnection.get('/user');
     },
 
+    async getAllUsersInTheWeekOf(date){        
+        return await axiosConnection.get(`/user/date/${date}`);
+    },
+
     deleteById(id){
         return axiosConnection.delete(`/user/delete/${id}`);
     },
