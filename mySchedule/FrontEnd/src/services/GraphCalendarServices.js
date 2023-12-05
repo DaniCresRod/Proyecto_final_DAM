@@ -2,16 +2,16 @@ import DateServices from "./DateServices";
 import moment from 'moment';
 
 
-const today=new Date(Date.now());
+// const today=new Date(Date.now());
 
-let numberOfToday=today.getDay();
+// let numberOfToday=today.getDay();
 
-function getNumberOfDaysInMonth(theDate){
-    const theMonth=theDate.getMonth();
-    const theYear=theDate.getFullYear();
+// function getNumberOfDaysInMonth(theDate){
+//     const theMonth=theDate.getMonth();
+//     const theYear=theDate.getFullYear();
 
-    return new Date(theYear, theMonth, 0).getDate();
-}
+//     return new Date(theYear, theMonth, 0).getDate();
+// }
 
 //Define un array rellenado con los dias de la semana y los horarios
 export function defineCalendarBasics(sessionMinutes, timeWindows, customTimeArray){    
@@ -69,10 +69,10 @@ class CalendarDay{
 //Clase que hereda de CalendarDay para las citas
 export class CalendarDayBooked extends CalendarDay{
     
-    constructor(index, currentDay, appoTime, userId, user, userAlias){
+    constructor(index, appoDay, appoTime, userId, user, userAlias){
         super(index, user+" "+userAlias);
-        this.currentDay=currentDay
-        this.appoTime=appoTime;
+        this.appoDay=appoDay
+        this.appoTime=DateServices.removeSeconds(appoTime);
         this.userId=userId;
         this.user=user;
         this.userAlias=userAlias;
@@ -117,9 +117,9 @@ export function appoIsInRange(dateFilter, userAppoDate){
     }
     let userDate=moment(userAppoDate);
     let selectedDate=moment(dateFilter);
-    console.log(selectedDate.format('YYYY-MM-DD'));
-    console.log(userDate.format('YYYY-MM-DD'));
-    console.log(rangeUp);
+    // console.log(selectedDate.format('YYYY-MM-DD'));
+    // console.log(userDate.format('YYYY-MM-DD'));
+    // console.log(rangeUp);
     // console.log(selectedDate.add(rangeUp,'days').format('YYYY-MM-DD'));
     // console.log(selectedDate.subtract(rangeDown, 'days').format('YYYY-MM-DD'));
 
@@ -128,4 +128,53 @@ export function appoIsInRange(dateFilter, userAppoDate){
         return true;
     } 
     else return false;
+}
+
+//Esta funcion pasa un usuario a un objeto CalendarDayBooked, y le asigna indice en el array
+export function getIndexInMyWeeklyArray(userWithAppo, theArray){
+    const weekDayName = DateServices.getDayFromDate(userWithAppo.nextAppoDate);
+    let column;
+    let row;
+    switch (weekDayName){
+        case "Lunes": 
+            column=2;
+            break;
+        case "Martes":
+            column=3;
+            break;
+        case "Miercoles":
+            column=4;
+            break;
+        case "Jueves":
+            column=5;
+            break;
+        case "Viernes":
+            column=6;
+            break;
+        case "Sabado":
+            column=7;
+            break;
+        case "Domingo":
+            column=8;
+            break;
+        default:
+            column=0;
+            break;
+    }
+    console.log(weekDayName);
+    console.log(column);
+
+    const appoTime = DateServices.removeSeconds(userWithAppo.nextAppoStart);
+    console.log(appoTime);
+    for(let i=1;i<theArray.length/9;i++){
+        if(appoTime===theArray[i*9].tag){
+            row=i;
+            break;
+        }
+        
+    }
+
+    console.log(row);
+
+    return (column)+(row*9);
 }

@@ -55,18 +55,13 @@ function MyFilter(theObjectArray){
     }
     else{
       if(props.myfilter!==""){
-        return (((x.nextAppoDate)>(props.myfilterdate))&&((x.name.toLowerCase()).includes(props.myfilter.toLowerCase())||(x.alias.toLowerCase()).includes(props.myfilter.toLowerCase())));
+        return (((x.nextAppoDate)>=(props.myfilterdate))&&((x.name.toLowerCase()).includes(props.myfilter.toLowerCase())||(x.alias.toLowerCase()).includes(props.myfilter.toLowerCase())));
       }
-      else{
-        // if((x.nextAppoStart!==null) && (DateServices.setTextAsTime(x.nextAppoStart).getHours()<=(new Date).getHours())){
-        //   console.log(DateServices.setTextAsTime( x.nextAppoStart));
-        //   console.log(DateServices.setTextAsTime(x.nextAppoStart).getHours());
-        // console.log((new Date).getHours());
-        // console.log(((x.nextAppoDate)>=(props.myfilterdate)) && (DateServices.setTextAsTime(x.nextAppoStart).getHours()<(new Date).getHours()));
-          
-        // }
-        
-        return (((x.nextAppoDate)>=(props.myfilterdate)));
+      else{        
+        // return (((x.nextAppoDate)>=(props.myfilterdate)));
+        return (((x.nextAppoDate)===(props.myfilterdate) ? 
+            ((x.nextAppoDate===props.myfilterdate) && (DateServices.setTextAsTime(x.nextAppoStart)>(new Date)))
+            :  ((x.nextAppoDate)>=(props.myfilterdate))));
       }
     }
   });
