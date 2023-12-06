@@ -42,7 +42,7 @@ public class userServices{
                 }
             }
 
-            DTOBasicInfo userBasicInfo=new DTOBasicInfo(eachUser.getId(),eachUser.getName(), eachUser.getAlias(), nextDate, nextDateStart );
+            DTOBasicInfo userBasicInfo=new DTOBasicInfo(eachUser.getId(),eachUser.getName(), eachUser.getAlias(), eachUser.getId(), nextDate, nextDateStart );
             basicInfo.add(userBasicInfo);
         }
         Collections.sort(basicInfo);
@@ -128,7 +128,7 @@ public class userServices{
         for (appointmentModel eachAppo : miArray){
             userModel theUser=myRepo.findById(eachAppo.getUserID().getId()).orElse(null);
 
-            DTOBasicInfo userBasicInfo=new DTOBasicInfo(theUser.getId(),theUser.getName(), theUser.getAlias(), eachAppo.getAppoDate(), eachAppo.getAppoStart() );
+            DTOBasicInfo userBasicInfo=new DTOBasicInfo(theUser.getId(),theUser.getName(), theUser.getAlias(), eachAppo.getId(), eachAppo.getAppoDate(), eachAppo.getAppoStart() );
             basicInfo.add(userBasicInfo);
         }
         return basicInfo;

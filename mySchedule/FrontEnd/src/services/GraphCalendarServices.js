@@ -51,9 +51,13 @@ export function defineCalendarBasics(sessionMinutes, timeWindows, customTimeArra
         weeklyArray2[index]=new CalendarDay(index, item);
     });
 
-    do{   
-        weeklyArray2.push("");
-    } while(weeklyArray2.length % 9 !== 0  );
+    //Se completa el array si no hay usuarios en las ultimas horas
+    //De no hacerse asi, se generan indices duplicados y no se renderiza
+    //bien el v-for. Le estamos dando un valor nulo (si no hay cita)
+    //a la que deberia ser la ultima casilla de nuestro calendario
+    if(weeklyArray2[(Math.ceil(weeklyArray2.length/9)*9)-1]===undefined){        
+        weeklyArray2[(Math.ceil(weeklyArray2.length/9)*9)-1]=null        
+    }
 
     return(weeklyArray2);
 }
@@ -69,11 +73,12 @@ class CalendarDay{
 //Clase que hereda de CalendarDay para las citas
 export class CalendarDayBooked extends CalendarDay{
     
-    constructor(index, appoDay, appoTime, userId, user, userAlias){
+    constructor(index, appoDay, appoTime, userId, user, userAlias, appoId){
         super(index, user+" "+userAlias);
         this.appoDay=appoDay
         this.appoTime=DateServices.removeSeconds(appoTime);
         this.userId=userId;
+        this.appoId=appoId;
         this.user=user;
         this.userAlias=userAlias;
     }
@@ -130,7 +135,7 @@ export function appoIsInRange(dateFilter, userAppoDate){
     else return false;
 }
 
-//Esta funcion pasa un usuario a un objeto CalendarDayBooked, y le asigna indice en el array
+//Esta funcion asigna indice en el array que formara el calendario a un usuario
 export function getIndexInMyWeeklyArray(userWithAppo, theArray){
     const weekDayName = DateServices.getDayFromDate(userWithAppo.nextAppoDate);
     let column;
@@ -171,4 +176,10 @@ export function getIndexInMyWeeklyArray(userWithAppo, theArray){
         }        
     }
     return (column)+(row*9);
+}
+
+export function sumDays(date, howManyDays){
+    const newDate = new Date(date);
+    newDate.setDate(newDate.getDate() + howManyDays);
+    return newDate;
 }

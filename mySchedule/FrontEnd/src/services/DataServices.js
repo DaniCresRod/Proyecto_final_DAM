@@ -63,7 +63,7 @@ export default({
         return axiosConnection.delete(`/appo/delete/${id}`);
     },
 
-    updateAppo(id, Data){
-        return axiosConnection.put('appo/update', Data);
+    async updateAppo(Data){
+        return await axiosConnection.put('appo/update', Data);
     }    
 })

@@ -18,7 +18,6 @@ async function LoadSelectedUser(user){
 
 watch(()=> myStore.AllUsers, ()=>{
     allUsersBasicInfo.value=myStore.AllUsers;
-    console.log(allUsersBasicInfo.value);
     // LoadSelectedUser(myStore.AllUsers[0].id);
 });
 

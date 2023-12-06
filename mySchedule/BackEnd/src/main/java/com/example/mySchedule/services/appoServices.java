@@ -41,10 +41,11 @@ public class appoServices {
         return myList;
     }
 
-    //Cambiar una cita
+    //Cambiar una cita: devuelve la cita cambiada si esta libre
+    //Si no esta libre el horario, devuelve una lista con las citas ya establecidas y que evitan el cambio
     public List<appointmentModel> updateAppoint(appointmentModel newAppo){
         try{
-            //verificar que existe la tarea
+            //verificar que existe la cita
             appointmentModel oldAppo=myRepoAppo.findById(newAppo.getId()).get();
 
             //Recoger la lista de citas con horario incompatible con la nueva cita
@@ -53,13 +54,16 @@ public class appoServices {
             //Si no hay horarios incompatibles
             if(myList.size()==0){
                 //Hacer los cambios
+                LocalDate oldDate=oldAppo.getAppoDate();
+                LocalTime oldTime=oldAppo.getAppoStart();
                 oldAppo.setAppoDate(newAppo.getAppoDate());
                 oldAppo.setAppoStart(newAppo.getAppoStart());
-                oldAppo.setNotes(oldAppo.getNotes()+
-                        "\n"+
-                        "Se cambia la cita del "+oldAppo.getAppoDate()+" al "+newAppo.getAppoDate()+" el día "+LocalDate.now()+
-                        "\n"+
-                        newAppo.getNotes());
+//                oldAppo.setNotes(oldAppo.getNotes()+
+//                        "\n"+
+//                        "Se cambia la cita del "+oldDate+" a las "+oldTime+
+//                        " al "+newAppo.getAppoDate()+" a las "+newAppo.getAppoStart()+
+//                        " el día "+LocalDate.now()+
+//                        newAppo.getNotes());
                 myRepoAppo.save(oldAppo);
                 myList.add(oldAppo);
             }
