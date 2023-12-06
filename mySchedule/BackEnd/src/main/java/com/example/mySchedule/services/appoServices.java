@@ -58,12 +58,12 @@ public class appoServices {
                 LocalTime oldTime=oldAppo.getAppoStart();
                 oldAppo.setAppoDate(newAppo.getAppoDate());
                 oldAppo.setAppoStart(newAppo.getAppoStart());
-//                oldAppo.setNotes(oldAppo.getNotes()+
-//                        "\n"+
-//                        "Se cambia la cita del "+oldDate+" a las "+oldTime+
-//                        " al "+newAppo.getAppoDate()+" a las "+newAppo.getAppoStart()+
-//                        " el día "+LocalDate.now()+
-//                        newAppo.getNotes());
+                oldAppo.setNotes(oldAppo.getNotes()+
+                        "\n"+
+                        "Se cambia la cita del "+oldDate+" a las "+oldTime+
+                        " al "+newAppo.getAppoDate()+" a las "+newAppo.getAppoStart()+
+                        " el día "+LocalDate.now()+
+                        newAppo.getNotes());
                 myRepoAppo.save(oldAppo);
                 myList.add(oldAppo);
             }
