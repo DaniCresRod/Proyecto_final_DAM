@@ -1,10 +1,11 @@
 <script setup>
 import { ref, watch, onBeforeMount } from 'vue';
-// import { myUserStore } from '../services/PiniaServices';
+import { myUserStore } from '../services/PiniaServices';
 import DataServices from '../services/DataServices';
-import {sumDays, defineCalendarBasics, appoIsInRange, getIndexInMyWeeklyArray, CalendarDayBooked} from '../services/GraphCalendarServices'
+import {sumDays, defineCalendarBasics, appoIsInRange, getIndexInMyWeeklyArray, CalendarDayBooked} from '../services/GraphCalendarServices';
 
-// const myStore=myUserStore();
+
+const myStore=myUserStore();
 
 const myWeeklyArray=ref([]);
 const oddApposArray=ref([]);
@@ -31,7 +32,7 @@ async function buildCalendarArray(theDate){
 
             if (isInWeek){
                 let myIndex=getIndexInMyWeeklyArray(eachUser, myWeeklyArray.value);
-                let userWithAppoThisWeek = new CalendarDayBooked(myIndex,eachUser.nextAppoDate, eachUser.nextAppoStart, eachUser.id, eachUser.name, eachUser.alias, eachUser.appoId);
+                let userWithAppoThisWeek = new CalendarDayBooked(myIndex,eachUser.nextAppoDate, eachUser.nextAppoStart, eachUser.id, eachUser.name, eachUser.alias, eachUser.appoId, eachUser.phone);
 
                 if(myIndex>-1){        
 
@@ -66,7 +67,12 @@ function resetDate(){
 function dragStart(event){
     //Filtramos solo los elementos que tengan datos de usuarios
     if((event.target.firstElementChild!==null) && (event.target.__vnode.key).userId ){
-        draggedStartInfo=event.target.__vnode.key;        
+        draggedStartInfo=event.target.__vnode.key;  
+        console.log(draggedStartInfo);
+        myStore.whatsAppUser.name=draggedStartInfo.user;
+        myStore.whatsAppUser.oldAppoDate=draggedStartInfo.appoDay;
+        myStore.whatsAppUser.oldAppoStart=draggedStartInfo.appoTime;
+        myStore.whatsAppUser.phone=draggedStartInfo.phone;      
     }
     else{
         event.preventDefault();
@@ -77,7 +83,7 @@ async function dragEnd(event){
 //El lugar de aterrizaje debe estar vacio
 if((event.target.firstElementChild===null) && (event.target.innerText==="") ){
     // console.log(event.srcElement.__vnode.key);
-console.log(draggedStartInfo);
+
     let newIndex=getChildIndex(event.target);
     let [newHour, newDay]=getNewDayAndHour(newIndex, draggedStartInfo.index);
 
@@ -97,13 +103,14 @@ console.log(draggedStartInfo);
     changedDateArray.value=response.data;
     console.log(changedDateArray.value);
     buildCalendarArray(dateFilter.value);
-    // draggedStartInfo.index=newIndex;
-    // myWeeklyArray.value[newIndex]=draggedStartInfo;    
 
-    // console.log(myWeeklyArray.value);
+    //Si devuelve el mismo id de cita es que se ha hecho el cambio, si no es que no se ha hecho
+    //Ojo porque lo que viene es una lista de citas
+    //Si todo ha ido bien se puede enviar el whatsapp
 
 }
 else if(event.target.innerText!==""){
+    myStore.whatsAppUser={};
     window.alert("No puedes asignar una cita ahi");
 }
     // console.log(getChildIndex(event.target));
@@ -136,6 +143,9 @@ onBeforeMount(() => {
 </script>
 
 <template>
+    <section id="section_whatsapp">
+        <span @click="SendWhatsApp()">Avisar por whatsApp</span>
+    </section>
     <section>
         <div id="div_searchBox">
         <input class="searchBox" type="date"  v-model="dateFilter"/>
@@ -155,11 +165,16 @@ onBeforeMount(() => {
             </p>
         </article>
     </section>
+    
 </template>
 
 <style scoped>
 section{
     max-width: 75vw;
+}
+
+section:last-of-type{
+    margin-bottom: 4vh;
 }
 
 div{
@@ -182,7 +197,16 @@ p{border:1px solid black;
     font-size: smaller;
     font-weight: bold;
     text-align: center;
-    
+    word-wrap: break-word;
+}
+
+@media screen and (max-width: 430px) {
+    div{
+        padding: 1vh 1vw;
+        display: grid;
+        grid-template-columns: 15vw 15vw repeat(7, auto);
+        gap:1vh;
+    }    
 }
 
 .p_outOfSchedule{
@@ -199,6 +223,18 @@ p{border:1px solid black;
 
 .article_outOfSchedule .p_outOfSchedule:first-of-type{
     padding-top: 1vh;
+}
+
+#section_whatsapp{border:5px solid var(--color-text2);
+    position: fixed;
+    right: 0vw;
+    top:22vh;
+    width: 10vw;
+    min-width: 100px;
+    border-radius: 100% 0 0 100%;
+    padding: 1vw 2vh;
+    text-align: center;
+    color:var(--color-text2);
 }
 
 </style>

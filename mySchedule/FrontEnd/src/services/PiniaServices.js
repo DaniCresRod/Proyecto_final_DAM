@@ -10,6 +10,7 @@ export const myUserStore=defineStore('userData', {
             surname2:'',
             alias:'',
             email:'',
+            phone:'',
             password:'',
             notes:'',
             price:'',
@@ -23,6 +24,15 @@ export const myUserStore=defineStore('userData', {
             userID:{}
        },
        AllUsers:[],
+       whatsAppUser:{
+            name:'',
+            surname1:'',
+            oldAppoDate:'',
+            oldAppoStart:'',
+            newAppoDate:'',
+            newAppoStart:'',
+            phone:''        
+       }
     }),
 });
 

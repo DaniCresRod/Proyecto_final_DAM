@@ -15,6 +15,7 @@ public class DTOBasicInfo implements Comparable<DTOBasicInfo> {
     private long id;
     private String name;
     private String alias;
+    private String phone;
     private long appoId;
     private LocalDate nextAppoDate;
     private LocalTime nextAppoStart;

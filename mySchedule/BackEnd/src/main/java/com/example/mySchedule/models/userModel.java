@@ -45,6 +45,9 @@ public class userModel implements UserDetails {
     @Column(name="Email")
     private String email;
 
+    @Column(name="Telefono")
+    private String phone;
+
     @Column(name="Password")
     private String password;
 

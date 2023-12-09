@@ -73,7 +73,7 @@ class CalendarDay{
 //Clase que hereda de CalendarDay para las citas
 export class CalendarDayBooked extends CalendarDay{
     
-    constructor(index, appoDay, appoTime, userId, user, userAlias, appoId){
+    constructor(index, appoDay, appoTime, userId, user, userAlias, appoId, phone){
         super(index, user+" "+userAlias);
         this.appoDay=appoDay
         this.appoTime=DateServices.removeSeconds(appoTime);
@@ -81,6 +81,7 @@ export class CalendarDayBooked extends CalendarDay{
         this.appoId=appoId;
         this.user=user;
         this.userAlias=userAlias;
+        this.phone=phone;
     }
 }
 

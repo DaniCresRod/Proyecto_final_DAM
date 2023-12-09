@@ -33,16 +33,18 @@ public class userServices{
             long difference=-1000000000;
             LocalDate nextDate=null;
             LocalTime nextDateStart=null;
+            long appoId=-1;
 
             for (appointmentModel eachAppo: eachUser.getAppointmentsList()){
                 if((!eachAppo.getAppoDate().isBefore(LocalDate.now())) && (DAYS.between(eachAppo.getAppoDate(),LocalDate.now())>difference)){
                     difference=DAYS.between(eachAppo.getAppoDate(),LocalDate.now());
                     nextDate=eachAppo.getAppoDate();
                     nextDateStart=eachAppo.getAppoStart();
+                    appoId= eachAppo.getId();
                 }
             }
 
-            DTOBasicInfo userBasicInfo=new DTOBasicInfo(eachUser.getId(),eachUser.getName(), eachUser.getAlias(), eachUser.getId(), nextDate, nextDateStart );
+            DTOBasicInfo userBasicInfo=new DTOBasicInfo(eachUser.getId(),eachUser.getName(), eachUser.getAlias(), eachUser.getPhone(), appoId, nextDate, nextDateStart );
             basicInfo.add(userBasicInfo);
         }
         Collections.sort(basicInfo);
@@ -128,7 +130,7 @@ public class userServices{
         for (appointmentModel eachAppo : miArray){
             userModel theUser=myRepo.findById(eachAppo.getUserID().getId()).orElse(null);
 
-            DTOBasicInfo userBasicInfo=new DTOBasicInfo(theUser.getId(),theUser.getName(), theUser.getAlias(), eachAppo.getId(), eachAppo.getAppoDate(), eachAppo.getAppoStart() );
+            DTOBasicInfo userBasicInfo=new DTOBasicInfo(theUser.getId(),theUser.getName(), theUser.getAlias(), theUser.getPhone(), eachAppo.getId(), eachAppo.getAppoDate(), eachAppo.getAppoStart() );
             basicInfo.add(userBasicInfo);
         }
         return basicInfo;
