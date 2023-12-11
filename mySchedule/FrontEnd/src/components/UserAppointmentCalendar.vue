@@ -3,7 +3,7 @@ import { ref, watch, onBeforeMount } from 'vue';
 import { myUserStore } from '../services/PiniaServices';
 import DataServices from '../services/DataServices';
 import {sumDays, defineCalendarBasics, appoIsInRange, getIndexInMyWeeklyArray, CalendarDayBooked} from '../services/GraphCalendarServices';
-
+import {sendWhatsApp} from '../services/WhatsAppService'
 
 const myStore=myUserStore();
 
@@ -48,7 +48,7 @@ async function buildCalendarArray(theDate){
 
     }
     catch{
-        console.log("liada");
+        console.log("Se produjo un error al crear el calendario");
     }
     
 }
@@ -82,13 +82,10 @@ function dragStart(event){
 async function dragEnd(event){
 //El lugar de aterrizaje debe estar vacio
 if((event.target.firstElementChild===null) && (event.target.innerText==="") ){
-    // console.log(event.srcElement.__vnode.key);
 
     let newIndex=getChildIndex(event.target);
     let [newHour, newDay]=getNewDayAndHour(newIndex, draggedStartInfo.index);
-
-    console.log(newHour);
-    console.log(newDay);
+    
     myWeeklyArray.value[draggedStartInfo.index]="";
 
     let dataToSend={
@@ -107,6 +104,13 @@ if((event.target.firstElementChild===null) && (event.target.innerText==="") ){
     //Si devuelve el mismo id de cita es que se ha hecho el cambio, si no es que no se ha hecho
     //Ojo porque lo que viene es una lista de citas
     //Si todo ha ido bien se puede enviar el whatsapp
+
+    if (changedDateArray.value[0].id===dataToSend.id){
+        myStore.whatsAppUser.newAppoDate = changedDateArray.value[0].appoDate;
+        myStore.whatsAppUser.newAppoStart = changedDateArray.value[0].appoStart;
+        document.getElementById("section_whatsapp").classList.remove("invisible");
+        document.querySelector('#section_whatsapp span').textContent=`Avisar del cambio a ${draggedStartInfo.user} por WhatsApp`;
+    }
 
 }
 else if(event.target.innerText!==""){
@@ -133,7 +137,6 @@ function getNewDayAndHour(index, draggedIndex){
 }
 
 watch(()=> dateFilter.value, ()=>{
-    console.log(dateFilter.value);
     buildCalendarArray(dateFilter.value);
 }),
 onBeforeMount(() => {
@@ -143,8 +146,8 @@ onBeforeMount(() => {
 </script>
 
 <template>
-    <section id="section_whatsapp">
-        <span @click="SendWhatsApp()">Avisar por whatsApp</span>
+    <section id="section_whatsapp" class="invisible">
+        <span @click="sendWhatsApp()">Avisar por whatsApp</span>
     </section>
     <section>
         <div id="div_searchBox">

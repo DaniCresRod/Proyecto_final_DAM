@@ -19,7 +19,7 @@ export default({
             let response=await axiosConnection.get('/auth');
             return response.data;
         }
-        catch(e){console.log(e);
+        catch(e){
             window.localStorage.clear();
             return e.code;
         }
