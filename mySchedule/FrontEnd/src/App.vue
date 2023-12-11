@@ -90,7 +90,7 @@ onBeforeMount(async () => {
 
 <style>
 .invisible{
-  display:none;
+  display:none !important;
 }
 
 .logInError{

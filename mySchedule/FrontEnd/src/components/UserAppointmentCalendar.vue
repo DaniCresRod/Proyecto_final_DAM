@@ -85,7 +85,7 @@ if((event.target.firstElementChild===null) && (event.target.innerText==="") ){
 
     let newIndex=getChildIndex(event.target);
     let [newHour, newDay]=getNewDayAndHour(newIndex, draggedStartInfo.index);
-    
+
     myWeeklyArray.value[draggedStartInfo.index]="";
 
     let dataToSend={
@@ -108,8 +108,8 @@ if((event.target.firstElementChild===null) && (event.target.innerText==="") ){
     if (changedDateArray.value[0].id===dataToSend.id){
         myStore.whatsAppUser.newAppoDate = changedDateArray.value[0].appoDate;
         myStore.whatsAppUser.newAppoStart = changedDateArray.value[0].appoStart;
-        document.getElementById("section_whatsapp").classList.remove("invisible");
-        document.querySelector('#section_whatsapp span').textContent=`Avisar del cambio a ${draggedStartInfo.user} por WhatsApp`;
+        document.getElementById("div_whatsapp").classList.remove("invisible");
+        document.querySelector('#div_whatsapp span').textContent=`Avisar del cambio a ${draggedStartInfo.user} por WhatsApp`;
     }
 
 }
@@ -136,6 +136,12 @@ function getNewDayAndHour(index, draggedIndex){
     return [myWeeklyArray.value[newHourIndex].tag, sumDays(myWeeklyArray.value[draggedIndex].appoDay,newDayIndex-draggedDayIndex).toISOString().split('T')[0]];
 }
 
+function showContextMenu(event){
+    document.getElementById("div_contextMenu").classList.toggle("invisible");
+    console.log(navigator.userAgentData.platform);
+
+}
+
 watch(()=> dateFilter.value, ()=>{
     buildCalendarArray(dateFilter.value);
 }),
@@ -146,9 +152,9 @@ onBeforeMount(() => {
 </script>
 
 <template>
-    <section id="section_whatsapp" class="invisible">
+    <div id="div_whatsapp" class="invisible">
         <span @click="sendWhatsApp()">Avisar por whatsApp</span>
-    </section>
+    </div>
     <section>
         <div id="div_searchBox">
         <input class="searchBox" type="date"  v-model="dateFilter"/>
@@ -156,7 +162,7 @@ onBeforeMount(() => {
       </div>
         <div>
             <p v-for="(item,index) in myWeeklyArray" :key="item" draggable="true" @drop="dragEnd" @dragstart="dragStart" :id="index" @dragover.prevent @dragenter.prevent>
-                <span v-if="myWeeklyArray[index]">{{ myWeeklyArray[index].tag }}</span>
+                <span v-if="myWeeklyArray[index]"  @contextmenu.prevent="showContextMenu()">{{ myWeeklyArray[index].tag }}</span>
             </p>                      
         </div>
         <article class="article_outOfSchedule" v-if="oddApposArray.length>0">
@@ -167,6 +173,12 @@ onBeforeMount(() => {
                 a las {{ oddApposArray[index].appoTime }}
             </p>
         </article>
+        <div id="div_contextMenu" class="invisible"  >
+            <ul>
+                <li>Editar</li>
+            </ul>
+
+        </div>
     </section>
     
 </template>
@@ -238,6 +250,18 @@ p{border:1px solid black;
     padding: 1vw 2vh;
     text-align: center;
     color:var(--color-text2);
+}
+
+#div_contextMenu{border:1px solid black;
+    position: relative;
+    z-index:3;
+    width: 10vw;
+    
+}
+
+#div_contextMenu ul{border:1px solid black;
+    list-style: none;
+    width: fit-content;
 }
 
 </style>
