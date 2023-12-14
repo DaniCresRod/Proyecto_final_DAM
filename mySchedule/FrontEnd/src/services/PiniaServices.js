@@ -31,7 +31,9 @@ export const myUserStore=defineStore('userData', {
             oldAppoStart:'',
             newAppoDate:'',
             newAppoStart:'',
-            phone:''        
+            phone:'',
+            userId:'',
+            appoId:'',        
        }
     }),
 });

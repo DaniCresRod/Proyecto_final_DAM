@@ -65,13 +65,13 @@ onBeforeMount(async () => {
   <form class="logInForm" v-else>
     <fieldset>
       <label for="logInEmail">Email <abbr title="Campo Requerido" aria-label="required">*</abbr></label>
-      <input type="text" name="logInEmail" id="logInEmail" v-model="userName">
+      <input type="text" name="logInEmail" id="logInEmail" autocomplete="username" v-model="userName">
     </fieldset>
 
     <fieldset>
       <label for="logInPassword">Contraseña <abbr title="Campo Requerido" aria-label="required">*</abbr></label>
       <div class="passwordBound">
-        <input type="password" name="logInPassword" id="logInPassword" v-model="userPass">
+        <input type="password" name="logInPassword" id="logInPassword" autocomplete="current-password" v-model="userPass">
         <img id="imgModePassword" src="@/assets/Images/iconoOculto.png" alt="Mostrar u ocultar contraseña" @click="ToggleImg()"/>
       </div>      
     </fieldset>
@@ -91,6 +91,7 @@ onBeforeMount(async () => {
 <style>
 .invisible{
   display:none !important;
+  width: fit-content;
 }
 
 .logInError{

@@ -4,6 +4,7 @@ import { myUserStore } from '../services/PiniaServices';
 import DataServices from '../services/DataServices';
 import {sumDays, defineCalendarBasics, appoIsInRange, getIndexInMyWeeklyArray, CalendarDayBooked} from '../services/GraphCalendarServices';
 import {sendWhatsApp} from '../services/WhatsAppService'
+import PopUpMenuComponent from '../components/PopUpMenuComponent.vue'
 
 const myStore=myUserStore();
 
@@ -23,6 +24,7 @@ async function buildCalendarArray(theDate){
 
         let sessionMinutes=90;
         let timeWindows=["08:00", "21:00"];
+
         myWeeklyArray.value=defineCalendarBasics(sessionMinutes, timeWindows, null);
         
         let arrayOfUsers=await DataServices.getAllUsersInTheWeekOf(theDate);
@@ -43,14 +45,11 @@ async function buildCalendarArray(theDate){
                 }          
             }              
         });
-    // console.log(myWeeklyArray.value);
-    // console.log(oddApposArray.value);
 
     }
     catch{
         console.log("Se produjo un error al crear el calendario");
-    }
-    
+    }    
 }
 
 const dateFilter = ref(dateNow.getFullYear() + "-" 
@@ -64,7 +63,7 @@ function resetDate(){
 }
 
 //Define lo que pasa cuando cogemos un elemento para arrastrarlo
-function dragStart(event){
+function dragStart(event){console.log(event);
     //Filtramos solo los elementos que tengan datos de usuarios
     if((event.target.firstElementChild!==null) && (event.target.__vnode.key).userId ){
         draggedStartInfo=event.target.__vnode.key;  
@@ -137,9 +136,59 @@ function getNewDayAndHour(index, draggedIndex){
 }
 
 function showContextMenu(event){
-    document.getElementById("div_contextMenu").classList.toggle("invisible");
-    console.log(navigator.userAgentData.platform);
+    event.stopPropagation();
 
+    let popUpMenu=document.getElementById("div_contextMenu");
+
+    function hideMenuOnTouchMove() {
+        popUpMenu.classList.add("invisible");
+        document.removeEventListener("touchmove", hideMenuOnTouchMove, {passive: true});
+    }
+
+    // if(((event.target.firstElementChild!==null) && (event.target.__vnode.key).userId) || ((event.target.firstElementChild===null) 
+    // && typeof((event.target.parentNode.__vnode.key).userId)!=='undefined')){
+    const target = event.target;
+    const parentNode = target.parentNode;
+
+    if (
+        (target.firstElementChild !== null && target.__vnode.key && target.__vnode.key.userId) ||
+        (target.firstElementChild === null && parentNode && parentNode.__vnode.key && parentNode.__vnode.key.userId)
+    ) {
+        
+        popUpMenu.classList.toggle("invisible");
+
+        //No ha habido forma de evitar que el span dentro del p no aparezca como target del evento, asi que lo reviso
+        //para acceder siempre al <p> padre.
+        let myClickedNode = getChildIndex(event.target.childElementCount===0 ? event.target.parentNode : event.target);
+        
+        //Obtengo los datos del usuario y los almaceno en pinia
+        document.getElementById("div_whatsapp").classList.add("invisible");
+            myStore.whatsAppUser={};
+            myStore.whatsAppUser.name=myWeeklyArray.value[myClickedNode].user;
+            myStore.whatsAppUser.oldAppoDate=myWeeklyArray.value[myClickedNode].appoDay;
+            myStore.whatsAppUser.oldAppoStart=myWeeklyArray.value[myClickedNode].appoTime;
+            myStore.whatsAppUser.phone=myWeeklyArray.value[myClickedNode].phone;
+            myStore.whatsAppUser.userId=myWeeklyArray.value[myClickedNode].userId;
+            myStore.whatsAppUser.appoId=myWeeklyArray.value[myClickedNode].appoId; 
+        
+
+        if(typeof(event.touches)!=='undefined'){
+            popUpMenu.style.top = event.touches[0].clientY + "px";
+            popUpMenu.style.left = event.touches[0].clientX + "px";
+
+            document.addEventListener("touchmove", hideMenuOnTouchMove, {passive: true});
+        
+        }
+        else{
+            popUpMenu.style.top=event.clientY+"px";
+            popUpMenu.style.left=event.clientX+"px";
+            popUpMenu.addEventListener("mouseleave", ()=>{
+            popUpMenu.classList.add("invisible");
+            })
+        }
+        
+    }
+      
 }
 
 watch(()=> dateFilter.value, ()=>{
@@ -160,9 +209,9 @@ onBeforeMount(() => {
         <input class="searchBox" type="date"  v-model="dateFilter"/>
         <span class="resetX" @click="resetDate()">x</span>
       </div>
-        <div>
-            <p v-for="(item,index) in myWeeklyArray" :key="item" draggable="true" @drop="dragEnd" @dragstart="dragStart" :id="index" @dragover.prevent @dragenter.prevent>
-                <span v-if="myWeeklyArray[index]"  @contextmenu.prevent="showContextMenu()">{{ myWeeklyArray[index].tag }}</span>
+        <div id="div_calendar">
+            <p v-for="(item,index) in myWeeklyArray" :key="item" draggable="true" @drop="dragEnd" @dragstart="dragStart" :id="index" @dragover.prevent @dragenter.prevent @touchstart.stop.passive="showContextMenu" @contextmenu.prevent.stop="showContextMenu">
+                <span v-if="myWeeklyArray[index]" >{{ myWeeklyArray[index].tag }}</span>
             </p>                      
         </div>
         <article class="article_outOfSchedule" v-if="oddApposArray.length>0">
@@ -173,11 +222,8 @@ onBeforeMount(() => {
                 a las {{ oddApposArray[index].appoTime }}
             </p>
         </article>
-        <div id="div_contextMenu" class="invisible"  >
-            <ul>
-                <li>Editar</li>
-            </ul>
-
+        <div id="div_contextMenu" class="invisible">
+            <PopUpMenuComponent/>
         </div>
     </section>
     
@@ -192,7 +238,7 @@ section:last-of-type{
     margin-bottom: 4vh;
 }
 
-div{
+#div_calendar{
     padding: 1vh 1vw;
     display: grid;
     grid-template-columns: 5vw 5vw repeat(7, 6vw);
@@ -204,7 +250,7 @@ div{
   justify-content: flex-end;
   align-items: baseline;
   margin-bottom: 2vh;
-
+  padding: 1vh 1vw;
   border-bottom: 7px solid  var(--color-text);
 }
 
@@ -216,7 +262,7 @@ p{border:1px solid black;
 }
 
 @media screen and (max-width: 430px) {
-    div{
+    #div_calendar{
         padding: 1vh 1vw;
         display: grid;
         grid-template-columns: 15vw 15vw repeat(7, auto);
@@ -252,16 +298,13 @@ p{border:1px solid black;
     color:var(--color-text2);
 }
 
-#div_contextMenu{border:1px solid black;
-    position: relative;
+#div_contextMenu{
+    position: absolute;
     z-index:3;
-    width: 10vw;
-    
-}
-
-#div_contextMenu ul{border:1px solid black;
-    list-style: none;
-    width: fit-content;
+    width: min-content;
+    overflow: hidden;
+    padding: 0;
+    margin:0;    
 }
 
 </style>

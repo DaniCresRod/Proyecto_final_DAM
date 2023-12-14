@@ -184,3 +184,4 @@ export function sumDays(date, howManyDays){
     newDate.setDate(newDate.getDate() + howManyDays);
     return newDate;
 }
+
