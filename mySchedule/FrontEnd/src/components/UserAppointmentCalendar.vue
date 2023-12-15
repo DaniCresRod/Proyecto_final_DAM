@@ -289,6 +289,7 @@ p{border:1px solid black;
     height: 5vh;   
     align-items: center;
     display:grid;
+    border-radius: 2px;
 }
 
 #div_daysInWeek p{
@@ -299,6 +300,10 @@ p{border:1px solid black;
     overflow: visible;
     padding-bottom: 0;
     height: unset;
+}
+
+#div_calendar p:nth-child(-n+9){
+    height: max-content;
 }
 
 @media screen and (max-width: 430px) {
@@ -316,10 +321,7 @@ p{border:1px solid black;
 
     .div_weekGrid p:empty{
         padding: 10px 0;
-    }   
-
-    #div_daysInWeek{
-    }
+    }    
 
     #div_daysInWeek p{
         font-size: smaller;
