@@ -2,19 +2,26 @@
 import { ref, watch, onBeforeMount } from 'vue';
 import { myUserStore } from '../services/PiniaServices';
 import DataServices from '../services/DataServices';
-import {sumDays, defineCalendarBasics, appoIsInRange, getIndexInMyWeeklyArray, CalendarDayBooked} from '../services/GraphCalendarServices';
-import {sendWhatsApp} from '../services/WhatsAppService'
-import PopUpMenuComponent from '../components/PopUpMenuComponent.vue'
+import DateServices from '../services/DateServices';
+import {defineCalendarBasics, appoIsInRange, getIndexInMyWeeklyArray, CalendarDayBooked} from '../services/GraphCalendarServices';
+import {sendWhatsApp} from '../services/WhatsAppService';
+import PopUpMenuComponent from '../components/PopUpMenuComponent.vue';
 
 const myStore=myUserStore();
 
 const myWeeklyArray=ref([]);
 const oddApposArray=ref([]);
-const changedDateArray=ref([])
+const changedDateArray=ref([]);
+const datesInWeekArray=ref([]);
 // const draggedStartInfo=ref();
 let draggedStartInfo;
 
-const dateNow= new Date(Date.now());
+const dateNow = new Date(Date.now());
+const dateFilter = ref(dateNow.getFullYear() + "-" 
++ (dateNow.getMonth() + 1).toString().padStart(2,'0') + "-" 
++ dateNow.getDate().toString().padStart(2,'0'));
+
+console.log(DateServices.getWeekDaysArray(dateFilter.value));
 
 //Construye el array que se mostrará en el calendario
 async function buildCalendarArray(theDate){
@@ -26,7 +33,8 @@ async function buildCalendarArray(theDate){
         let timeWindows=["08:00", "21:00"];
 
         myWeeklyArray.value=defineCalendarBasics(sessionMinutes, timeWindows, null);
-        
+        datesInWeekArray.value=DateServices.getWeekDaysArray(dateFilter.value);
+
         let arrayOfUsers=await DataServices.getAllUsersInTheWeekOf(theDate);
         
         arrayOfUsers.data.forEach((eachUser)=>{    
@@ -52,10 +60,6 @@ async function buildCalendarArray(theDate){
     }    
 }
 
-const dateFilter = ref(dateNow.getFullYear() + "-" 
-+ (dateNow.getMonth() + 1).toString().padStart(2,'0') + "-" 
-+ dateNow.getDate().toString().padStart(2,'0'));
-
 function resetDate(){
   dateFilter.value=dateNow.getFullYear() + "-" 
 + (dateNow.getMonth() + 1).toString().padStart(2,'0') + "-" 
@@ -76,6 +80,16 @@ function dragStart(event){console.log(event);
     else{
         event.preventDefault();
     }
+}
+
+function getNewDayAndHour(index, draggedIndex){
+    let newHourIndex=(Math.floor(index/9))*9;
+    let newDayIndex=index-newHourIndex;
+
+    let draggedHourIndex=(Math.floor(draggedIndex/9))*9;
+    let draggedDayIndex=draggedIndex-draggedHourIndex;
+
+    return [myWeeklyArray.value[newHourIndex].tag, DateServices.sumDays(myWeeklyArray.value[draggedIndex].appoDay,newDayIndex-draggedDayIndex).toISOString().split('T')[0]];
 }
 
 async function dragEnd(event){
@@ -125,18 +139,8 @@ function getChildIndex(myNode){
     return i;
 }
 
-function getNewDayAndHour(index, draggedIndex){
-    let newHourIndex=(Math.floor(index/9))*9;
-    let newDayIndex=index-newHourIndex;
-
-    let draggedHourIndex=(Math.floor(draggedIndex/9))*9;
-    let draggedDayIndex=draggedIndex-draggedHourIndex;
-
-    return [myWeeklyArray.value[newHourIndex].tag, sumDays(myWeeklyArray.value[draggedIndex].appoDay,newDayIndex-draggedDayIndex).toISOString().split('T')[0]];
-}
-
 function showContextMenu(event){
-    event.stopPropagation();
+    // event.stopPropagation();
 
     let popUpMenu=document.getElementById("div_contextMenu");
 
@@ -149,6 +153,7 @@ function showContextMenu(event){
     // && typeof((event.target.parentNode.__vnode.key).userId)!=='undefined')){
     const target = event.target;
     const parentNode = target.parentNode;
+    console.log(event);
 
     if (
         (target.firstElementChild !== null && target.__vnode.key && target.__vnode.key.userId) ||
@@ -206,14 +211,25 @@ onBeforeMount(() => {
     </div>
     <section>
         <div id="div_searchBox">
-        <input class="searchBox" type="date"  v-model="dateFilter"/>
-        <span class="resetX" @click="resetDate()">x</span>
-      </div>
-        <div id="div_calendar">
-            <p v-for="(item,index) in myWeeklyArray" :key="item" draggable="true" @drop="dragEnd" @dragstart="dragStart" :id="index" @dragover.prevent @dragenter.prevent @touchstart.stop.passive="showContextMenu" @contextmenu.prevent.stop="showContextMenu">
+            <input class="searchBox" type="date"  v-model="dateFilter"/>
+            <span class="resetX" @click="resetDate()">x</span>
+        </div>
+
+        <div id="div_daysInWeek" class="div_weekGrid">
+            <p></p>
+            <p></p>
+            <p v-for="item in datesInWeekArray" :key="item">{{ item }}</p>
+        </div>
+        
+        <div id="div_calendar" class="div_weekGrid">            
+            <p v-for="(item,index) in myWeeklyArray" :key="item" draggable="true" :id="index"
+            @drop="dragEnd" @dragstart="dragStart" @dragover.prevent @dragenter.prevent 
+            @touchstart.passive="showContextMenu"
+            @contextmenu.prevent.stop="showContextMenu">
                 <span v-if="myWeeklyArray[index]" >{{ myWeeklyArray[index].tag }}</span>
             </p>                      
         </div>
+        
         <article class="article_outOfSchedule" v-if="oddApposArray.length>0">
             Citas en horarios especiales:
             <p class="p_outOfSchedule" v-for="(item,index) in oddApposArray" :key="item">
@@ -222,9 +238,11 @@ onBeforeMount(() => {
                 a las {{ oddApposArray[index].appoTime }}
             </p>
         </article>
+        
         <div id="div_contextMenu" class="invisible">
             <PopUpMenuComponent/>
         </div>
+
     </section>
     
 </template>
@@ -238,36 +256,77 @@ section:last-of-type{
     margin-bottom: 4vh;
 }
 
-#div_calendar{
+.div_weekGrid{
     padding: 1vh 1vw;
     display: grid;
     grid-template-columns: 5vw 5vw repeat(7, 6vw);
     gap:1vh;
+    padding-bottom: 0vh;
+    align-items: center;
 }
 
 #div_searchBox{    
   display: flex;
   justify-content: flex-end;
   align-items: baseline;
-  margin-bottom: 2vh;
-  padding: 1vh 1vw;
+  margin-bottom: 1vh;
+  padding: 0 1vw 1vh;
   border-bottom: 7px solid  var(--color-text);
 }
+
+.div_weekGrid p:empty{
+    display: block;
+} 
 
 p{border:1px solid black;
     font-size: smaller;
     font-weight: bold;
     text-align: center;
-    word-wrap: break-word;
+    word-wrap: none;
+    overflow: hidden;
+    
+    color: var(--color-text);
+    height: 5vh;   
+    align-items: center;
+    display:grid;
+}
+
+#div_daysInWeek p{
+    border:none;
+    color: var(--color-text2);
+    font-size: 1vw;
+    line-height: 0.5vw;
+    overflow: visible;
+    padding-bottom: 0;
+    height: unset;
 }
 
 @media screen and (max-width: 430px) {
-    #div_calendar{
+    .div_weekGrid{
         padding: 1vh 1vw;
         display: grid;
-        grid-template-columns: 15vw 15vw repeat(7, auto);
+        grid-template-columns: 15vw 15vw repeat(7, 70px);
         gap:1vh;
-    }    
+        font-size: 5vw;      
+    }
+
+    .div_weekGrid :not(p:empty){
+        align-self: center;
+    }
+
+    .div_weekGrid p:empty{
+        padding: 10px 0;
+    }   
+
+    #div_daysInWeek{
+    }
+
+    #div_daysInWeek p{
+        font-size: smaller;
+        margin-bottom: 0;
+        line-height: unset;
+        padding: 0;
+    }  
 }
 
 .p_outOfSchedule{
@@ -286,7 +345,7 @@ p{border:1px solid black;
     padding-top: 1vh;
 }
 
-#section_whatsapp{border:5px solid var(--color-text2);
+#div_whatsapp{border:5px solid var(--color-text2);
     position: fixed;
     right: 0vw;
     top:22vh;

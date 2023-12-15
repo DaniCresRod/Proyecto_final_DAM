@@ -52,6 +52,48 @@ export default({
         let SpanishDays=["Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"];
 
         return SpanishDays[index];
+    },
+
+    getWeekDaysArray(date){
+        let rangeDown;
+        let weekArray=[];
+
+        switch(this.getDayFromDate(date)){
+            case "Lunes": 
+            rangeDown=0;
+            break;
+        case "Martes":
+            rangeDown=1;
+            break;
+        case "Miercoles":
+            rangeDown=2;
+            break;
+        case "Jueves":
+            rangeDown=3;
+            break;
+        case "Viernes":
+            rangeDown=4;
+            break;
+        case "Sabado":
+            rangeDown=5;
+            break;
+        case "Domingo":
+            rangeDown=6;
+            break;
+        }
+
+        for(let i=0;i<7;i++){
+            let theDay=this.sumDays(date, -rangeDown+i);
+            weekArray[i]=(theDay.getDate()+" / "
+                        +(theDay.getMonth()+1));
+        }
+        return weekArray;
+    },
+
+    sumDays(date, howManyDays){
+        const newDate = new Date(date);
+        newDate.setDate(newDate.getDate() + howManyDays);
+        return newDate;
     }
 
 })

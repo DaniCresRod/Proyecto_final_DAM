@@ -1,17 +1,6 @@
 import DateServices from "./DateServices";
+import { myUserStore } from './PiniaServices';
 import moment from 'moment';
-
-
-// const today=new Date(Date.now());
-
-// let numberOfToday=today.getDay();
-
-// function getNumberOfDaysInMonth(theDate){
-//     const theMonth=theDate.getMonth();
-//     const theYear=theDate.getFullYear();
-
-//     return new Date(theYear, theMonth, 0).getDate();
-// }
 
 //Define un array rellenado con los dias de la semana y los horarios
 export function defineCalendarBasics(sessionMinutes, timeWindows, customTimeArray){    
@@ -179,9 +168,8 @@ export function getIndexInMyWeeklyArray(userWithAppo, theArray){
     return (column)+(row*9);
 }
 
-export function sumDays(date, howManyDays){
-    const newDate = new Date(date);
-    newDate.setDate(newDate.getDate() + howManyDays);
-    return newDate;
-}
+// export function changeAnAppointment(fromIndex, toIndex){
+//     myUserStore().whatsAppUser;
+
+// }
 

@@ -182,7 +182,7 @@ header {
   background-color: white;
   /* border-radius: 0 0 15px 15px; */
 
-  margin-bottom: 1vh;
+  /* margin-bottom: 1vh; */
 }
 
 header img{  

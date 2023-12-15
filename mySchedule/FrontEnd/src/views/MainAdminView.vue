@@ -26,7 +26,7 @@ onBeforeMount(async() => {
 div{
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
     
     margin-top: 2vh;
