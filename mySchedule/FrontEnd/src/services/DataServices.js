@@ -59,8 +59,8 @@ export default({
         return axiosConnection.get(`/appo/${date}`);
     },
 
-    deleteAppoById(id){
-        return axiosConnection.delete(`/appo/delete/${id}`);
+    async deleteAppoById(id){
+        return await axiosConnection.delete(`/appo/delete/${id}`);
     },
 
     async updateAppo(Data){

@@ -20,3 +20,10 @@ export function sendWhatsApp(){
     }, 10000)
     //newWindow.close();
 }
+
+export function sendReminder(changedDateArray){
+    myStore.whatsAppUser.newAppoDate = changedDateArray.appoDate;
+    myStore.whatsAppUser.newAppoStart = changedDateArray.appoStart;
+    document.getElementById("div_whatsapp").classList.remove("invisible");
+    document.querySelector('#div_whatsapp span').textContent=`Avisar del cambio a ${myStore.whatsAppUser.name} por WhatsApp`;           
+}

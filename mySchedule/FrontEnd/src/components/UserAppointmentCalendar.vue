@@ -3,8 +3,8 @@ import { ref, watch, onBeforeMount } from 'vue';
 import { myUserStore } from '../services/PiniaServices';
 import DataServices from '../services/DataServices';
 import DateServices from '../services/DateServices';
-import {defineCalendarBasics, appoIsInRange, getIndexInMyWeeklyArray, CalendarDayBooked} from '../services/GraphCalendarServices';
-import {sendWhatsApp} from '../services/WhatsAppService';
+import {defineCalendarBasics, appoIsInRange, getIndexInMyWeeklyArray, CalendarDayBooked, getChildIndex, getNewDayAndHour} from '../services/GraphCalendarServices';
+import {sendWhatsApp, sendReminder} from '../services/WhatsAppService';
 import PopUpMenuComponent from '../components/PopUpMenuComponent.vue';
 
 const myStore=myUserStore();
@@ -20,8 +20,6 @@ const dateNow = new Date(Date.now());
 const dateFilter = ref(dateNow.getFullYear() + "-" 
 + (dateNow.getMonth() + 1).toString().padStart(2,'0') + "-" 
 + dateNow.getDate().toString().padStart(2,'0'));
-
-console.log(DateServices.getWeekDaysArray(dateFilter.value));
 
 //Construye el array que se mostrará en el calendario
 async function buildCalendarArray(theDate){
@@ -44,8 +42,7 @@ async function buildCalendarArray(theDate){
                 let myIndex=getIndexInMyWeeklyArray(eachUser, myWeeklyArray.value);
                 let userWithAppoThisWeek = new CalendarDayBooked(myIndex,eachUser.nextAppoDate, eachUser.nextAppoStart, eachUser.id, eachUser.name, eachUser.alias, eachUser.appoId, eachUser.phone);
 
-                if(myIndex>-1){        
-
+                if(myIndex>-1){ 
                     myWeeklyArray.value[myIndex]=userWithAppoThisWeek;
                 }
                 else{
@@ -53,7 +50,6 @@ async function buildCalendarArray(theDate){
                 }          
             }              
         });
-
     }
     catch{
         console.log("Se produjo un error al crear el calendario");
@@ -61,17 +57,18 @@ async function buildCalendarArray(theDate){
 }
 
 function resetDate(){
-  dateFilter.value=dateNow.getFullYear() + "-" 
-+ (dateNow.getMonth() + 1).toString().padStart(2,'0') + "-" 
-+ dateNow.getDate().toString().padStart(2,'0');
+    dateFilter.value=dateNow.getFullYear() + "-" 
+        + (dateNow.getMonth() + 1).toString().padStart(2,'0') + "-" 
+        + dateNow.getDate().toString().padStart(2,'0');
 }
 
 //Define lo que pasa cuando cogemos un elemento para arrastrarlo
-function dragStart(event){console.log(event);
+function dragStart(event){
     //Filtramos solo los elementos que tengan datos de usuarios
     if((event.target.firstElementChild!==null) && (event.target.__vnode.key).userId ){
-        draggedStartInfo=event.target.__vnode.key;  
-        console.log(draggedStartInfo);
+        
+        draggedStartInfo=event.target.__vnode.key;
+
         myStore.whatsAppUser.name=draggedStartInfo.user;
         myStore.whatsAppUser.oldAppoDate=draggedStartInfo.appoDay;
         myStore.whatsAppUser.oldAppoStart=draggedStartInfo.appoTime;
@@ -82,65 +79,34 @@ function dragStart(event){console.log(event);
     }
 }
 
-function getNewDayAndHour(index, draggedIndex){
-    let newHourIndex=(Math.floor(index/9))*9;
-    let newDayIndex=index-newHourIndex;
+function dragEnd(event){
+    //El lugar de aterrizaje debe estar vacio
+    if((event.target.firstElementChild===null) && (event.target.innerText==="") ){
+        let newIndex=getChildIndex(event.target);
+        let [newHourIndex, draggedDayIndex, newDayIndex]=getNewDayAndHour(newIndex, draggedStartInfo.index);
+        let [newHour, newDay]=[myWeeklyArray.value[newHourIndex].tag, DateServices.sumDays(myWeeklyArray.value[draggedStartInfo.index].appoDay,newDayIndex-draggedDayIndex).toISOString().split('T')[0]]
 
-    let draggedHourIndex=(Math.floor(draggedIndex/9))*9;
-    let draggedDayIndex=draggedIndex-draggedHourIndex;
-
-    return [myWeeklyArray.value[newHourIndex].tag, DateServices.sumDays(myWeeklyArray.value[draggedIndex].appoDay,newDayIndex-draggedDayIndex).toISOString().split('T')[0]];
-}
-
-async function dragEnd(event){
-//El lugar de aterrizaje debe estar vacio
-if((event.target.firstElementChild===null) && (event.target.innerText==="") ){
-
-    let newIndex=getChildIndex(event.target);
-    let [newHour, newDay]=getNewDayAndHour(newIndex, draggedStartInfo.index);
-
-    myWeeklyArray.value[draggedStartInfo.index]="";
-
-    let dataToSend={
-        id: draggedStartInfo.appoId,
-        appoDate: newDay,
-        appoStart: newHour,
-        notes: "",
-        userID:{
-            id: draggedStartInfo.userId}
+        let dataToSend={
+            id: draggedStartInfo.appoId,
+            appoDate: newDay,
+            appoStart: newHour,
+            notes: "",
+            userID:{
+                id: draggedStartInfo.userId}
+        }
+        executeAppoChange(dataToSend);
     }
-    let response=await DataServices.updateAppo(JSON.stringify(dataToSend));
-    changedDateArray.value=response.data;
-    console.log(changedDateArray.value);
-    buildCalendarArray(dateFilter.value);
-
-    //Si devuelve el mismo id de cita es que se ha hecho el cambio, si no es que no se ha hecho
-    //Ojo porque lo que viene es una lista de citas
-    //Si todo ha ido bien se puede enviar el whatsapp
-
-    if (changedDateArray.value[0].id===dataToSend.id){
-        myStore.whatsAppUser.newAppoDate = changedDateArray.value[0].appoDate;
-        myStore.whatsAppUser.newAppoStart = changedDateArray.value[0].appoStart;
-        document.getElementById("div_whatsapp").classList.remove("invisible");
-        document.querySelector('#div_whatsapp span').textContent=`Avisar del cambio a ${draggedStartInfo.user} por WhatsApp`;
+    else if(event.target.innerText!==""){
+        myStore.whatsAppUser={};
+        myStore.onChanging=false;
+        window.alert("No puedes asignar una cita ahi");
     }
-
-}
-else if(event.target.innerText!==""){
-    myStore.whatsAppUser={};
-    window.alert("No puedes asignar una cita ahi");
-}
-    // console.log(getChildIndex(event.target));
-}
-
-function getChildIndex(myNode){
-    let i=0;
-    while((myNode=myNode.previousElementSibling) != null) i++;
-    return i;
+        // console.log(getChildIndex(event.target));
 }
 
 function showContextMenu(event){
     // event.stopPropagation();
+    cancelAppoMove();
 
     let popUpMenu=document.getElementById("div_contextMenu");
 
@@ -148,34 +114,35 @@ function showContextMenu(event){
         popUpMenu.classList.add("invisible");
         document.removeEventListener("touchmove", hideMenuOnTouchMove, {passive: true});
     }
-
-    // if(((event.target.firstElementChild!==null) && (event.target.__vnode.key).userId) || ((event.target.firstElementChild===null) 
-    // && typeof((event.target.parentNode.__vnode.key).userId)!=='undefined')){
+    
     const target = event.target;
     const parentNode = target.parentNode;
-    console.log(event);
 
-    if (
-        (target.firstElementChild !== null && target.__vnode.key && target.__vnode.key.userId) ||
+    if ((target.firstElementChild !== null && target.__vnode.key && target.__vnode.key.userId) ||
         (target.firstElementChild === null && parentNode && parentNode.__vnode.key && parentNode.__vnode.key.userId)
-    ) {
-        
+    ) {        
         popUpMenu.classList.toggle("invisible");
 
         //No ha habido forma de evitar que el span dentro del p no aparezca como target del evento, asi que lo reviso
         //para acceder siempre al <p> padre.
         let myClickedNode = getChildIndex(event.target.childElementCount===0 ? event.target.parentNode : event.target);
+
+        //Se resalta el elemento seleccionado
+        let myDocument=document.querySelector(':root');
+        let myColor=getComputedStyle(myDocument).getPropertyValue('--color-border');
+        document.querySelector(`#div_calendar p:nth-of-type(${myClickedNode+1})`).style.border=`3px solid ${myColor}`;
         
         //Obtengo los datos del usuario y los almaceno en pinia
         document.getElementById("div_whatsapp").classList.add("invisible");
-            myStore.whatsAppUser={};
-            myStore.whatsAppUser.name=myWeeklyArray.value[myClickedNode].user;
-            myStore.whatsAppUser.oldAppoDate=myWeeklyArray.value[myClickedNode].appoDay;
-            myStore.whatsAppUser.oldAppoStart=myWeeklyArray.value[myClickedNode].appoTime;
-            myStore.whatsAppUser.phone=myWeeklyArray.value[myClickedNode].phone;
-            myStore.whatsAppUser.userId=myWeeklyArray.value[myClickedNode].userId;
-            myStore.whatsAppUser.appoId=myWeeklyArray.value[myClickedNode].appoId; 
         
+        myStore.whatsAppUser={};
+        myStore.whatsAppUser.name=myWeeklyArray.value[myClickedNode].user;
+        myStore.whatsAppUser.oldAppoDate=myWeeklyArray.value[myClickedNode].appoDay;
+        myStore.whatsAppUser.oldAppoStart=myWeeklyArray.value[myClickedNode].appoTime;
+        myStore.whatsAppUser.phone=myWeeklyArray.value[myClickedNode].phone;
+        myStore.whatsAppUser.userId=myWeeklyArray.value[myClickedNode].userId;
+        myStore.whatsAppUser.appoId=myWeeklyArray.value[myClickedNode].appoId; 
+        myStore.whatsAppUser.indexOfArray=myClickedNode;
 
         if(typeof(event.touches)!=='undefined'){
             popUpMenu.style.top = event.touches[0].clientY + "px";
@@ -188,12 +155,72 @@ function showContextMenu(event){
             popUpMenu.style.top=event.clientY+"px";
             popUpMenu.style.left=event.clientX+"px";
             popUpMenu.addEventListener("mouseleave", ()=>{
-            popUpMenu.classList.add("invisible");
-            })
-        }
+                popUpMenu.classList.add("invisible");});
+        }        
+    }      
+}
+
+function changeWeekAppointment(event){
+    if(myUserStore().onChanging && myStore.onChanging){
+        myUserStore().onChanging=false;
+
+        //El lugar de aterrizaje debe estar vacio
+        if((event.target.firstElementChild===null) && (event.target.innerText==="") ){
+
+            let newIndex=getChildIndex(event.target);
+            let oldIndex=myUserStore().whatsAppUser.indexOfArray;
         
-    }
-      
+            let [newHourIndex, draggedDayIndex, newDayIndex]=getNewDayAndHour(newIndex, oldIndex);
+            let [newHour, newDay]=[myWeeklyArray.value[newHourIndex].tag, datesInWeekArray.value[newDayIndex-2]];
+
+            newDay=newDay.split("/");
+
+            //ajustar fecha y formato teniendo cuidado con los cambios de año
+            let parsedDate = new Date(Date.parse(dateFilter.value));
+            if(parsedDate.getMonth()===11 && newDay[1].trim()=="1"){
+                newDay=(parsedDate.getFullYear()+1)+"-"+newDay[1].trim()+"-"+newDay[0].trim();
+            }
+            else if(parsedDate.getMonth()===0 && newDay[1].trim()=="12"){
+                newDay=(parsedDate.getFullYear()-1)+"-"+newDay[1].trim()+"-"+newDay[0].trim();
+            }
+            else{
+                newDay=(parsedDate.getFullYear())+"-"+newDay[1].trim()+"-"+newDay[0].trim();
+            }
+
+            let dataToSend={
+                id: myStore.whatsAppUser.appoId,
+                appoDate: newDay,
+                appoStart: newHour,
+                notes: "",
+                userID:{
+                    id: myStore.whatsAppUser.userId}
+            }
+            executeAppoChange(dataToSend);
+        } 
+        else{
+            cancelAppoMove(); 
+        }         
+    }     
+}
+
+async function executeAppoChange(dataToSend){
+    let response=await DataServices.updateAppo(JSON.stringify(dataToSend));
+    changedDateArray.value=response.data;
+    buildCalendarArray(dateFilter.value);
+
+    cancelAppoMove();
+
+    //Si devuelve el mismo id de cita es que se ha hecho el cambio, si no es que no se ha hecho
+    //Ojo porque lo que viene es una lista de citas
+    //Si todo ha ido bien se puede enviar el whatsapp   
+    if (changedDateArray.value[0].id===dataToSend.id) sendReminder(changedDateArray.value[0]);
+}
+
+function cancelAppoMove(){
+    document.getElementById('div_changingAppo').classList.add('invisible');
+    myStore.onChanging=false;
+    // myStore.whatsAppUser={};
+    document.querySelectorAll(`#div_calendar p`).forEach(eachP=> eachP.style.border=`1px solid black`);
 }
 
 watch(()=> dateFilter.value, ()=>{
@@ -208,6 +235,9 @@ onBeforeMount(() => {
 <template>
     <div id="div_whatsapp" class="invisible">
         <span @click="sendWhatsApp()">Avisar por whatsApp</span>
+    </div>
+    <div id="div_changingAppo" class="invisible">
+        <span @click="cancelAppoMove()">Cancelar Cambio de fecha</span>
     </div>
     <section>
         <div id="div_searchBox">
@@ -225,7 +255,8 @@ onBeforeMount(() => {
             <p v-for="(item,index) in myWeeklyArray" :key="item" draggable="true" :id="index"
             @drop="dragEnd" @dragstart="dragStart" @dragover.prevent @dragenter.prevent 
             @touchstart.passive="showContextMenu"
-            @contextmenu.prevent.stop="showContextMenu">
+            @contextmenu.prevent.stop="showContextMenu"            
+            @click="changeWeekAppointment">
                 <span v-if="myWeeklyArray[index]" >{{ myWeeklyArray[index].tag }}</span>
             </p>                      
         </div>
@@ -367,5 +398,19 @@ p{border:1px solid black;
     padding: 0;
     margin:0;    
 }
+
+#div_changingAppo{
+    position: fixed;
+    right: 0vw;
+    top:22vh;
+    width: 10vw;
+    min-width: 100px;
+    border-radius: 100% 0 0 100%;
+    padding: 1vw 2vh;
+    text-align: center;
+    color:var(--color-text2);
+}
+
+
 
 </style>

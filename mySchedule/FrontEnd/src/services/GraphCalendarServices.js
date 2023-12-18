@@ -168,8 +168,20 @@ export function getIndexInMyWeeklyArray(userWithAppo, theArray){
     return (column)+(row*9);
 }
 
-// export function changeAnAppointment(fromIndex, toIndex){
-//     myUserStore().whatsAppUser;
+export function getChildIndex(myNode){
+    let i=0;
+    while((myNode=myNode.previousElementSibling) != null) i++;
+    return i;
+}
 
-// }
+export function getNewDayAndHour(index, draggedIndex){
+    let newHourIndex=(Math.floor(index/9))*9;
+    let newDayIndex=index-newHourIndex;
+
+    let draggedHourIndex=(Math.floor(draggedIndex/9))*9;
+    let draggedDayIndex=draggedIndex-draggedHourIndex;
+
+    return [newHourIndex, draggedDayIndex, newDayIndex];
+    // return [myWeeklyArray.value[newHourIndex].tag, DateServices.sumDays(myWeeklyArray.value[draggedIndex].appoDay,newDayIndex-draggedDayIndex).toISOString().split('T')[0]];
+}
 

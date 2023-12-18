@@ -33,8 +33,10 @@ export const myUserStore=defineStore('userData', {
             newAppoStart:'',
             phone:'',
             userId:'',
-            appoId:'',        
-       }
+            appoId:'',  
+            indexOfArray:'',      
+       },
+       onChanging: false,
     }),
 });
 
