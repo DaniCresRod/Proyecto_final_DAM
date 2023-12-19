@@ -1,9 +1,10 @@
 <script setup>
 import UserNavComponent from '../components/UserNavComponent.vue';
 import UserAppointmentCalendar from '../components/UserAppointmentCalendar.vue';
+import SelectedUserCalendar from '../components/SelectedUserCalendar.vue';
 import axiosConnection from "../services/DataServices.js";
 import { myUserStore } from "../services/PiniaServices";
-import { onBeforeMount } from 'vue'
+import { onBeforeMount } from 'vue';
 
 const myStore = myUserStore();
 
@@ -18,7 +19,8 @@ onBeforeMount(async() => {
 <template>
     <div>
         <UserNavComponent/>
-        <UserAppointmentCalendar/>
+        <UserAppointmentCalendar v-if="myStore.user.id===''"/>
+        <SelectedUserCalendar v-else />
     </div>    
 </template>
 
@@ -28,7 +30,7 @@ div{
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    
+    gap: 1vw;
     margin-top: 2vh;
 }
 </style>

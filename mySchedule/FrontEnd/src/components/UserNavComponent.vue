@@ -8,12 +8,32 @@ const myStore = myUserStore();
 const allUsersBasicInfo = ref([]);
 const selectedUser = ref();
 
-async function LoadSelectedUser(user){
+async function LoadSelectedUser(event, user){
     if(myStore.user.id!==user){
         selectedUser.value = (await axiosConnection.getUserById(user)).data;
         console.log(selectedUser.value);
-        myStore.user=selectedUser.value
+        myStore.user=selectedUser.value;
+        console.log(event);
+
+
     }    
+}
+
+function deleteMyStoreUser(){
+    myStore.user ={
+            id:'',
+            nif:'',
+            name:'',
+            surname1:'',
+            surname2:'',
+            alias:'',
+            email:'',
+            phone:'',
+            password:'',
+            notes:'',
+            price:'',
+            appointmentsList:[]
+        }
 }
 
 watch(()=> myStore.AllUsers, ()=>{
@@ -25,15 +45,17 @@ watch(()=> myStore.AllUsers, ()=>{
 
 <template>
     <section>
-        Listado: 
+        <p v-if="myStore.user.id===''">Listado:</p>
+        <p v-else @click="deleteMyStoreUser()"><span>X</span> Ver Todos</p> 
+        
         <ul>
-            <li v-for="eachUser in allUsersBasicInfo" :key="eachUser" @click="LoadSelectedUser(eachUser.id)">
-                {{ eachUser.name }} <br> {{ eachUser.alias }}
+            <li v-for="eachUser in allUsersBasicInfo" :key="eachUser" 
+                @click="LoadSelectedUser($event, eachUser.id)"
+                :class="{selected: eachUser.id === myStore.user.id }">
+                    {{ eachUser.name }} <br> {{ eachUser.alias }}
             </li>
         </ul>
     </section>
-
-
 </template>
 
 <style scoped lang="scss">
@@ -63,6 +85,7 @@ section{border: 1px solid var(--color-border);
             padding: 0.3vh 0.6vw;
             word-wrap: break-word;
             text-wrap: pretty;
+            cursor: pointer;
         } 
         
         li:hover{
@@ -70,9 +93,20 @@ section{border: 1px solid var(--color-border);
             color:var(--color-text1) !important;
         }        
     } 
-    // ul:hover li {
-    //     color: var(--color-text2);
-    // }
+    p{
+        cursor: pointer;
+        font-weight: bold;
+
+        span{
+            border: 1px solid black;
+            border-radius: 25%;
+        }
+    }
+}
+
+.selected{
+    background-color: var(--color-background-text) !important;
+    color:var(--color-text1) !important;
 }
 
 </style>

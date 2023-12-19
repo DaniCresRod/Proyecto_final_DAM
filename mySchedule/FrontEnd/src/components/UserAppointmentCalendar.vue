@@ -321,6 +321,15 @@ p{border:1px solid black;
     align-items: center;
     display:grid;
     border-radius: 2px;
+    
+}
+
+#div_calendar p:not(:empty){
+    cursor: grab;
+}
+
+#div_calendar p:nth-of-type(9n+1), #div_calendar p:nth-of-type(9n+2), #div_calendar p:nth-of-type(-n+9){
+    cursor:default;
 }
 
 #div_daysInWeek p{

@@ -32,6 +32,7 @@ onBeforeMount(() => {
 main{
   width: 80vw;
   height: 80vh;  
+  overflow-y: hidden;
 }
 
 </style>

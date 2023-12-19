@@ -48,6 +48,11 @@ a,
     padding: 0.5vh 0.5vw;
 }
 
+fieldset{
+    border-radius: 5px;
+    border: 1px solid var(--color-border);
+}
+
 
 /*RESET*/
 /* Box sizing rules */
