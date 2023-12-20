@@ -30,22 +30,25 @@ public class userServices{
         ArrayList<DTOBasicInfo> basicInfo = new ArrayList<>();
         for (userModel eachUser : (ArrayList<userModel>) myRepo.findAll()){
 
-            long difference=-1000000000;
-            LocalDate nextDate=null;
-            LocalTime nextDateStart=null;
-            long appoId=-1;
+            if(eachUser.getRol()== userModel.UserType.Usuario){
+                long difference=-1000000000;
+                LocalDate nextDate=null;
+                LocalTime nextDateStart=null;
+                long appoId=-1;
 
-            for (appointmentModel eachAppo: eachUser.getAppointmentsList()){
-                if((!eachAppo.getAppoDate().isBefore(LocalDate.now())) && (DAYS.between(eachAppo.getAppoDate(),LocalDate.now())>difference)){
-                    difference=DAYS.between(eachAppo.getAppoDate(),LocalDate.now());
-                    nextDate=eachAppo.getAppoDate();
-                    nextDateStart=eachAppo.getAppoStart();
-                    appoId= eachAppo.getId();
+                for (appointmentModel eachAppo: eachUser.getAppointmentsList()){
+                    if((!eachAppo.getAppoDate().isBefore(LocalDate.now())) && (DAYS.between(eachAppo.getAppoDate(),LocalDate.now())>difference)){
+                        difference=DAYS.between(eachAppo.getAppoDate(),LocalDate.now());
+                        nextDate=eachAppo.getAppoDate();
+                        nextDateStart=eachAppo.getAppoStart();
+                        appoId= eachAppo.getId();
+                    }
                 }
-            }
 
-            DTOBasicInfo userBasicInfo=new DTOBasicInfo(eachUser.getId(),eachUser.getName(), eachUser.getAlias(), eachUser.getPhone(), appoId, nextDate, nextDateStart );
-            basicInfo.add(userBasicInfo);
+                DTOBasicInfo userBasicInfo=new DTOBasicInfo(eachUser.getId(),eachUser.getName(), eachUser.getAlias(), eachUser.getPhone(), appoId, nextDate, nextDateStart );
+                basicInfo.add(userBasicInfo);
+
+            }
         }
         Collections.sort(basicInfo);
         return basicInfo;

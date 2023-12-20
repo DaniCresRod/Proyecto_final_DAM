@@ -55,6 +55,7 @@ fieldset{
     max-height: 35vh;
     border-radius: 5px;
     border: 1px solid var(--color-border);
+    row-gap: 1vh;
 }
 
 section{
@@ -68,6 +69,13 @@ section{
 input{
     max-width: 40vw;
     pointer-events: none;
+    border-color: var(--color-border);
+    border-style: none;
+    border-bottom-style: solid;
+}
+
+label{
+    font-size: smaller;
 }
 
 </style>

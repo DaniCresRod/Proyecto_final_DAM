@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onBeforeMount } from 'vue';
-import dateWorks from '../services/DateServices';
-import ProgramAppoComponent from '../components/ProgramAppoComponent.vue';
+import dateWorks from '../../services/DateServices';
+import ProgramAppoComponent from './ProgramAppoComponent.vue';
 
 const props=defineProps({
     userBasicInfo:Object

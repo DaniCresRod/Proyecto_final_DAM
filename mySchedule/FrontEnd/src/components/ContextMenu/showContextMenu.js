@@ -1,4 +1,4 @@
-import { myStore } from './UserAppointmentCalendar.vue';
+import { myStore } from './../UserAppointmentCalendar.vue';
 
 export function showContextMenu(event) {
 let popUpMenu = document.getElementById("div_contextMenu");

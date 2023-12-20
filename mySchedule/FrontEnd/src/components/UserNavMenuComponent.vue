@@ -11,11 +11,7 @@ const selectedUser = ref();
 async function LoadSelectedUser(event, user){
     if(myStore.user.id!==user){
         selectedUser.value = (await axiosConnection.getUserById(user)).data;
-        console.log(selectedUser.value);
         myStore.user=selectedUser.value;
-        console.log(event);
-
-
     }    
 }
 

@@ -63,6 +63,7 @@ public class userModel implements UserDetails {
 
     @OneToMany(mappedBy = "userID",cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnoreProperties("userID")
+    @OrderBy("appoDate ASC, appoStart ASC")
     private List<appointmentModel> appointmentsList;
 
     //Si el usuario no tiene un rol asignado previamente, se le asigna el rol "Usuario" por defecto
@@ -97,11 +98,13 @@ public class userModel implements UserDetails {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isEnabled() {
         return true;

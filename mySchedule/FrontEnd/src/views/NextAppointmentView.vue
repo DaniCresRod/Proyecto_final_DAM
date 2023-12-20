@@ -1,5 +1,5 @@
 <script setup>
-import NextAppoComponent from '../components/AllAppointmentComponent.vue'
+import NextAppoComponent from '../components/NextAppointments/AllAppointmentComponent.vue'
 import { ref } from 'vue'
 
 const wordFilter=ref();

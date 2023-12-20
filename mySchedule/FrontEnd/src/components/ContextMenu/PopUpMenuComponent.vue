@@ -1,6 +1,6 @@
 <script setup>
-import { myUserStore } from '../services/PiniaServices';
-import DataServices from '../services/DataServices';
+import { myUserStore } from '../../services/PiniaServices';
+import DataServices from '../../services/DataServices';
 
 let myStore=myUserStore();
 

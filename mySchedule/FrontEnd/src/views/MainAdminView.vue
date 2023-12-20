@@ -1,7 +1,7 @@
 <script setup>
-import UserNavComponent from '../components/UserNavComponent.vue';
+import UserNavComponent from '../components/UserNavMenuComponent.vue';
 import UserAppointmentCalendar from '../components/UserAppointmentCalendar.vue';
-import SelectedUserCalendar from '../components/SelectedUserCalendar.vue';
+import SelectedUserCalendar from '../components/SelectedUserCalendar/SelectedUserCalendar.vue';
 import axiosConnection from "../services/DataServices.js";
 import { myUserStore } from "../services/PiniaServices";
 import { onBeforeMount } from 'vue';

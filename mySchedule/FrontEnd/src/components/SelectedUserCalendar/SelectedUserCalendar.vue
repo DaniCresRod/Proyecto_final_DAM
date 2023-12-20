@@ -1,10 +1,15 @@
 <script setup>
 import UserDataComponent from './UserDataComponent.vue';
 import { ref, watch } from 'vue'
-import { myUserStore } from '../services/PiniaServices';
+import { myUserStore } from '../../services/PiniaServices';
+import AppoListComponent from './AppoListComponent.vue';
+import SelectedAppoNotesComponent from './SelectedAppoNotesComponent.vue'; 
+
+// const myEmits = defineEmits(['selected-appo-emit']);
 
 const myUserData=ref({});
 const myStore=myUserStore();
+const mySelectedAppo=ref();
 
 myUserData.value=myStore.user;
 
@@ -18,15 +23,7 @@ watch(()=>myStore.user.name, ()=>{
 <template>
     <section id="section_mainSelectedUserInfo">
         <div id="div_AppoDates">
-            <fieldset>
-            <legend>Citas</legend>
-            <ul>
-                <li v-for="(items, index) in myStore.user.appointmentsList" :key="items">
-                    {{ items.appoDate }}
-
-                </li>
-            </ul>
-            </fieldset>
+            <AppoListComponent @selected-appo-emit="(incommingValue)=> mySelectedAppo=incommingValue"/>
         </div>
 
         <div id="div_UserData">
@@ -38,7 +35,7 @@ watch(()=>myStore.user.name, ()=>{
         </div>
 
         <div id="div_AppoNotes">
-            {{ myStore.user.notes }}
+            <SelectedAppoNotesComponent :incommingValue="mySelectedAppo"/>
         </div>
 
         <div id="div_options">
@@ -65,16 +62,7 @@ watch(()=>myStore.user.name, ()=>{
     #div_AppoDates{
         grid-row: 1 / span 2;
         align-self: flex-start;
-        height: 100%;
-        
-        fieldset{
-            height: 100%;
-
-            ul{
-                list-style: none;
-            }
-        }
-        
+        height: 100%;        
     }
 
     #div_AppoNotes{

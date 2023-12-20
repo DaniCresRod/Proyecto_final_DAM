@@ -1,8 +1,8 @@
 <script setup>
-import UserInfo from '../components/UserInfoComponent.vue'
-import axiosConnection from '../services/DataServices'
+import UserInfo from './UserInfoComponent.vue'
+import axiosConnection from '../../services/DataServices'
 import { ref, onBeforeMount, watch} from 'vue'
-import DateServices from '../services/DateServices';
+import DateServices from '../../services/DateServices';
 
 const props=defineProps({
     myfilter:{

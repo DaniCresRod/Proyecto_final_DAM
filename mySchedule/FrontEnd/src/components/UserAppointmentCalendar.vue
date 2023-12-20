@@ -5,7 +5,7 @@ import DataServices from '../services/DataServices';
 import DateServices from '../services/DateServices';
 import {defineCalendarBasics, appoIsInRange, getIndexInMyWeeklyArray, CalendarDayBooked, getChildIndex, getNewDayAndHour} from '../services/GraphCalendarServices';
 import {sendWhatsApp, sendReminder} from '../services/WhatsAppService';
-import PopUpMenuComponent from '../components/PopUpMenuComponent.vue';
+import PopUpMenuComponent from './ContextMenu/PopUpMenuComponent.vue';
 
 const myStore=myUserStore();
 
