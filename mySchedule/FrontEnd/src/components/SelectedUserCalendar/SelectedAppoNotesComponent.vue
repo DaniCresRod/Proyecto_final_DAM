@@ -1,6 +1,7 @@
 <script setup>
 import { myUserStore } from '../../services/PiniaServices';
-import { ref, watch } from 'vue'
+import { ref, watchEffect } from 'vue'
+import DateServices from '../../services/DateServices';
 
 const myStore=myUserStore();
 const myNote=ref();
@@ -8,38 +9,73 @@ const myNote=ref();
 const props=defineProps({
     incommingValue: {
         type: Number,
-        default: 0,
+        default: -1,
     },
 })
 
-//pasar a pinia.appo para hacerla de doble diren por si hay que editar
-watch( () => props.incommingValue, ()=>{
-    myNote.value=myStore.user.appointmentsList.find(
-        (eachAppo)=>eachAppo.id === props.incommingValue).notes;
+watchEffect(() => {
+    if (props.incommingValue !== undefined) {
+        myNote.value = myStore.user.appointmentsList.find(
+            (eachAppo) => eachAppo.id === props.incommingValue
+        );
+
+        if (myNote.value) {
+            myStore.appo.id = myNote.value.id;
+            myStore.appo.appoDate = myNote.value.appoDate;
+            myStore.appo.appoStart = myNote.value.appoStart;
+            myStore.appo.notes = myNote.value.notes;
+            myStore.appo.userID.id = myStore.user.id;
+        }
+    }
 }),
 
-watch(()=> myStore.user.id, () => myNote.value=null)
-
-
+watchEffect(()=> myStore.user.id, () => {
+    myNote.value=null;
+    myStore.appo.id=null;
+    myStore.appo.appoDate=null;
+    myStore.appo.appoStart=null;
+    myStore.appo.notes=null;
+    myStore.appo.userID.id=null;
+})
 
 </script>
 
-<template>hola {{ props.incommingValue }}
-
-<fieldset v-if="props.incommingValue">
-    <textarea 
-            v-model="myNote">
-                
-            </textarea>
+<template>
+<fieldset>
+    <legend v-if="myStore.appo.appoDate">Notas de la sesion del {{ DateServices.changeFormatToDate(myStore.appo.appoDate) }}
+    a las {{ DateServices.removeSeconds(myStore.appo.appoStart) }}</legend>
+    <textarea v-if="myStore.appo.appoDate"
+            v-model="myStore.appo.notes"
+            @focus="myStore.onChanging=true" readonly>
+    </textarea>
+    <input type="text" v-if="myStore.onChanging" v-model="myStore.appo.notesAdd" placeholder="Escribe aqui...">
 
 </fieldset>
-    <!-- <textarea cols="30" rows="10" 
-            v-model="myStore.user.appointmentsList.find(
-                    (eachAppo)=>eachAppo.id === props.incommingValue).notes">
-                
-            </textarea> -->
 </template>
 
 <style scoped>
+fieldset{
+    width: 100%;
+    height: 100%;
+}
+
+
+textarea{
+    width: 100%;
+    height: 80%;
+    box-sizing: border-box;
+    border:none;
+    padding-left: 1vw;
+    border-radius: 5px;
+}
+input{
+    width: 100%;
+    height: 20%;
+    box-sizing: border-box;
+    border:1px solid var(--color-border);
+    padding-left: 1vw;
+    border-radius: 5px;
+
+}
 
 </style>

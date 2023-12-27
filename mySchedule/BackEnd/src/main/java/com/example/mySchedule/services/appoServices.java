@@ -91,4 +91,26 @@ public class appoServices {
             return "Hubo un error y no se pudo borrar: "+e.getMessage();
         }
     }
+
+    public appointmentModel updateAppointDetail(appointmentModel newAppo) {
+        try{
+            //verificar que existe la cita
+            appointmentModel oldAppo=myRepoAppo.findById(newAppo.getId()).get();
+
+            if (oldAppo!=null){
+                //Hacer los cambios
+                oldAppo.setNotes(oldAppo.getNotes()+
+                        "\n"+
+                        "Se hacen anotaciones el día "+LocalDate.now()+":\n"+
+                        newAppo.getNotes());
+                myRepoAppo.save(oldAppo);
+            }
+            return oldAppo;
+
+        }
+        catch(Exception e){
+            return null;
+        }
+
+    }
 }

@@ -12,6 +12,13 @@ async function LoadSelectedUser(event, user){
     if(myStore.user.id!==user){
         selectedUser.value = (await axiosConnection.getUserById(user)).data;
         myStore.user=selectedUser.value;
+        myStore.onChanging=false;
+
+        myStore.appo.id=null;
+        myStore.appo.appoDate=null;
+        myStore.appo.appoStart=null;
+        myStore.appo.notes=null;
+        myStore.appo.userID.id=null;
     }    
 }
 
@@ -30,6 +37,7 @@ function deleteMyStoreUser(){
             price:'',
             appointmentsList:[]
         }
+    myStore.onChanging=false;
 }
 
 watch(()=> myStore.AllUsers, ()=>{

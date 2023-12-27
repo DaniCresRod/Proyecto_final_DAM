@@ -62,8 +62,7 @@ section{
     max-width: 40vw;
     display: flex;
     flex-direction: column;
-    font-size: small;
-    
+    font-size: small;    
 }
 
 input{
@@ -76,6 +75,7 @@ input{
 
 label{
     font-size: smaller;
+    pointer-events: none;
 }
 
 </style>

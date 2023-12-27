@@ -30,10 +30,16 @@ public class appoControl {
         return myService.readAppoints(localDate);
     }
 
-    //Cambiar una cita
+    //Cambiar una cita de fecha
     @PutMapping(path="/update")
     public List<appointmentModel> updateAppo(@RequestBody appointmentModel newAppo){
         return myService.updateAppoint(newAppo);
+    }
+
+    //Cambiar detalles de una cita (sin cambio de fecha)
+    @PutMapping(path="/updateNotes")
+    public appointmentModel updateAppoDetail(@RequestBody appointmentModel newAppo){
+        return myService.updateAppointDetail(newAppo);
     }
 
     //Borrar una cita

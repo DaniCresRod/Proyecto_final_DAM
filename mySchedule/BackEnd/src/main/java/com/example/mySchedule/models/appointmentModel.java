@@ -35,4 +35,12 @@ public class appointmentModel {
     @JoinColumn(name = "user_id")
     @JsonIgnoreProperties("appointmentsList")
     private userModel userID;
+
+    public enum AppoType
+    {
+        Terapia,
+        Formacion,
+        Grupos,
+        Otros
+    }
 }

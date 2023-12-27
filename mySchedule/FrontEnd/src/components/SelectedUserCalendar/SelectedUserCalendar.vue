@@ -4,6 +4,8 @@ import { ref, watch } from 'vue'
 import { myUserStore } from '../../services/PiniaServices';
 import AppoListComponent from './AppoListComponent.vue';
 import SelectedAppoNotesComponent from './SelectedAppoNotesComponent.vue'; 
+import SelectedUserNotesComponent from './SelectedUserNotesComponent.vue';
+import ButtonMenuComponent from './ButtonMenuComponent.vue';
 
 // const myEmits = defineEmits(['selected-appo-emit']);
 
@@ -31,7 +33,7 @@ watch(()=>myStore.user.name, ()=>{
         </div>
 
         <div id="div_UserNotes">
-            {{ myStore.user.notes }}
+            <SelectedUserNotesComponent/>
         </div>
 
         <div id="div_AppoNotes">
@@ -39,7 +41,7 @@ watch(()=>myStore.user.name, ()=>{
         </div>
 
         <div id="div_options">
-5
+            <ButtonMenuComponent/>
         </div>
     </section>
 </template>
@@ -55,7 +57,7 @@ watch(()=>myStore.user.name, ()=>{
     gap: 1vh;
     
 
-    div{border: 1px solid var(--color-border);        
+    div{      
         border-radius: 5px;
     }
 
