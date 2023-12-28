@@ -98,16 +98,21 @@ public class userServices{
     public String changeUser(long id, userModel newUser) {
         try{
             userModel myUser = myRepo.findById(id).get();
-            myUser.setId(newUser.getId());
+//            myUser.setId(newUser.getId());
+            myUser.setNif(newUser.getNif());
+            myUser.setName(newUser.getName());
+            myUser.setSurname1(newUser.getSurname1());
+            myUser.setSurname2(newUser.getSurname2());
             myUser.setAlias(newUser.getAlias());
             myUser.setEmail(newUser.getEmail());
-            myUser.setName(newUser.getName());
+            myUser.setPhone(newUser.getPhone());
+            if(newUser.getPassword()!=null) myUser.setPassword(newUser.getPassword());
             myUser.setNotes(newUser.getNotes());
-            myUser.setPassword(newUser.getPassword());
+            myUser.setPrice(newUser.getPrice());
 
             myRepo.save(myUser);
 
-            return myUser.getAlias()+" fue modificado satisfactoriamente";
+            return "Usuario "+myUser.getName()+" "+myUser.getSurname1()+" fue modificado satisfactoriamente";
 
         }
         catch(Exception e){

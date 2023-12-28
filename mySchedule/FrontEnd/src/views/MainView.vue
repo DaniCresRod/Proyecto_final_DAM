@@ -32,4 +32,10 @@ main{
   overflow-y: hidden;
 }
 
+@media screen and (max-width: 500px) {
+  main{
+    width: 100vw;
+  }  
+}
+
 </style>

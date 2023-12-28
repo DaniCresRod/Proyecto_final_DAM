@@ -46,8 +46,8 @@ export default({
         return axiosConnection.post('/user/add', Data);
     },
 
-    updateUser(id, Data){
-        return axiosConnection.put(`user/update/${id}`, Data);
+    async updateUser(id, Data){
+        return await axiosConnection.put(`user/update/${id}`, Data);
     },
 
     //Interactuar con la tabla appointments

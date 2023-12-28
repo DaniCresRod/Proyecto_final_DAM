@@ -347,6 +347,9 @@ p{border:1px solid black;
 }
 
 @media screen and (max-width: 430px) {
+    *{
+        font-size: small !important;
+    }
     .div_weekGrid{
         padding: 1vh 1vw;
         display: grid;
@@ -369,6 +372,10 @@ p{border:1px solid black;
         line-height: unset;
         padding: 0;
     }  
+
+    #div_calendar p{
+        height: 4vh;
+    }
 }
 
 .p_outOfSchedule{

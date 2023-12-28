@@ -1,9 +1,11 @@
 <script setup>
 import { myUserStore } from '../../services/PiniaServices';
-import { watchEffect } from 'vue'
+import { watchEffect, ref } from 'vue'
 import DataServices from '../../services/DataServices';
 
 const myStore=myUserStore();
+let originalData;
+const axiosResponse=ref();
 
 function cancelChanges(){
     myStore.onChanging=false;
@@ -17,36 +19,94 @@ function modifyAppo(){
 }
 
 async function upgradeAppoNotes(){
-    let dataToSend={
+    if(myStore.appo.notesAdd.trim()!==""){
+        
+        let dataToSend={
         id: myStore.appo.id,
         appoDate: myStore.appo.appoDate,
         appoStart: myStore.appo.appoStart,
         notes: myStore.appo.notesAdd,
         userID:{
             id: myStore.appo.userID.id}
-    }
+        }
 
-    let response=await DataServices.updateAppoNotes(JSON.stringify(dataToSend));
+        let response=await DataServices.updateAppoNotes(JSON.stringify(dataToSend));
 
-    if(response.data!==null){
-        cancelChanges();
-        myStore.appo.notes=response.data.notes;
+        if(response.data!==null){
+            cancelChanges();
+            myStore.appo.notes=response.data.notes;
+            console.log(response.data);
+            axiosResponse.value="Se guardó correctamente";
+            document.getElementById("aside_feedback").classList.remove("invisible");
+        }
+        else{
+            window.alert("Se ha producido un error y no se han cargado los datos");
+        }
     }
     else{
-        window.alert("Se ha producido un error y no se han cargado los datos");
+        cancelChanges();
+        axiosResponse.value="No se han detectado cambios y no se realizará ninguna operación";
+        document.getElementById("aside_feedback").classList.remove("invisible");
     }
+    
 }
 
 //Aqui si nos interesa que se puedan modificar las notas del usuario.
-function changeUserData(){
-    let buttonFunction=document.getElementById("button_changeUserData");
+async function changeUserData(){
+    let buttonFunction=document.getElementById("button_changeUserData");    
     
-    console.log(buttonFunction.title);
+    if(buttonFunction.title==="Editar"){
+        document.querySelector("#fieldset_userNotes textarea").removeAttribute("readonly");
+        document.querySelectorAll("#fieldset_UserData section").forEach((eachSection)=> eachSection.style.pointerEvents="all");
 
-    document.querySelector("#fieldset_userNotes textarea").removeAttribute("readonly");
-    document.querySelectorAll("#fieldset_UserData section").forEach((eachSection)=> eachSection.style.pointerEvents="all");
+        buttonFunction.setAttribute("title", "Guardar");
+        buttonFunction.innerText="Guardar Datos Personales";
 
+        originalData={
+            nif: myStore.user.nif,
+            name: myStore.user.name,
+            surname1: myStore.user.surname1,
+            surname2: myStore.user.surname2,
+            alias: myStore.user.alias,
+            email: myStore.user.email,
+            phone: myStore.user.phone,
+            notes: myStore.user.notes,
+            price: myStore.user.price
+        }
+    }
+    else{
+        document.querySelector("#fieldset_userNotes textarea").setAttribute("readonly", "");
+        document.querySelectorAll("#fieldset_UserData section").forEach((eachSection)=> eachSection.style.pointerEvents="none");
 
+        buttonFunction.setAttribute("title", "Editar");
+        buttonFunction.innerText="Editar Datos Personales";
+
+        let dataToSend={
+            nif: myStore.user.nif,
+            name: myStore.user.name,
+            surname1: myStore.user.surname1,
+            surname2: myStore.user.surname2,
+            alias: myStore.user.alias,
+            email: myStore.user.email,
+            phone: myStore.user.phone,
+            notes: myStore.user.notes,
+            price: myStore.user.price
+        }
+
+        //Solo actualiza si ha cambiado algo
+        if(JSON.stringify(originalData)!==JSON.stringify(dataToSend)){
+            let response=await DataServices.updateUser(myStore.user.id, JSON.stringify(dataToSend));
+            axiosResponse.value=response.data;
+        }
+        else{
+            axiosResponse.value="No se han detectado cambios y no se realizará ninguna operación";
+            document.getElementById("aside_feedback").classList.remove("invisible");
+        }   
+    }
+}
+
+function closeDialog(){
+    document.getElementById("aside_feedback").classList.add("invisible");
 }
 
 watchEffect(()=>myStore.onChanging, )
@@ -57,14 +117,21 @@ watchEffect(()=>myStore.onChanging, )
     <section>
         <div>
         <button v-if="!myStore.onChanging && myStore.appo.id!==null"  @click="modifyAppo" title="Modificar Notas de Sesión">Modificar</button>
-        <button v-if="myStore.onChanging" @click="upgradeAppoNotes" title="Guardar Cambios">Guardar Cambios</button>
         <button v-if="myStore.onChanging" @click="cancelChanges" title="Cancelar Cambios">Cancelar Cambios</button>
+        <button v-if="myStore.onChanging" @click="upgradeAppoNotes" title="Guardar Cambios">Guardar Cambios</button>
         <button>Nueva cita</button>        
     </div>
     <div>
         <button id="button_changeUserData" @click="changeUserData" title="Editar">Editar Datos Personales</button>
     </div>
     </section>
+
+    <aside id="aside_feedback" class="invisible">
+        <article>{{ axiosResponse }}</article>
+        <div>
+            <button @click="closeDialog">OK</button>
+        </div>
+    </aside>
     
 </template>
 
@@ -72,6 +139,7 @@ watchEffect(()=>myStore.onChanging, )
 section{
     display: flex;
     justify-content:space-between;
+    column-gap: 1.5vw;
 }
 
 div{
@@ -85,6 +153,26 @@ button{
     color: var(--color-text);
     font-weight: bold;
     border-color: var(--color-text);
+}
+
+#aside_feedback{border:1px solid black;
+    position: absolute;
+    top:calc(50% - 20vh / 2);
+    left: calc(50% - 30vw / 2);
+    z-index: 3;    
+    width: 30vw;
+    height: 20vh;
+
+    background-color: var(--color-background-text);
+    border-radius: 5px;
+    padding:1vh 1vw;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2vh;
+    text-align: center;        
 }
 
 </style>

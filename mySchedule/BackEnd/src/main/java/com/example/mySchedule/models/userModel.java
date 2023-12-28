@@ -63,7 +63,7 @@ public class userModel implements UserDetails {
 
     @OneToMany(mappedBy = "userID",cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnoreProperties("userID")
-    @OrderBy("appoDate ASC, appoStart ASC")
+    @OrderBy("appoDate DESC, appoStart DESC")
     private List<appointmentModel> appointmentsList;
 
     //Si el usuario no tiene un rol asignado previamente, se le asigna el rol "Usuario" por defecto

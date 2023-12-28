@@ -108,6 +108,12 @@ section{border: 1px solid var(--color-border);
     }
 }
 
+@media screen and (max-width: 414px) {
+  li{
+    font-size: small;
+  }  
+}
+
 .selected{
     background-color: var(--color-background-text) !important;
     color:var(--color-text1) !important;

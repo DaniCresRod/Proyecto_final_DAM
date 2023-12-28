@@ -1,13 +1,29 @@
 <script setup>
 import { myUserStore } from '../../services/PiniaServices';
 import DateServices from '../../services/DateServices';
+import { onUpdated } from 'vue'
 
 const myStore=myUserStore();
+
+onUpdated(() => {
+  document.querySelectorAll("#fieldset_Appos li").forEach((eachAppoContainer, index)=>{
+    let dateText=eachAppoContainer.innerText.split(" ",1)[0].split("/", 3);
+
+    let myDate=new Date(dateText[2]+"-"+dateText[1]+"-"+dateText[0]);
+
+    if(myDate >= Date.now()){
+        console.log("hola"+myDate);
+        console.log(index);
+    }
+
+    // console.log(myDate);
+  })  
+})
 
 </script>
 
 <template>
-    <fieldset>
+    <fieldset id="fieldset_Appos">
         <legend>Citas</legend>
         <ul>
             <li v-for="items in myStore.user.appointmentsList" :key="items" @click="$emit('selectedAppoEmit', items.id)">

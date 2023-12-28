@@ -39,7 +39,7 @@ const props=defineProps({
         </section>
         <section>
             <label for="input_userPrice">Precio por sesión: </label>
-            <input type="text" id="input_userPrice" v-model="props.userData.price">  
+            <input type="number" id="input_userPrice" v-model="props.userData.price">  
         </section>      
     </fieldset>
 </template>

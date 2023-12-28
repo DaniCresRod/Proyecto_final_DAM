@@ -52,6 +52,7 @@ watch(()=>myStore.user.name, ()=>{
     grid-template-columns: 1fr 3fr;
     grid-template-rows: 1fr 1fr 1.5fr 0.5fr;
     width: 80vw;
+    height: 70vh;
     max-height: 70vh;
     gap: 1vh;
     
