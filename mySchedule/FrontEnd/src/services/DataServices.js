@@ -65,5 +65,9 @@ export default({
 
     async updateAppo(Data){
         return await axiosConnection.put('appo/update', Data);
-    }    
+    }, 
+    
+    async updateAppoNotes(Data){
+        return await axiosConnection.put('appo/updateNotes', Data);
+    }
 })

@@ -1,6 +1,6 @@
 <script setup>
 import { myUserStore } from '../../services/PiniaServices';
-import { ref, watchEffect } from 'vue'
+import { ref, watchEffect, onUpdated, watch } from 'vue'
 import DateServices from '../../services/DateServices';
 
 const myStore=myUserStore();
@@ -36,20 +36,33 @@ watchEffect(()=> myStore.user.id, () => {
     myStore.appo.appoStart=null;
     myStore.appo.notes=null;
     myStore.appo.userID.id=null;
+}),
+
+watch(()=> myStore.appo.id, () =>{
+    myStore.onChanging=false;
+    myStore.appo.notesAdd="";
+}),
+
+onUpdated(() => {
+    if(document.querySelectorAll("#fieldset_appoNotes textarea").length===2){
+        document.querySelector("#fieldset_appoNotes textarea:nth-of-type(2)").focus();
+        //Hace scroll hasta el final del textArea donde estan las notas ya escritas
+        document.querySelector("#fieldset_appoNotes textarea:nth-of-type(1)").scrollTop=document.querySelector("#fieldset_appoNotes textarea:nth-of-type(1)").scrollHeight;;
+    }        
 })
 
 </script>
 
 <template>
-<fieldset>
+<fieldset id="fieldset_appoNotes">
     <legend v-if="myStore.appo.appoDate">Notas de la sesion del {{ DateServices.changeFormatToDate(myStore.appo.appoDate) }}
     a las {{ DateServices.removeSeconds(myStore.appo.appoStart) }}</legend>
     <textarea v-if="myStore.appo.appoDate"
             v-model="myStore.appo.notes"
-            @focus="myStore.onChanging=true" readonly>
+            @focus="focusToChange" readonly>
     </textarea>
-    <input type="text" v-if="myStore.onChanging" v-model="myStore.appo.notesAdd" placeholder="Escribe aqui...">
-
+    <textarea class="txtArea_newNotes" type="text" v-if="myStore.onChanging" v-model="myStore.appo.notesAdd" placeholder="Añade nuevas notas aqui...">
+    </textarea>
 </fieldset>
 </template>
 
@@ -59,23 +72,17 @@ fieldset{
     height: 100%;
 }
 
-
 textarea{
     width: 100%;
-    height: 80%;
+    height: 100%;
+    max-height: 100%;
     box-sizing: border-box;
     border:none;
     padding-left: 1vw;
     border-radius: 5px;
 }
-input{
-    width: 100%;
-    height: 20%;
-    box-sizing: border-box;
-    border:1px solid var(--color-border);
-    padding-left: 1vw;
-    border-radius: 5px;
-
+.txtArea_newNotes{
+    height: 50%;
 }
 
 </style>

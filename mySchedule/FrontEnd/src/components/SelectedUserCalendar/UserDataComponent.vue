@@ -7,7 +7,7 @@ const props=defineProps({
 </script>
 
 <template>
-    <fieldset>
+    <fieldset id="fieldset_UserData">
         <legend>Datos Personales</legend>
         <section>
             <label for="input_userName">Nombre: </label>
@@ -62,12 +62,13 @@ section{
     max-width: 40vw;
     display: flex;
     flex-direction: column;
-    font-size: small;    
+    font-size: small;  
+    pointer-events: none;  
 }
 
 input{
     max-width: 40vw;
-    pointer-events: none;
+    
     border-color: var(--color-border);
     border-style: none;
     border-bottom-style: solid;
@@ -75,7 +76,7 @@ input{
 
 label{
     font-size: smaller;
-    pointer-events: none;
+    
 }
 
 </style>

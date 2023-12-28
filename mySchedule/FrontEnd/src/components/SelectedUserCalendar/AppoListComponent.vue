@@ -2,8 +2,6 @@
 import { myUserStore } from '../../services/PiniaServices';
 import DateServices from '../../services/DateServices';
 
-
-
 const myStore=myUserStore();
 
 </script>

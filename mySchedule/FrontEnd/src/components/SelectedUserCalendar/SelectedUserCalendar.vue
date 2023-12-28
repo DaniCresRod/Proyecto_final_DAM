@@ -17,7 +17,6 @@ myUserData.value=myStore.user;
 
 watch(()=>myStore.user.name, ()=>{
     myUserData.value=myStore.user;
-    console.log(myUserData.value);
 })
 
 </script>

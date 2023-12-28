@@ -1,9 +1,6 @@
 <script setup>
 import { onBeforeMount } from 'vue'
 import router from '../router/index.js';
-// import { RouterView } from 'vue-router'
-// import mainUserView from './MainUserView.vue';
-// import mainAdminView from './MainAdminView.vue';
 
 
 

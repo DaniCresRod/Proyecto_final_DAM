@@ -5,9 +5,9 @@ const myStore=myUserStore();
 </script>
 
 <template>
-    <fieldset>
+    <fieldset id="fieldset_userNotes">
         <legend>Notas generales</legend>
-        <textarea v-model="myStore.user.notes">
+        <textarea v-model="myStore.user.notes" readonly>
         </textarea>
     </fieldset>
 </template>
@@ -25,7 +25,7 @@ textarea{
     box-sizing: border-box;
     border:none;
     padding-left: 1vw;
-    
+    /* pointer-events: none; */
 }
 
 </style>
