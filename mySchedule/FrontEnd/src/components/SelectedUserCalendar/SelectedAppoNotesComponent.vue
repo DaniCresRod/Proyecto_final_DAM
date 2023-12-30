@@ -14,7 +14,7 @@ const props=defineProps({
 })
 
 watchEffect(() => {
-    if (props.incommingValue !== undefined) {
+    if (props.incommingValue !== undefined && props.incommingValue!==-1) {
         myNote.value = myStore.user.appointmentsList.find(
             (eachAppo) => eachAppo.id === props.incommingValue
         );

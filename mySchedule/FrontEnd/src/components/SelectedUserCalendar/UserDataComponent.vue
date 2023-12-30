@@ -1,7 +1,20 @@
 <script setup>
 
 const props=defineProps({
-    userData: Object,
+    userData: {
+        type: Object,
+        default: ()=> ({
+            name:'',
+            alias:'',
+            surname1:'',
+            surname2:'',
+            email:'',
+            phone:'',
+            notes:'',
+            nif:'',
+            price: 60,
+        }),
+    },
 })
 
 </script>

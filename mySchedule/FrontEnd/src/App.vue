@@ -43,7 +43,7 @@ onBeforeMount(async () => {
 
       <nav v-if="isAdmin && isLogged">
         <RouterLink to="/AdminView">Home</RouterLink>
-        <RouterLink to="/newAppointment">Nueva Cita</RouterLink>
+        <RouterLink to="/newAppointment">Nuevo usuario</RouterLink>
         <RouterLink to="/allApointment">Próximas citas</RouterLink>
         <RouterLink to="/allApointment">LogOut</RouterLink>
       </nav>      

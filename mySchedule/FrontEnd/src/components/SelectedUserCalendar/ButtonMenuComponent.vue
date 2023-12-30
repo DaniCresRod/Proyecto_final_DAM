@@ -100,8 +100,8 @@ async function changeUserData(){
         }
         else{
             axiosResponse.value="No se han detectado cambios y no se realizará ninguna operación";
-            document.getElementById("aside_feedback").classList.remove("invisible");
-        }   
+        }
+        document.getElementById("aside_feedback").classList.remove("invisible");   
     }
 }
 
