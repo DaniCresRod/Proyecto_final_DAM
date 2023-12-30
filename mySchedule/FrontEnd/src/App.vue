@@ -259,7 +259,8 @@ footer{
     left: calc(50% - 30vw / 2);
     z-index: 3;    
     width: 30vw;
-    height: 20vh;
+    min-height: 20vh;
+    height: fit-content;
 
     background-color: var(--color-background-text);
     border-radius: 5px;
@@ -270,6 +271,7 @@ footer{
     justify-content: center;
     align-items: center;
     gap: 2vh;
-    text-align: center;        
+    text-align: center; 
+    white-space: pre-line;       
 }
 </style>

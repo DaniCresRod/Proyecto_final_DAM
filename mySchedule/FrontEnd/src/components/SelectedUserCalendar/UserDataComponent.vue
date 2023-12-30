@@ -24,35 +24,35 @@ const props=defineProps({
         <legend>Datos Personales</legend>
         <section>
             <label for="input_userName">Nombre: </label>
-            <input type="text" id="input_userName" v-model="props.userData.name">  
+            <input type="text" id="input_userName" v-model="props.userData.name" title="Nombre del usuario" required>  
         </section>
         <section>
             <label for="input_userAlias">Alias: </label>
-            <input type="text" id="input_userAlias" v-model="props.userData.alias">  
+            <input type="text" id="input_userAlias" v-model="props.userData.alias" title="Alias del usuario">  
         </section>
         <section>
             <label for="input_userSurName">Apellido: </label>
-            <input type="text" id="input_userSurName" v-model="props.userData.surname1">  
+            <input type="text" id="input_userSurName" v-model="props.userData.surname1" title="Primer apellido del usuario">  
         </section>
         <section>
             <label for="input_userSurName2">Apellido 2º: </label>
-            <input type="text" id="input_userSurName2" v-model="props.userData.surname2">  
+            <input type="text" id="input_userSurName2" v-model="props.userData.surname2" title="Segundo apellido del usuario">  
         </section>
         <section>
             <label for="input_userEmail">Email: </label>
-            <input type="text" id="input_userEmail" v-model="props.userData.email">  
+            <input type="email" id="input_userEmail" v-model="props.userData.email" title="Email del usuario" required>  
         </section>
         <section>
             <label for="input_userPhone">Teléfono: </label>
-            <input type="text" id="input_userPhone" v-model="props.userData.phone">  
+            <input type="text" id="input_userPhone" v-model="props.userData.phone" title="Telefono del usuario" required>  
         </section>
         <section>
             <label for="input_userNif">Nif: </label>
-            <input type="text" id="input_userNif" v-model="props.userData.nif">  
+            <input type="text" id="input_userNif" v-model="props.userData.nif" title="Nif del usuario" required>  
         </section>
         <section>
             <label for="input_userPrice">Precio por sesión: </label>
-            <input type="number" id="input_userPrice" v-model="props.userData.price">  
+            <input type="number" id="input_userPrice" v-model="props.userData.price" title="Precio para el usuario">  
         </section>      
     </fieldset>
 </template>
