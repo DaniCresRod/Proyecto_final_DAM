@@ -37,6 +37,7 @@ export const myUserStore=defineStore('userData', {
             indexOfArray:'',      
        },
        onChanging: false,
+       msgToUser:'',
     }),
 });
 

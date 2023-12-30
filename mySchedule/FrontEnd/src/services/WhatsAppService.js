@@ -3,11 +3,11 @@ import DateServices from './DateServices';
 
 const myStore = myUserStore();
 
-export function sendWhatsApp(){
+export function sendWhatsApp(msg){
     document.getElementById("div_whatsapp").classList.add("invisible");
 
-    let msg=`Hola ${myStore.whatsAppUser.name}, recuerda que hemos cambiado la fecha de la cita que tenías (el ${DateServices.changeFormatToDate(myStore.whatsAppUser.oldAppoDate)} a las ${myStore.whatsAppUser.oldAppoStart}),`
-    +` al día *${DateServices.changeFormatToDate(myStore.whatsAppUser.newAppoDate)} a las ${DateServices.removeSeconds(myStore.whatsAppUser.newAppoStart)}*. Un saludo!`;
+    // let msg=`Hola ${myStore.whatsAppUser.name}, recuerda que hemos cambiado la fecha de la cita que tenías (el ${DateServices.changeFormatToDate(myStore.whatsAppUser.oldAppoDate)} a las ${myStore.whatsAppUser.oldAppoStart}),`
+    // +` al día *${DateServices.changeFormatToDate(myStore.whatsAppUser.newAppoDate)} a las ${DateServices.removeSeconds(myStore.whatsAppUser.newAppoStart)}*. Un saludo!`;
 
     //Expresion regular para cambiar los espacios por su representacion %20
     let formattedMsg=msg.replace(/\s/g, "%20");

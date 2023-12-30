@@ -51,8 +51,8 @@ export default({
     },
 
     //Interactuar con la tabla appointments
-    saveAppo(Data){
-        return axiosConnection.post('/appo/add', Data);
+    async saveAppo(Data){
+        return await axiosConnection.post('/appo/add', Data);
     },
 
     getAppoByDate(date){

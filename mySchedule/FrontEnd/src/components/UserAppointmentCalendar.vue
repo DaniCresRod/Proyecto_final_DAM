@@ -13,7 +13,7 @@ const myWeeklyArray=ref([]);
 const oddApposArray=ref([]);
 const changedDateArray=ref([]);
 const datesInWeekArray=ref([]);
-// const draggedStartInfo=ref();
+const whatsAppMsj=ref();
 let draggedStartInfo;
 
 const dateNow = new Date(Date.now());
@@ -166,18 +166,18 @@ function changeWeekAppointment(event){
 
         //El lugar de aterrizaje debe estar vacio
         if((event.target.firstElementChild===null) && (event.target.innerText==="") ){
-
+            
             let newIndex=getChildIndex(event.target);
             let oldIndex=myUserStore().whatsAppUser.indexOfArray;
         
             let [newHourIndex, draggedDayIndex, newDayIndex]=getNewDayAndHour(newIndex, oldIndex);
             let [newHour, newDay]=[myWeeklyArray.value[newHourIndex].tag, datesInWeekArray.value[newDayIndex-2]];
-
+            
             newDay=newDay.split("/");
 
             //ajustar fecha y formato teniendo cuidado con los cambios de año
             let parsedDate = new Date(Date.parse(dateFilter.value));
-            if(parsedDate.getMonth()===11 && newDay[1].trim()=="1"){
+            if(parsedDate.getMonth()===11 && newDay[1].trim()=="01"){
                 newDay=(parsedDate.getFullYear()+1)+"-"+newDay[1].trim()+"-"+newDay[0].trim();
             }
             else if(parsedDate.getMonth()===0 && newDay[1].trim()=="12"){
@@ -194,13 +194,30 @@ function changeWeekAppointment(event){
                 notes: "",
                 userID:{
                     id: myStore.whatsAppUser.userId}
+            };
+            if(dataToSend.id!==""){
+                executeAppoChange(dataToSend);
             }
-            executeAppoChange(dataToSend);
+            else{
+                executeNewAppo(dataToSend);
+            }
         } 
         else{
             cancelAppoMove(); 
         }         
     }     
+}
+
+async function executeNewAppo(dataToSend){
+    let response=await DataServices.saveAppo(JSON.stringify(dataToSend));
+    changedDateArray.value=response.data;
+    buildCalendarArray(dateFilter.value);
+
+    cancelAppoMove();
+
+    if (changedDateArray.value[0].id===dataToSend.id) sendReminder(changedDateArray.value[0]);
+    whatsAppMsj.value=`Hola ${myStore.whatsAppUser.name}, recuerda que hemos quedado en vernos `
+    +` el día *${DateServices.changeFormatToDate(myStore.whatsAppUser.newAppoDate)} a las ${DateServices.removeSeconds(myStore.whatsAppUser.newAppoStart)}*. Un saludo!`;
 }
 
 async function executeAppoChange(dataToSend){
@@ -214,6 +231,8 @@ async function executeAppoChange(dataToSend){
     //Ojo porque lo que viene es una lista de citas
     //Si todo ha ido bien se puede enviar el whatsapp   
     if (changedDateArray.value[0].id===dataToSend.id) sendReminder(changedDateArray.value[0]);
+    whatsAppMsj.value=`Hola ${myStore.whatsAppUser.name}, recuerda que hemos cambiado la fecha de la cita que tenías (el ${DateServices.changeFormatToDate(myStore.whatsAppUser.oldAppoDate)} a las ${myStore.whatsAppUser.oldAppoStart}),`
+    +` al día *${DateServices.changeFormatToDate(myStore.whatsAppUser.newAppoDate)} a las ${DateServices.removeSeconds(myStore.whatsAppUser.newAppoStart)}*. Un saludo!`;
 }
 
 function cancelAppoMove(){
@@ -234,7 +253,7 @@ onBeforeMount(() => {
 
 <template>
     <div id="div_whatsapp" class="invisible">
-        <span @click="sendWhatsApp()">Avisar por whatsApp</span>
+        <span @click="sendWhatsApp(whatsAppMsj)">Avisar por whatsApp</span>
     </div>
     <div id="div_changingAppo" class="invisible">
         <span @click="cancelAppoMove()">Cancelar Cambio de fecha</span>

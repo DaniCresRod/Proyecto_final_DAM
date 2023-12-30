@@ -84,8 +84,8 @@ export default({
 
         for(let i=0;i<7;i++){
             let theDay=this.sumDays(date, -rangeDown+i);
-            weekArray[i]=(theDay.getDate()+" / "
-                        +(theDay.getMonth()+1));
+            weekArray[i]=(theDay.getDate().toString().padStart(2, "0")+" / "
+                        +(theDay.getMonth()+1).toString().padStart(2, "0"));
         }
         return weekArray;
     },

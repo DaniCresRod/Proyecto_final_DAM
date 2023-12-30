@@ -2,6 +2,7 @@
 import mainView from './views/MainView.vue';
 import { ref, watch, onBeforeMount } from 'vue'
 import {LogIn, checkLogIn} from '../src/services/LogInOkService'
+import { myUserStore } from './services/PiniaServices';
 
 //window.localStorage.clear();
 
@@ -22,6 +23,11 @@ function ToggleImg(){
     myImage.src="/src/assets/Images/iconoOculto.png";  
     document.getElementById("logInPassword").type="password";
   }
+}
+
+function closeDialog(){
+    document.getElementById("aside_feedback").classList.add("invisible");
+    myUserStore().msgToUser='';
 }
 
 watch(logType, async ()=>{  
@@ -85,6 +91,13 @@ onBeforeMount(async () => {
   <footer>
 
   </footer>
+
+  <aside id="aside_feedback" class="invisible">
+        <article>{{ myUserStore().msgToUser }}</article>
+        <div>
+            <button @click="closeDialog">OK</button>
+        </div>
+    </aside>
   
 </template>
 
@@ -238,5 +251,25 @@ footer{
   height: 4vh;
   width: 100%;
   z-index: 2;
+}
+
+#aside_feedback{border:1px solid black;
+    position: absolute;
+    top:calc(50% - 20vh / 2);
+    left: calc(50% - 30vw / 2);
+    z-index: 3;    
+    width: 30vw;
+    height: 20vh;
+
+    background-color: var(--color-background-text);
+    border-radius: 5px;
+    padding:1vh 1vw;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2vh;
+    text-align: center;        
 }
 </style>

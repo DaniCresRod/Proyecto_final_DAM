@@ -12,7 +12,20 @@ onMounted(()=>{
   document.querySelectorAll("#fieldset_UserData section").forEach((eachSection)=> eachSection.style.pointerEvents="all");
   document.querySelectorAll("#fieldset_UserData input").forEach((eachSection)=> eachSection.setAttribute("autocomplete", "off"));
   document.querySelectorAll("#fieldset_userNotes textarea").forEach((eachSection)=> eachSection.removeAttribute("readonly"));
-  myUserStore().user={};
+  myUserStore().user ={
+            id:'',
+            nif:'',
+            name:'',
+            surname1:'',
+            surname2:'',
+            alias:'',
+            email:'',
+            phone:'',
+            password:'',
+            notes:'',
+            price:'',
+            appointmentsList:[]
+        };
 }), 
 
 onUnmounted(()=>{
@@ -34,6 +47,10 @@ onUnmounted(()=>{
 </template>
 
 <style scoped>
+
+.div_newUser{
+  
+}
 
 /* @media (min-width: 1024px) {
   .about {

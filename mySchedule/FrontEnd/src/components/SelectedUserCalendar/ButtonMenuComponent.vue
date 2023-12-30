@@ -1,11 +1,10 @@
 <script setup>
 import { myUserStore } from '../../services/PiniaServices';
-import { watchEffect, ref } from 'vue'
+import { watchEffect} from 'vue'
 import DataServices from '../../services/DataServices';
 
 const myStore=myUserStore();
 let originalData;
-const axiosResponse=ref();
 
 function cancelChanges(){
     myStore.onChanging=false;
@@ -36,8 +35,7 @@ async function upgradeAppoNotes(){
             cancelChanges();
             myStore.appo.notes=response.data.notes;
             console.log(response.data);
-            axiosResponse.value="Se guardó correctamente";
-            document.getElementById("aside_feedback").classList.remove("invisible");
+            myStore.msgToUser="Se guardó correctamente";
         }
         else{
             window.alert("Se ha producido un error y no se han cargado los datos");
@@ -45,10 +43,9 @@ async function upgradeAppoNotes(){
     }
     else{
         cancelChanges();
-        axiosResponse.value="No se han detectado cambios y no se realizará ninguna operación";
-        document.getElementById("aside_feedback").classList.remove("invisible");
+        myStore.msgToUser="No se han detectado cambios y no se realizará ninguna operación";
     }
-    
+    document.getElementById("aside_feedback").classList.remove("invisible");
 }
 
 //Aqui si nos interesa que se puedan modificar las notas del usuario.
@@ -96,17 +93,13 @@ async function changeUserData(){
         //Solo actualiza si ha cambiado algo
         if(JSON.stringify(originalData)!==JSON.stringify(dataToSend)){
             let response=await DataServices.updateUser(myStore.user.id, JSON.stringify(dataToSend));
-            axiosResponse.value=response.data;
+            myStore.msgToUser=response.data;
         }
         else{
-            axiosResponse.value="No se han detectado cambios y no se realizará ninguna operación";
+            myStore.msgToUser="No se han detectado cambios y no se realizará ninguna operación";
         }
         document.getElementById("aside_feedback").classList.remove("invisible");   
     }
-}
-
-function closeDialog(){
-    document.getElementById("aside_feedback").classList.add("invisible");
 }
 
 watchEffect(()=>myStore.onChanging, )
@@ -125,13 +118,6 @@ watchEffect(()=>myStore.onChanging, )
         <button id="button_changeUserData" @click="changeUserData" title="Editar">Editar Datos Personales</button>
     </div>
     </section>
-
-    <aside id="aside_feedback" class="invisible">
-        <article>{{ axiosResponse }}</article>
-        <div>
-            <button @click="closeDialog">OK</button>
-        </div>
-    </aside>
     
 </template>
 
@@ -153,26 +139,6 @@ button{
     color: var(--color-text);
     font-weight: bold;
     border-color: var(--color-text);
-}
-
-#aside_feedback{border:1px solid black;
-    position: absolute;
-    top:calc(50% - 20vh / 2);
-    left: calc(50% - 30vw / 2);
-    z-index: 3;    
-    width: 30vw;
-    height: 20vh;
-
-    background-color: var(--color-background-text);
-    border-radius: 5px;
-    padding:1vh 1vw;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 2vh;
-    text-align: center;        
 }
 
 </style>
