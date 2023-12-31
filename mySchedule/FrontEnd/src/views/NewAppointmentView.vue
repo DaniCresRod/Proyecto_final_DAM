@@ -23,7 +23,7 @@ onMounted(()=>{
             phone:'',
             password:'',
             notes:'',
-            price:'',
+            price:60,
             appointmentsList:[]
         };
 }), 
@@ -49,7 +49,7 @@ onUnmounted(()=>{
 <style scoped>
 
 .div_newUser{
-  
+
 }
 
 /* @media (min-width: 1024px) {

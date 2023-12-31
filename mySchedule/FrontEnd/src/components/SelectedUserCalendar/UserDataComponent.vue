@@ -17,6 +17,10 @@ const props=defineProps({
     },
 })
 
+function showWrongFields(event){
+    event.target.style.backgroundColor='transparent';
+}
+
 </script>
 
 <template>
@@ -24,7 +28,7 @@ const props=defineProps({
         <legend>Datos Personales</legend>
         <section>
             <label for="input_userName">Nombre: </label>
-            <input type="text" id="input_userName" v-model="props.userData.name" title="Nombre del usuario" required>  
+            <input type="text" id="input_userName" v-model="props.userData.name" title="Nombre del usuario" required @focus="showWrongFields">  
         </section>
         <section>
             <label for="input_userAlias">Alias: </label>
@@ -40,15 +44,15 @@ const props=defineProps({
         </section>
         <section>
             <label for="input_userEmail">Email: </label>
-            <input type="email" id="input_userEmail" v-model="props.userData.email" title="Email del usuario" required>  
+            <input type="email" id="input_userEmail" v-model="props.userData.email" title="Email del usuario" required @focus="showWrongFields">  
         </section>
         <section>
             <label for="input_userPhone">Teléfono: </label>
-            <input type="text" id="input_userPhone" v-model="props.userData.phone" title="Telefono del usuario" required>  
+            <input type="text" id="input_userPhone" v-model="props.userData.phone" title="Telefono del usuario" required @focus="showWrongFields">  
         </section>
         <section>
             <label for="input_userNif">Nif: </label>
-            <input type="text" id="input_userNif" v-model="props.userData.nif" title="Nif del usuario" required>  
+            <input type="text" id="input_userNif" v-model="props.userData.nif" title="Nif del usuario" required @focus="showWrongFields">  
         </section>
         <section>
             <label for="input_userPrice">Precio por sesión: </label>
@@ -89,7 +93,6 @@ input{
 
 label{
     font-size: smaller;
-    
 }
 
 </style>
