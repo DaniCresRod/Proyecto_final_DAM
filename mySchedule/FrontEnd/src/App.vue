@@ -3,6 +3,7 @@ import mainView from './views/MainView.vue';
 import { ref, watch, onBeforeMount } from 'vue'
 import {LogIn, checkLogIn} from '../src/services/LogInOkService'
 import { myUserStore } from './services/PiniaServices';
+import InputServices from './services/inputServices';
 
 //window.localStorage.clear();
 
@@ -12,18 +13,6 @@ const logType=ref([]);
 
 const userName=ref("");
 const userPass=ref("");
-
-function ToggleImg(){
-  const myImage=document.getElementById("imgModePassword");
-  if(document.getElementById("logInPassword").type=="password"){    
-    myImage.src="/src/assets/Images/iconoMostrar.png";  
-    document.getElementById("logInPassword").type="text"; 
-  }
-  else{    
-    myImage.src="/src/assets/Images/iconoOculto.png";  
-    document.getElementById("logInPassword").type="password";
-  }
-}
 
 function closeDialog(){
     document.getElementById("aside_feedback").classList.add("invisible");
@@ -78,7 +67,7 @@ onBeforeMount(async () => {
       <label for="logInPassword">Contraseña <abbr title="Campo Requerido" aria-label="required">*</abbr></label>
       <div class="passwordBound">
         <input type="password" name="logInPassword" id="logInPassword" autocomplete="current-password" v-model="userPass">
-        <img id="imgModePassword" src="@/assets/Images/iconoOculto.png" alt="Mostrar u ocultar contraseña" @click="ToggleImg()"/>
+        <img id="imgModePassword_1" class="hideShowPass" src="@/assets/Images/iconoOculto.png" alt="Mostrar u ocultar contraseña" @click="InputServices.ToggleImg('logInPassword', 'imgModePassword_1')"/>
       </div>      
     </fieldset>
       
@@ -128,7 +117,7 @@ onBeforeMount(async () => {
   flex-direction: row;
 }
 
-#imgModePassword{
+.hideShowPass{
   height: 2.5vh;
   margin-left: 2vw;
   min-height: 20px;
@@ -166,8 +155,7 @@ onBeforeMount(async () => {
 }
 
 .logInForm fieldset{
-  border: 0;
-  
+  border: 0;  
   margin-bottom: 1vh;
   display: flex;
   flex-direction: column;

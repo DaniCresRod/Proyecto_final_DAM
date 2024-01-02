@@ -1,6 +1,6 @@
 <script setup>
 import UserDataComponent from '../components/SelectedUserCalendar/UserDataComponent.vue'
-import ChangeAppoDateComponent from '../components/ChangeAppoDateComponent.vue'
+import ChangeAppoDateComponent from '../components/NewUserComponent/ChangeAppoDateComponent.vue'
 import SelectedUserNotesComponent from '../components/SelectedUserCalendar/selectedusernotescomponent.vue'
 import { onMounted, onUnmounted } from 'vue'
 import { myUserStore } from '../services/PiniaServices';

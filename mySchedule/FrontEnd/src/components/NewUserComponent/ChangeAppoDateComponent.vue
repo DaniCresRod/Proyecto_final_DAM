@@ -1,6 +1,8 @@
 <script setup>
 import { ref } from 'vue'
-import { myUserStore} from '../services/PiniaServices';
+import { myUserStore} from '../../services/PiniaServices';
+import DataServices from '../../services/DataServices';
+import PasswordPopUp from './PasswordPopUp.vue';
 
 const myStore=myUserStore();
 const chbxState=ref(false);
@@ -29,9 +31,9 @@ function newUserAppo(){
         document.getElementById("aside_feedback").classList.remove("invisible");
         document.querySelector("#input_userEmail").style.backgroundColor="var(--color-background-text2)";
     }
-    else{
+    else{        
         if(chbxState.value===false){
-            console.log("hola");
+            createNewUser();
         }
         else{
             console.log("no");
@@ -39,6 +41,28 @@ function newUserAppo(){
         
         //llamar a axios
     }
+}
+
+function createNewUser(){
+    createNewPasswordDialog();
+
+    let dataToSend={
+                name: myStore.user.name,
+                alias:myStore.user.alias,
+                nif: myStore.user.nif,
+                surname1: myStore.user.surname1,
+                surname2: myStore.user.surname2,
+                email: myStore.user.email,
+                phone:myStore.user.phone,
+                notes:myStore.user.notes,
+                password:myStore.user.password,
+                price:myStore.user.price,
+            }
+
+}
+
+function createNewPasswordDialog(){
+    document.getElementById("aside_newPassDialog").classList.remove("invisible");
 }
 
 
@@ -50,8 +74,12 @@ function newUserAppo(){
         <input type="checkbox" id="chbx_withoutAppo" v-model="chbxState">
         <label for="chbx_withoutAppo"> No asignar fecha de cita</label>
     </div>
+    <PasswordPopUp/>
+    
+    
 </template>
 
 <style scoped>
+
 
 </style>
