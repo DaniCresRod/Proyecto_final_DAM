@@ -2,6 +2,9 @@
 import InputServices from '../../services/inputServices';
 import { onMounted, onBeforeUnmount } from 'vue'
 import { myUserStore } from '../../services/PiniaServices';
+import DataServices from '../../services/DataServices';
+
+let observer;
 
 function centerDialog(){
     let myDialog=document.getElementById("aside_newPassDialog");
@@ -10,9 +13,6 @@ function centerDialog(){
 
     myDialog.style.top = (visualViewport.height / 3)-(dialogHeight /2)+"px";
     myDialog.style.left = (visualViewport.width / 2)-(dialogWidth /2)+"px";
-
-    console.log(myDialog.style.top);
-    console.log(myDialog.style.left);
 }
 
 function checkPasswords(){
@@ -28,16 +28,26 @@ function checkPasswords(){
 function setPassword(){
     myUserStore().user.password=document.getElementById('input_password_1').value;
     document.getElementById("aside_newPassDialog").classList.add("invisible");
-
+    //AXIOS
 }
 
 onMounted(() => {
-    centerDialog();
+    observer=new MutationObserver((mutations) => {
+        mutations.forEach((mutation)=>{
+            if(mutation.attributeName === 'class' && !mutation.target.classList.contains('invisible')){
+                centerDialog();
+            }
+        })
+    });
+    
+    observer.observe(document.getElementById("aside_newPassDialog"), { attributes: true, attributeFilter: ['class'] });
+    
     window.addEventListener('resize', centerDialog);
 });
 
 onBeforeUnmount(() => {
     window.removeEventListener('resize', centerDialog);
+    observer.disconnect();    
 });
 
 </script>
@@ -48,7 +58,7 @@ onBeforeUnmount(() => {
             <label for="input_password_1">Nueva contraseña:</label>
             <div class="passwordBound">
                 <input id="input_password_1" type="password" required 
-                @input="checkPasswords">
+                @change="checkPasswords">
                 <img id="imgModePassword_2" class="hideShowPass" src="@/assets/Images/iconoOculto.png" 
                 alt="Mostrar u ocultar contraseña" 
                 @click="InputServices.ToggleImg('input_password_1', 'imgModePassword_2')"/>
