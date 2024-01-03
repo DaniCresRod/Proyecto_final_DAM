@@ -2,7 +2,6 @@
 import InputServices from '../../services/inputServices';
 import { onMounted, onBeforeUnmount } from 'vue'
 import { myUserStore } from '../../services/PiniaServices';
-import DataServices from '../../services/DataServices';
 
 let observer;
 
@@ -25,10 +24,18 @@ function checkPasswords(){
     }
 }
 
-function setPassword(){
-    myUserStore().user.password=document.getElementById('input_password_1').value;
-    document.getElementById("aside_newPassDialog").classList.add("invisible");
-    //AXIOS
+function setPassword(okOrCancel){
+    if(okOrCancel){
+        myUserStore().user.password=document.getElementById('input_password_1').value;
+        document.getElementById("aside_newPassDialog").classList.add("invisible");
+        document.getElementById("div_darkness").classList.add("invisible");
+                
+    }
+    else{
+        document.getElementById("aside_newPassDialog").classList.add("invisible");
+        document.getElementById("div_darkness").classList.add("invisible");
+                
+    }    
 }
 
 onMounted(() => {
@@ -73,7 +80,11 @@ onBeforeUnmount(() => {
                 @click="InputServices.ToggleImg('input_password_2', 'imgModePassword_3')"/>
             </div>
 
-            <button disabled @click="setPassword">Asignar contraseña</button>
+            <div>
+                <button disabled @click="setPassword(true)">Asignar contraseña</button>
+                <button @click="setPassword(false)">Cancelar</button>
+            </div>
+            
 
         </fieldset>        
     </aside>
@@ -88,8 +99,23 @@ onBeforeUnmount(() => {
     background-color: white;
 }
 
-fieldset div:last-of-type{
+.aside_newPassPosition fieldset{
+    margin-bottom: 0;
+}
+
+fieldset div{
+    margin-bottom: 0.5vh;
+}
+
+fieldset div:nth-last-of-type(2){
     margin-bottom: 2vh;
+}
+
+fieldset div:last-of-type{
+    display: flex;
+    justify-content: space-between;
+    gap: 2vh;
+    margin-bottom: 0;
 }
 
 

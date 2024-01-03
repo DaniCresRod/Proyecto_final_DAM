@@ -19,6 +19,8 @@ public class DTOBasicInfo implements Comparable<DTOBasicInfo> {
     private long appoId;
     private LocalDate nextAppoDate;
     private LocalTime nextAppoStart;
+    private boolean newUser=false;
+    private String feedback;
 
     @Override
     public int compareTo(DTOBasicInfo o) {

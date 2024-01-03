@@ -16,6 +16,7 @@ const userPass=ref("");
 
 function closeDialog(){
     document.getElementById("aside_feedback").classList.add("invisible");
+    document.getElementById("div_darkness").classList.add("invisible");
     myUserStore().msgToUser='';
 }
 
@@ -82,11 +83,17 @@ onBeforeMount(async () => {
   </footer>
 
   <aside id="aside_feedback" class="invisible">
-        <article>{{ myUserStore().msgToUser }}</article>
-        <div>
-            <button @click="closeDialog">OK</button>
-        </div>
-    </aside>
+    <article>{{ myUserStore().msgToUser }}</article>
+    <div>
+      <button @click="closeDialog">OK</button>
+    </div>
+  </aside>
+
+  <div id="div_darkness" class="invisible darkness">
+
+  </div>
+
+
   
 </template>
 
@@ -126,7 +133,7 @@ onBeforeMount(async () => {
 .logInForm{
   border:7px solid #8B7198;
   border-radius: 15px;
-  margin: 7vh auto;
+  margin: 1vh auto;
   padding: 3vh 6vw;
 
   height: fit-content;
@@ -261,5 +268,16 @@ footer{
     gap: 2vh;
     text-align: center; 
     white-space: pre-line;       
+}
+
+.darkness{
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.158);
+    position: absolute;
+    top:0px;
+    left:0px;
+    display:inline-block;
+    z-index:2;
 }
 </style>

@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { myUserStore} from '../../services/PiniaServices';
 import DataServices from '../../services/DataServices';
 import PasswordPopUp from './PasswordPopUp.vue';
@@ -8,6 +8,7 @@ const myStore=myUserStore();
 const chbxState=ref(false);
 
 function newUserAppo(){
+    document.getElementById("div_darkness").classList.remove("invisible");
 
     let allInputs=document.querySelectorAll("#fieldset_UserData input");
     let onlyRequiredInputs=Array.from(allInputs).filter((eachOne)=>{
@@ -31,40 +32,44 @@ function newUserAppo(){
         document.getElementById("aside_feedback").classList.remove("invisible");
         document.querySelector("#input_userEmail").style.backgroundColor="var(--color-background-text2)";
     }
-    else{        
-        if(chbxState.value===false){
-            createNewUser();
-        }
-        else{
-            console.log("no");
-        }
-        
-        //llamar a axios
+    else{  
+        createNewPasswordDialog();
     }
 }
 
-function createNewUser(){
-    createNewPasswordDialog();
+watch(()=>myStore.user.password, (thePassword)=>{
+    if(thePassword.trim()!==''){
+        createNewUser();
+    }
+    
+})
+
+async function createNewUser(){
 
     let dataToSend={
-                name: myStore.user.name,
-                alias:myStore.user.alias,
-                nif: myStore.user.nif,
-                surname1: myStore.user.surname1,
-                surname2: myStore.user.surname2,
-                email: myStore.user.email,
-                phone:myStore.user.phone,
-                notes:myStore.user.notes,
-                password:myStore.user.password,
-                price:myStore.user.price,
-            }
+        name: myStore.user.name,
+        alias:myStore.user.alias,
+        nif: myStore.user.nif,
+        surname1: myStore.user.surname1,
+        surname2: myStore.user.surname2,
+        email: myStore.user.email,
+        phone:myStore.user.phone,
+        notes:myStore.user.notes,
+        password:myStore.user.password,
+        price:myStore.user.price,
+    }
+
+    let response= await DataServices.saveNewUser(dataToSend);
+    console.log(response.data);
+    //Mostrar feedback a usuario (borrar inputs?)
+    //Si viene bien, volcar a whatsappuser y elegir fecha
+    //crear nueva fecha
 
 }
 
 function createNewPasswordDialog(){
     document.getElementById("aside_newPassDialog").classList.remove("invisible");
 }
-
 
 </script>
 
@@ -80,6 +85,7 @@ function createNewPasswordDialog(){
 </template>
 
 <style scoped>
+
 
 
 </style>

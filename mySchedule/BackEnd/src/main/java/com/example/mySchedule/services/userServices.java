@@ -45,7 +45,7 @@ public class userServices{
                     }
                 }
 
-                DTOBasicInfo userBasicInfo=new DTOBasicInfo(eachUser.getId(),eachUser.getName(), eachUser.getAlias(), eachUser.getPhone(), appoId, nextDate, nextDateStart );
+                DTOBasicInfo userBasicInfo=new DTOBasicInfo(eachUser.getId(),eachUser.getName(), eachUser.getAlias(), eachUser.getPhone(), appoId, nextDate, nextDateStart, false, "" );
                 basicInfo.add(userBasicInfo);
 
             }
@@ -54,12 +54,12 @@ public class userServices{
         return basicInfo;
     }
 
-    public String saveUser(userModel newUser) {
+    public DTOBasicInfo saveUser(userModel newUser) {
+        String feedbackMsg;
         //Se revisa si ya existe el usuario en la base de datos (Por Email)
         userModel retrievedUser=myRepo.findByEmail(newUser.getEmail());
         if(retrievedUser==null){
             //Se revisa si ya existe el usuario en la base de datos (Por NIF)
-//            retrievedUser=myRepo.findByNif(newUser.getNif());
             retrievedUser=myRepo.findByUserNif(newUser.getNif()).orElse(null);
             if(retrievedUser==null){
                 try{
@@ -71,14 +71,29 @@ public class userServices{
                     if(newUser.getRol()==null) newUser.setRol(userModel.UserType.Usuario);
 
                     retrievedUser=myRepo.save(newUser);
-                    return retrievedUser.getAlias()+" guardado con exito";
+
+                    DTOBasicInfo sendUserBasicInfo= new DTOBasicInfo(retrievedUser.getId(),
+                            retrievedUser.getName(),
+                            retrievedUser.getAlias(),
+                            retrievedUser.getPhone(),
+                            -1, null, null,
+                            true,
+                            "El usuario "+retrievedUser.getAlias()+"se añadió con éxito");
+
+                    return sendUserBasicInfo;
                 }
                 catch(Exception e){
                     e.printStackTrace();
-                    return "Error: No se pudo guardar el registro";
+                    return null;
                 }
-            }else return "El NIF "+newUser.getNif()+" ya esta asignado a "+retrievedUser.getAlias();
-        }else return "El email "+newUser.getEmail()+" ya esta asignado a "+retrievedUser.getAlias();
+            }else feedbackMsg="El NIF "+newUser.getNif()+" ya esta asignado a "+retrievedUser.getAlias();
+
+        }else feedbackMsg= "El email "+newUser.getEmail()+" ya esta asignado a "+retrievedUser.getAlias();
+
+        return new DTOBasicInfo(
+                retrievedUser.getId(), null, retrievedUser.getAlias(), retrievedUser.getPhone(),
+                -1, null, null, false,
+                feedbackMsg);
     }
 
     public String deleteUser(long id) {
@@ -138,7 +153,7 @@ public class userServices{
         for (appointmentModel eachAppo : miArray){
             userModel theUser=myRepo.findById(eachAppo.getUserID().getId()).orElse(null);
 
-            DTOBasicInfo userBasicInfo=new DTOBasicInfo(theUser.getId(),theUser.getName(), theUser.getAlias(), theUser.getPhone(), eachAppo.getId(), eachAppo.getAppoDate(), eachAppo.getAppoStart() );
+            DTOBasicInfo userBasicInfo=new DTOBasicInfo(theUser.getId(),theUser.getName(), theUser.getAlias(), theUser.getPhone(), eachAppo.getId(), eachAppo.getAppoDate(), eachAppo.getAppoStart(), false, null );
             basicInfo.add(userBasicInfo);
         }
         return basicInfo;

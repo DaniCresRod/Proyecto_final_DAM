@@ -42,8 +42,8 @@ export default({
         return axiosConnection.delete(`/user/delete/${id}`);
     },
 
-    saveNewUser(Data){
-        return axiosConnection.post('/user/add', Data);
+    async saveNewUser(Data){
+        return await axiosConnection.post('/user/add', Data);
     },
 
     async updateUser(id, Data){

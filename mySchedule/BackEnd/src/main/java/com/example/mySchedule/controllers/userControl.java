@@ -39,7 +39,7 @@ public class userControl{
 
     //Salva un nuevo usuario
     @PostMapping(value="/add")
-    public String saveUser(@RequestBody userModel newUser){
+    public DTOBasicInfo saveUser(@RequestBody userModel newUser){
         return myService.saveUser(newUser);
     }
 
