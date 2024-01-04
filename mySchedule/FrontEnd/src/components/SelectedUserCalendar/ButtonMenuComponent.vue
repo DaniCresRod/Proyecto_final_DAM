@@ -2,6 +2,7 @@
 import { myUserStore } from '../../services/PiniaServices';
 import { watchEffect} from 'vue'
 import DataServices from '../../services/DataServices';
+import { OpenFeedbackDialog } from '../../services/UserFeedbackService';
 
 const myStore=myUserStore();
 let originalData;
@@ -45,7 +46,7 @@ async function upgradeAppoNotes(){
         cancelChanges();
         myStore.msgToUser="No se han detectado cambios y no se realizará ninguna operación";
     }
-    document.getElementById("aside_feedback").classList.remove("invisible");
+    OpenFeedbackDialog();
 }
 
 //Aqui si nos interesa que se puedan modificar las notas del usuario.
@@ -98,7 +99,7 @@ async function changeUserData(){
         else{
             myStore.msgToUser="No se han detectado cambios y no se realizará ninguna operación";
         }
-        document.getElementById("aside_feedback").classList.remove("invisible");   
+        OpenFeedbackDialog();   
     }
 }
 

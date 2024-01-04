@@ -1,7 +1,7 @@
 <script setup>
-import UserDataComponent from '../components/SelectedUserCalendar/UserDataComponent.vue'
-import ChangeAppoDateComponent from '../components/NewUserComponent/ChangeAppoDateComponent.vue'
-import SelectedUserNotesComponent from '../components/SelectedUserCalendar/selectedusernotescomponent.vue'
+import UserDataComponent from '../components/SelectedUserCalendar/UserDataComponent.vue';
+import ChangeAppoDateComponent from '../components/NewUserComponent/ChangeAppoDateComponent.vue';
+import SelectedUserNotesComponent from '../components/SelectedUserCalendar/SelectedUserNotesComponent.vue';
 import { onMounted, onUnmounted } from 'vue'
 import { myUserStore } from '../services/PiniaServices';
 
@@ -49,7 +49,9 @@ onUnmounted(()=>{
 <style scoped>
 
 .div_newUser{
-
+  display: flex;
+  flex-direction: column;
+  gap:1vh;
 }
 
 /* @media (min-width: 1024px) {

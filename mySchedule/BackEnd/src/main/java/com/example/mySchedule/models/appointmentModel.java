@@ -31,6 +31,9 @@ public class appointmentModel {
     @Column(name="SessionNotes", columnDefinition = "TEXT")
     private String notes;
 
+    @Column(name="BillPath")
+    private String billPath;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     @JsonIgnoreProperties("appointmentsList")

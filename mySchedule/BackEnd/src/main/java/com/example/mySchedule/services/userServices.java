@@ -86,9 +86,9 @@ public class userServices{
                     e.printStackTrace();
                     return null;
                 }
-            }else feedbackMsg="El NIF "+newUser.getNif()+" ya esta asignado a "+retrievedUser.getAlias();
+            }else feedbackMsg="El NIF "+newUser.getNif()+" ya esta asignado a "+retrievedUser.getName()+" "+retrievedUser.getAlias();
 
-        }else feedbackMsg= "El email "+newUser.getEmail()+" ya esta asignado a "+retrievedUser.getAlias();
+        }else feedbackMsg= "El email "+newUser.getEmail()+" ya esta asignado a "+retrievedUser.getName()+" "+retrievedUser.getAlias();
 
         return new DTOBasicInfo(
                 retrievedUser.getId(), null, retrievedUser.getAlias(), retrievedUser.getPhone(),

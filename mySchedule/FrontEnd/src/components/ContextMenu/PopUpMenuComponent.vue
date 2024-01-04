@@ -1,6 +1,7 @@
 <script setup>
 import { myUserStore } from '../../services/PiniaServices';
 import DataServices from '../../services/DataServices';
+// import router from '../../router';
 
 let myStore=myUserStore();
 
@@ -9,18 +10,19 @@ function changingAppoMode(){
         myStore.onChanging=true;
     
         document.getElementById("div_contextMenu").classList.add("invisible");
-        document.getElementById("div_changingAppo").classList.remove("invisible");
+        // document.getElementById("div_changingAppo").classList.remove("invisible");
     }
     catch{
         myStore.onChanging=false;
-        document.getElementById("div_changingAppo").classList.add("invisible");
+        // document.getElementById("div_changingAppo").classList.add("invisible");
         console.log("error");
     }    
 }
 
 async function deleteAppo(){
     try{
-        let response= await DataServices.deleteAppoById(myStore.whatsAppUser.appoId);
+        let response = await DataServices.deleteAppoById(myStore.whatsAppUser.appoId);
+        
         console.log(response);
     }
     catch{

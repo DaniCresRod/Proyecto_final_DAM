@@ -215,9 +215,13 @@ async function executeNewAppo(dataToSend){
 
     cancelAppoMove();
 
-    if (changedDateArray.value[0].id===dataToSend.id) sendReminder(changedDateArray.value[0]);
+    console.log(dataToSend);
+    console.log(changedDateArray.value[0]);
+
+    
     whatsAppMsj.value=`Hola ${myStore.whatsAppUser.name}, recuerda que hemos quedado en vernos `
     +` el día *${DateServices.changeFormatToDate(myStore.whatsAppUser.newAppoDate)} a las ${DateServices.removeSeconds(myStore.whatsAppUser.newAppoStart)}*. Un saludo!`;
+    sendReminder(changedDateArray.value[0]);
 }
 
 async function executeAppoChange(dataToSend){
@@ -236,7 +240,7 @@ async function executeAppoChange(dataToSend){
 }
 
 function cancelAppoMove(){
-    document.getElementById('div_changingAppo').classList.add('invisible');
+    // document.getElementById('div_changingAppo').classList.add('invisible');
     myStore.onChanging=false;
     // myStore.whatsAppUser={};
     document.querySelectorAll(`#div_calendar p`).forEach(eachP=> eachP.style.border=`1px solid black`);
@@ -255,7 +259,7 @@ onBeforeMount(() => {
     <div id="div_whatsapp" class="invisible">
         <span @click="sendWhatsApp(whatsAppMsj)">Avisar por whatsApp</span>
     </div>
-    <div id="div_changingAppo" class="invisible">
+    <div id="div_changingAppo" v-if="myStore.onChanging">
         <span @click="cancelAppoMove()">Cancelar Cambio de fecha</span>
     </div>
     <section>

@@ -1,9 +1,9 @@
 <script setup>
 import mainView from './views/MainView.vue';
 import { ref, watch, onBeforeMount } from 'vue'
-import {LogIn, checkLogIn} from '../src/services/LogInOkService'
+import {LogIn, checkLogIn, closeDialog} from '../src/services/UserFeedbackService'
 import { myUserStore } from './services/PiniaServices';
-import InputServices from './services/inputServices';
+import InputServices from './services/InputServices';
 
 //window.localStorage.clear();
 
@@ -13,12 +13,6 @@ const logType=ref([]);
 
 const userName=ref("");
 const userPass=ref("");
-
-function closeDialog(){
-    document.getElementById("aside_feedback").classList.add("invisible");
-    document.getElementById("div_darkness").classList.add("invisible");
-    myUserStore().msgToUser='';
-}
 
 watch(logType, async ()=>{  
   [isLogged.value, isAdmin.value] = await logType.value;

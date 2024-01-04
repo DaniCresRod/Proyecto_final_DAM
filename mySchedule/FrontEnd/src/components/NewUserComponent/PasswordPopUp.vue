@@ -1,6 +1,6 @@
 <script setup>
-import InputServices from '../../services/inputServices';
-import { onMounted, onBeforeUnmount } from 'vue'
+import InputServices from '../../services/InputServices';
+import { onMounted, onBeforeUnmount} from 'vue';
 import { myUserStore } from '../../services/PiniaServices';
 
 let observer;
@@ -28,14 +28,18 @@ function setPassword(okOrCancel){
     if(okOrCancel){
         myUserStore().user.password=document.getElementById('input_password_1').value;
         document.getElementById("aside_newPassDialog").classList.add("invisible");
-        document.getElementById("div_darkness").classList.add("invisible");
-                
+        document.getElementById("div_darkness").classList.add("invisible");     
     }
     else{
         document.getElementById("aside_newPassDialog").classList.add("invisible");
         document.getElementById("div_darkness").classList.add("invisible");
                 
-    }    
+    }
+    //Borrar los campos
+    document.querySelectorAll("#aside_newPassDialog input").forEach((eachInput)=>{
+        eachInput.value='';
+    });
+    checkPasswords();
 }
 
 onMounted(() => {
@@ -54,7 +58,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
     window.removeEventListener('resize', centerDialog);
-    observer.disconnect();    
+    observer.disconnect();       
 });
 
 </script>
@@ -84,8 +88,6 @@ onBeforeUnmount(() => {
                 <button disabled @click="setPassword(true)">Asignar contraseña</button>
                 <button @click="setPassword(false)">Cancelar</button>
             </div>
-            
-
         </fieldset>        
     </aside>
 </template>

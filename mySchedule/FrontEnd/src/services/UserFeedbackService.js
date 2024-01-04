@@ -1,4 +1,5 @@
 import axiosConnection from './DataServices'
+import {myUserStore} from './PiniaServices'
 
 export function StoreUserData(userEmail, token, userId, userName, userRol){    
   window.localStorage.setItem("userEmail", userEmail);
@@ -63,9 +64,18 @@ export async function checkLogIn(){
   }
   catch{
     return false;
-  }
+  }  
+}
 
-  
+export function closeDialog(){
+  document.getElementById("aside_feedback").classList.add("invisible");
+  document.getElementById("div_darkness").classList.add("invisible");
+  myUserStore().msgToUser='';
+}
+
+export function OpenFeedbackDialog(){
+  document.getElementById("aside_feedback").classList.remove("invisible");
+  document.getElementById("div_darkness").classList.remove("invisible");  
 }
 
 // function changeMainPageView(isAdmin){
