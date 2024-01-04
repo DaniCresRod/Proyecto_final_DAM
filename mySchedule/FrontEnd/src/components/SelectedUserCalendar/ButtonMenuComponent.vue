@@ -105,9 +105,11 @@ async function changeUserData(){
 
 async function deleteUser(){
     document.getElementById("aside_rUSure").classList.remove("invisible");
+    document.getElementById("div_darkness").classList.remove("invisible");  
 }
 
 async function dareToDelete(valor){
+    document.getElementById("div_darkness").classList.add("invisible");
     document.getElementById("aside_rUSure").classList.add("invisible");
     if(valor){
         let response=await DataServices.deleteById(myStore.user.id);
