@@ -78,6 +78,19 @@ export function OpenFeedbackDialog(){
   document.getElementById("div_darkness").classList.remove("invisible");  
 }
 
+export function resetMyStoreUser(){
+  myUserStore().user.name='';
+  myUserStore().user.alias='';
+  myUserStore().user.nif='';
+  myUserStore().user.surname1='';
+  myUserStore().user.surname2='';
+  myUserStore().user.email='';
+  myUserStore().user.phone='';
+  myUserStore().user.notes='';
+  myUserStore().user.password='';
+  myUserStore().user.price=60;
+}
+
 // function changeMainPageView(isAdmin){
 //   if(isAdmin) router.push("/");
 //   else router.push("/allApointment");

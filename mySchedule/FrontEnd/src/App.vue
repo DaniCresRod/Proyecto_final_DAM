@@ -274,4 +274,12 @@ footer{
     display:inline-block;
     z-index:2;
 }
+
+button{
+    background-color: #fff;
+    color: var(--color-text);
+    font-weight: bold;
+    border-color: var(--color-text);
+    border-radius: 5px;
+}
 </style>

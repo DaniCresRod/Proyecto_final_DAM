@@ -240,10 +240,13 @@ async function executeAppoChange(dataToSend){
 }
 
 function cancelAppoMove(){
-    // document.getElementById('div_changingAppo').classList.add('invisible');
     myStore.onChanging=false;
     // myStore.whatsAppUser={};
     document.querySelectorAll(`#div_calendar p`).forEach(eachP=> eachP.style.border=`1px solid black`);
+}
+
+function deleteAppoDone(value){
+    if(value)buildCalendarArray(dateFilter.value);
 }
 
 watch(()=> dateFilter.value, ()=>{
@@ -294,7 +297,7 @@ onBeforeMount(() => {
         </article>
         
         <div id="div_contextMenu" class="invisible">
-            <PopUpMenuComponent/>
+            <PopUpMenuComponent v-on:-appo-delete-done="deleteAppoDone"/>
         </div>
 
     </section>

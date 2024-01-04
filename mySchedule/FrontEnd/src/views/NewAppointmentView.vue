@@ -5,9 +5,6 @@ import SelectedUserNotesComponent from '../components/SelectedUserCalendar/Selec
 import { onMounted, onUnmounted } from 'vue'
 import { myUserStore } from '../services/PiniaServices';
 
-
-
-
 onMounted(()=>{
   document.querySelectorAll("#fieldset_UserData section").forEach((eachSection)=> eachSection.style.pointerEvents="all");
   document.querySelectorAll("#fieldset_UserData input").forEach((eachSection)=> eachSection.setAttribute("autocomplete", "off"));

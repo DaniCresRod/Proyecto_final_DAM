@@ -99,12 +99,14 @@ public class userServices{
     public String deleteUser(long id) {
         if(myRepo.existsById(id)){
             try{
+                userModel myUser=myRepo.findById(id).orElse(null);
                 myRepo.deleteById(id);
-                return "record "+id+" deleted";
+                return "Usuario "+myUser.getName()+
+                        " "+myUser.getSurname1()+" eliminado";
             }
             catch(Exception e){
                 e.printStackTrace();
-                return "Can not delete record";
+                return "No se pudo borrar";
             }
         }
         return "El usuario no existe o no se encuentra";

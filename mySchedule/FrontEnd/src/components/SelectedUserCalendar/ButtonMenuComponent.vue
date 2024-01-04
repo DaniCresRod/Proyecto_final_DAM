@@ -1,8 +1,8 @@
 <script setup>
 import { myUserStore } from '../../services/PiniaServices';
-import { watchEffect} from 'vue'
 import DataServices from '../../services/DataServices';
 import { OpenFeedbackDialog } from '../../services/UserFeedbackService';
+import areYouSure from '../AreYouSureComponent.vue'
 
 const myStore=myUserStore();
 let originalData;
@@ -103,7 +103,28 @@ async function changeUserData(){
     }
 }
 
-watchEffect(()=>myStore.onChanging, )
+async function deleteUser(){
+    document.getElementById("aside_rUSure").classList.remove("invisible");
+}
+
+async function dareToDelete(valor){
+    document.getElementById("aside_rUSure").classList.add("invisible");
+    if(valor){
+        let response=await DataServices.deleteById(myStore.user.id);
+        myStore.msgToUser=response.data;
+
+        OpenFeedbackDialog();
+
+        let userToDelete=myStore.AllUsers.find(user=>user.id===myStore.user.id);
+        let myDeletedUser=myStore.AllUsers.indexOf(userToDelete);
+        myStore.AllUsers.splice(myDeletedUser, 1);
+
+        myStore.user.id='';        
+        // myStore.AllUsers = (await DataServices.getAllUsers()).data;
+        
+        
+    }    
+}
 
 </script>
 
@@ -117,9 +138,10 @@ watchEffect(()=>myStore.onChanging, )
     </div>
     <div>
         <button id="button_changeUserData" @click="changeUserData" title="Editar">Editar Datos Personales</button>
+        <button id="button_changeUserData" @click="deleteUser" title="Borrar Usuario">Borrar Usuario</button>
     </div>
     </section>
-    
+    <areYouSure @sure-to-delete="dareToDelete"/>
 </template>
 
 <style scoped>

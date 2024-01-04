@@ -3,7 +3,7 @@ import { ref, watch } from 'vue';
 import { myUserStore} from '../../services/PiniaServices';
 import DataServices from '../../services/DataServices';
 import PasswordPopUp from './PasswordPopUp.vue';
-import { OpenFeedbackDialog } from '../../services/UserFeedbackService';
+import { OpenFeedbackDialog, resetMyStoreUser } from '../../services/UserFeedbackService';
 import router from '../../router';
 
 const myStore=myUserStore();
@@ -63,7 +63,7 @@ async function createNewUser(){
     console.log(response.data);
 
     if(response.data.newUser){
-        if(document.getElementById("chbx_withoutAppo").value){
+        if(document.getElementById("chbx_withoutAppo").checked){
             myStore.onChanging=true;
 
             myStore.whatsAppUser.userId=response.data.id;
@@ -71,16 +71,18 @@ async function createNewUser(){
             myStore.whatsAppUser.phone=response.data.phone;
             router.push("/AdminView");
         }
+        else{
+            myStore.msgToUser=response.data.feedback;
+            myStore.user.password='';
+            OpenFeedbackDialog();
+            resetMyStoreUser();
+        }
     }
     else{
         myStore.msgToUser=response.data.feedback;
         myStore.user.password='';
         OpenFeedbackDialog();
     }
-    //Mostrar feedback a usuario (borrar inputs?)
-    //Si viene bien, volcar a whatsappuser y elegir fecha
-    //crear nueva fecha
-
 }
 
 function createNewPasswordDialog(){
@@ -91,12 +93,13 @@ function createNewPasswordDialog(){
 
 <template>
     <fieldset>
-        <button @click="newUserAppo()">Crear usuario</button>        
         <div>
+            <button @click="newUserAppo()">Crear usuario</button>       
             <input type="checkbox" id="chbx_withoutAppo" v-model="chbxState">
             <label for="chbx_withoutAppo"> Asignar fecha de cita</label>
-        </div>        
-    </fieldset>
+        </div> 
+        <button @click="resetMyStoreUser">Borrar campos</button>       
+    </fieldset> 
     <PasswordPopUp/>    
 </template>
 
@@ -104,6 +107,7 @@ function createNewPasswordDialog(){
 fieldset{
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
     align-items:center;
     gap: 1vw;
 }

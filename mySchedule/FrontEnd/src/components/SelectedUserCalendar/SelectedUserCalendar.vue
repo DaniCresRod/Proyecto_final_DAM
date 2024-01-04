@@ -7,8 +7,6 @@ import SelectedAppoNotesComponent from './SelectedAppoNotesComponent.vue';
 import SelectedUserNotesComponent from './SelectedUserNotesComponent.vue';
 import ButtonMenuComponent from './ButtonMenuComponent.vue';
 
-// const myEmits = defineEmits(['selected-appo-emit']);
-
 const myUserData=ref({});
 const myStore=myUserStore();
 const mySelectedAppo=ref();

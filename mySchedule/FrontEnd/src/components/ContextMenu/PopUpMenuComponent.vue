@@ -1,20 +1,18 @@
 <script setup>
 import { myUserStore } from '../../services/PiniaServices';
 import DataServices from '../../services/DataServices';
-// import router from '../../router';
+import { OpenFeedbackDialog } from '../../services/UserFeedbackService';
 
 let myStore=myUserStore();
+const emit=defineEmits(['AppoDeleteDone']);
 
 function changingAppoMode(){
     try{
-        myStore.onChanging=true;
-    
+        myStore.onChanging=true;    
         document.getElementById("div_contextMenu").classList.add("invisible");
-        // document.getElementById("div_changingAppo").classList.remove("invisible");
     }
     catch{
         myStore.onChanging=false;
-        // document.getElementById("div_changingAppo").classList.add("invisible");
         console.log("error");
     }    
 }
@@ -22,11 +20,13 @@ function changingAppoMode(){
 async function deleteAppo(){
     try{
         let response = await DataServices.deleteAppoById(myStore.whatsAppUser.appoId);
-        
-        console.log(response);
+        myStore.msgToUser= response.data;
+        OpenFeedbackDialog();
+        emit('AppoDeleteDone', true);
     }
     catch{
-        console.log("error al borrar");
+        myStore.msgToUser = "Error al borrar";
+        OpenFeedbackDialog();
     }
 }
 

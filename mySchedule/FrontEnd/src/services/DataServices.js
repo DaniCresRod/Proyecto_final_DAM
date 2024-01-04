@@ -38,8 +38,8 @@ export default({
         return await axiosConnection.get(`/user/date/${date}`);
     },
 
-    deleteById(id){
-        return axiosConnection.delete(`/user/delete/${id}`);
+    async deleteById(id){
+        return await axiosConnection.delete(`/user/delete/${id}`);
     },
 
     async saveNewUser(Data){
