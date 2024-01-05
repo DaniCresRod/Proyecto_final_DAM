@@ -3,6 +3,7 @@ import { myUserStore } from '../../services/PiniaServices';
 import DataServices from '../../services/DataServices';
 import { OpenFeedbackDialog } from '../../services/UserFeedbackService';
 import areYouSure from '../AreYouSureComponent.vue'
+import { turnToSetUserAppo } from '../../services/SelectUserAppo';
 
 const myStore=myUserStore();
 let originalData;
@@ -13,7 +14,7 @@ function cancelChanges(){
     document.querySelector("#fieldset_appoNotes textarea").classList.remove("txtArea_newNotes");
 }
 
-function modifyAppo(){
+function modifyAppoNotes(){
     myStore.onChanging=true;
     document.querySelector("#fieldset_appoNotes textarea").classList.add("txtArea_newNotes");
 }
@@ -26,6 +27,7 @@ async function upgradeAppoNotes(){
         appoDate: myStore.appo.appoDate,
         appoStart: myStore.appo.appoStart,
         notes: myStore.appo.notesAdd,
+        billPath: myStore.appo.billPath,
         userID:{
             id: myStore.appo.userID.id}
         }
@@ -122,10 +124,18 @@ async function dareToDelete(valor){
         myStore.AllUsers.splice(myDeletedUser, 1);
 
         myStore.user.id='';        
-        // myStore.AllUsers = (await DataServices.getAllUsers()).data;
-        
-        
+        // myStore.AllUsers = (await DataServices.getAllUsers()).data;        
     }    
+}
+
+function newAppo(){console.log("hola");
+    let dataToSend={
+        id:myStore.user.id,
+        name: myStore.user.name,
+        phone:myStore.user.phone,
+    }
+    turnToSetUserAppo(dataToSend);
+    myStore.user.id='';
 }
 
 </script>
@@ -133,10 +143,15 @@ async function dareToDelete(valor){
 <template>
     <section>
         <div>
-        <button v-if="!myStore.onChanging && myStore.appo.id!==null"  @click="modifyAppo" title="Modificar Notas de Sesión">Modificar</button>
-        <button v-if="myStore.onChanging" @click="cancelChanges" title="Cancelar Cambios">Cancelar Cambios</button>
-        <button v-if="myStore.onChanging" @click="upgradeAppoNotes" title="Guardar Cambios">Guardar Cambios</button>
-        <button>Nueva cita</button>        
+        <button v-if="!myStore.onChanging && myStore.appo.id!==null"  @click="modifyAppoNotes" title="Modificar Notas de Sesión">Modificar Notas de esta cita</button>
+
+        <button v-if="!myStore.onChanging && myStore.appo.id!==null  && myStore.appo.billPath===null" title="Generar Factura para esta cita">Generar Factura</button>
+        <button v-if="!myStore.onChanging && myStore.appo.id!==null  && myStore.appo.billPath!==null" title="ver Factura de esta cita">Ver Factura</button>
+
+        <button v-if="myStore.onChanging && myStore.appo.id!==null" @click="cancelChanges" title="Cancelar Cambios">Cancelar Cambios</button>
+        <button v-if="myStore.onChanging && myStore.appo.id!==null" @click="upgradeAppoNotes" title="Guardar Cambios">Guardar Cambios</button>
+        <button @click="newAppo()" title="Nueva Cita">Nueva cita</button>
+
     </div>
     <div>
         <button id="button_changeUserData" @click="changeUserData" title="Editar">Editar Datos Personales</button>

@@ -18,6 +18,7 @@ async function LoadSelectedUser(event, user){
         myStore.appo.appoDate=null;
         myStore.appo.appoStart=null;
         myStore.appo.notes=null;
+        myStore.appo.billPath=null;
         myStore.appo.userID.id=null;
     }    
 }

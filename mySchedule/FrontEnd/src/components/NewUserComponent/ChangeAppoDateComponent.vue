@@ -4,7 +4,7 @@ import { myUserStore} from '../../services/PiniaServices';
 import DataServices from '../../services/DataServices';
 import PasswordPopUp from './PasswordPopUp.vue';
 import { OpenFeedbackDialog, resetMyStoreUser } from '../../services/UserFeedbackService';
-import router from '../../router';
+import { turnToSetUserAppo } from '../../services/SelectUserAppo';
 
 const myStore=myUserStore();
 const chbxState=ref(true);
@@ -63,13 +63,8 @@ async function createNewUser(){
     console.log(response.data);
 
     if(response.data.newUser){
-        if(document.getElementById("chbx_withoutAppo").checked){
-            myStore.onChanging=true;
-
-            myStore.whatsAppUser.userId=response.data.id;
-            myStore.whatsAppUser.name=response.data.name;
-            myStore.whatsAppUser.phone=response.data.phone;
-            router.push("/AdminView");
+        if(document.getElementById("chbx_withoutAppo").checked){           
+            turnToSetUserAppo(response.data);
         }
         else{
             myStore.msgToUser=response.data.feedback;

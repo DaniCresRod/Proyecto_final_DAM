@@ -48,7 +48,8 @@ onBeforeMount(() => {
 </template>
 
 <style scoped>
-.userCard{border:2px solid black;
+.userCard{
+    border:1px solid var(--color-border);
     width: 100%;
     /* height: 13vh;     */
     max-height: fit-content;
@@ -56,7 +57,7 @@ onBeforeMount(() => {
     border-radius: 15px;
     padding: 1vh 3vw ;
     background-color: bisque;
-    box-shadow: 3px 3px 3px black;
+    /* box-shadow: 3px 3px 3px black; */
 
     display: flex;
     flex-direction: column;

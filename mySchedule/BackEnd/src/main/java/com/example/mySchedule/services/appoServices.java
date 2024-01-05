@@ -92,6 +92,7 @@ public class appoServices {
         }
     }
 
+    //Permite cambiar las anotaciones de una cita concreta
     public appointmentModel updateAppointDetail(appointmentModel newAppo) {
         try{
             //verificar que existe la cita

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,6 +27,7 @@ public class userServices{
     @Autowired
     PasswordEncoder passwordEncoder;
 
+    //Devuelve los detalles basicos (primera cita) de todos los usuarios
     public ArrayList<DTOBasicInfo> readUsers() {
         ArrayList<DTOBasicInfo> basicInfo = new ArrayList<>();
         for (userModel eachUser : (ArrayList<userModel>) myRepo.findAll()){
@@ -37,7 +39,9 @@ public class userServices{
                 long appoId=-1;
 
                 for (appointmentModel eachAppo: eachUser.getAppointmentsList()){
-                    if((!eachAppo.getAppoDate().isBefore(LocalDate.now())) && (DAYS.between(eachAppo.getAppoDate(),LocalDate.now())>difference)){
+                    LocalDateTime candidateAppo=LocalDateTime.of(eachAppo.getAppoDate(), eachAppo.getAppoStart());
+
+                    if((!candidateAppo.isBefore(LocalDateTime.now())) && (DAYS.between(eachAppo.getAppoDate(),LocalDate.now())>difference)){
                         difference=DAYS.between(eachAppo.getAppoDate(),LocalDate.now());
                         nextDate=eachAppo.getAppoDate();
                         nextDateStart=eachAppo.getAppoStart();

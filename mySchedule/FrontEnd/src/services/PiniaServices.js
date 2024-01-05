@@ -21,6 +21,7 @@ export const myUserStore=defineStore('userData', {
             appoDate:'',
             appoStart:'',
             notes:'',
+            billPath:'',
             userID:{}
        },
        AllUsers:[],

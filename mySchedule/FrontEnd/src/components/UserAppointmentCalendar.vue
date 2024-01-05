@@ -282,7 +282,7 @@ onBeforeMount(() => {
             @drop="dragEnd" @dragstart="dragStart" @dragover.prevent @dragenter.prevent 
             @touchstart.passive="showContextMenu"
             @contextmenu.prevent.stop="showContextMenu"            
-            @click="changeWeekAppointment">
+            @pointerdown="changeWeekAppointment">
                 <span v-if="myWeeklyArray[index]" >{{ myWeeklyArray[index].tag }}</span>
             </p>                      
         </div>

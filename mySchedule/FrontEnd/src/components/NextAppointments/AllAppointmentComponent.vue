@@ -88,6 +88,7 @@ function MyFilter(theObjectArray){
   
   overflow: auto;
   overflow-x: hidden;
+  max-height: 73vh;
 
 }
 

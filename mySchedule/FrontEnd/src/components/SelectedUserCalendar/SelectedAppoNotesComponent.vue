@@ -24,17 +24,20 @@ watchEffect(() => {
             myStore.appo.appoDate = myNote.value.appoDate;
             myStore.appo.appoStart = myNote.value.appoStart;
             myStore.appo.notes = myNote.value.notes;
+            myStore.appo.billPath= myNote.value.billPath;
             myStore.appo.userID.id = myStore.user.id;
         }
     }
 }),
 
+//Evita restos de informacion indeseada en MyNote al cambiar de usuario
 watchEffect(()=> myStore.user.id, () => {
     myNote.value=null;
     myStore.appo.id=null;
     myStore.appo.appoDate=null;
     myStore.appo.appoStart=null;
     myStore.appo.notes=null;
+    myStore.appo.billPath=null;
     myStore.appo.userID.id=null;
 }),
 
