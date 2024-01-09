@@ -28,4 +28,7 @@ public interface RepoAppointment extends JpaRepository<appointmentModel, Long> {
 
     @Query(value = "SELECT * FROM appointments WHERE date BETWEEN :startDate AND :endDate", nativeQuery = true )
     List<appointmentModel> findAppoBetweenDates(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+
+    @Query(value="SELECT COUNT(bill_Path) FROM appointments", nativeQuery = true)
+    int findBillNumber();
 }

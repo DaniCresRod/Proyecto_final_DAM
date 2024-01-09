@@ -138,6 +138,13 @@ function newAppo(){console.log("hola");
     myStore.user.id='';
 }
 
+async function generateBill(){
+    let response = await DataServices.generateBill(myStore.appo.id);
+    console.log(response);
+    myStore.msgToUser=response.data;
+    OpenFeedbackDialog();
+}
+
 </script>
 
 <template>
@@ -145,7 +152,7 @@ function newAppo(){console.log("hola");
         <div>
         <button v-if="!myStore.onChanging && myStore.appo.id!==null"  @click="modifyAppoNotes" title="Modificar Notas de Sesión">Modificar Notas de esta cita</button>
 
-        <button v-if="!myStore.onChanging && myStore.appo.id!==null  && myStore.appo.billPath===null" title="Generar Factura para esta cita">Generar Factura</button>
+        <button v-if="!myStore.onChanging && myStore.appo.id!==null  && myStore.appo.billPath===null" title="Generar Factura para esta cita" @click="generateBill">Generar Factura</button>
         <button v-if="!myStore.onChanging && myStore.appo.id!==null  && myStore.appo.billPath!==null" title="ver Factura de esta cita">Ver Factura</button>
 
         <button v-if="myStore.onChanging && myStore.appo.id!==null" @click="cancelChanges" title="Cancelar Cambios">Cancelar Cambios</button>

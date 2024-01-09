@@ -161,7 +161,7 @@ function showContextMenu(event){
 }
 
 function changeWeekAppointment(event){
-    if(myUserStore().onChanging && myStore.onChanging){
+    if(myStore.onChanging){
         myUserStore().onChanging=false;
 
         //El lugar de aterrizaje debe estar vacio

@@ -11,9 +11,12 @@ package com.example.mySchedule.services;
 import com.example.mySchedule.models.appointmentModel;
 import com.example.mySchedule.models.userModel;
 import com.example.mySchedule.repositories.RepoAppointment;
+import com.itextpdf.text.DocumentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.io.FileNotFoundException;
 import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -24,6 +27,8 @@ import java.util.List;
 public class appoServices {
     @Autowired
     RepoAppointment myRepoAppo;
+    @Autowired
+    PDFServices myPDFService;
 
     //Devuelve todas las citas de ese dia
     public List<appointmentModel> readAppoints(LocalDate date){
@@ -113,5 +118,44 @@ public class appoServices {
             return null;
         }
 
+    }
+
+    @Transactional
+    public String generateBill(long id){
+        appointmentModel theAppo=null;
+        int billNumber=-1;
+        String feedbackMsg=null;
+        String completePath=null;
+        try{
+            theAppo=myRepoAppo.findById(id).get();
+            billNumber= myRepoAppo.findBillNumber();
+
+            completePath=myPDFService.createDocument(id, theAppo.getAppoDate(), billNumber);
+            myPDFService.openPDFDocument();
+
+            String billTitle="Factura número "+billNumber+" para "+theAppo.getUserID().getName();
+            myPDFService.addPDFTitle(billTitle);
+
+            myPDFService.addLineBreak();
+
+            String billBody="Se expende esta fatura de "+theAppo.getUserID().getPrice()+"€"+
+                    " por los servicios de terapia del día "+theAppo.getAppoDate();
+            myPDFService.addPDFParagraph(billBody);
+
+            myPDFService.addLineBreak();
+            myPDFService.closePDFDocument();
+
+
+            feedbackMsg="Se generó la factura para "+theAppo.getUserID().getName()+" con número "+billNumber;
+        }
+        catch(Exception e){
+            completePath=null;
+            feedbackMsg= "Se produjo un error y no se puede generar la factura";
+        }
+        finally {
+            theAppo.setBillPath(completePath);
+            myRepoAppo.save(theAppo);
+            return feedbackMsg;
+        }
     }
 }

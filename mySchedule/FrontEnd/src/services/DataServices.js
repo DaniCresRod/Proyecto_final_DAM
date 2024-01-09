@@ -69,5 +69,9 @@ export default({
     
     async updateAppoNotes(Data){
         return await axiosConnection.put('appo/updateNotes', Data);
+    },
+
+    async generateBill(id){
+        return await axiosConnection.post('appo/genBill/'+id);
     }
 })

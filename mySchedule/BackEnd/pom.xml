@@ -55,12 +55,18 @@
 			<version>0.11.5</version>
 			<scope>runtime</scope>
 		</dependency>
-<!--Tuve que añadir esta dependencia extra porque no era capaz de deserializar el token-->
+		<!--Tuve que añadir esta dependencia extra porque no era capaz de deserializar el token-->
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-jackson</artifactId>
 			<version>0.11.5</version>
 			<scope>runtime</scope>
+		</dependency>
+		<!-- Dependencia para crear los PDF -->
+		<dependency>
+			<groupId>com.itextpdf</groupId>
+			<artifactId>itextpdf</artifactId>
+			<version>5.5.13.3</version>
 		</dependency>
 	</dependencies>
 

@@ -47,4 +47,10 @@ public class appoControl {
     public String deleteAppo(@PathVariable long id){
         return myService.deleteAppo(id);
     }
+
+    //Generar factura
+    @PostMapping(path="/genBill/{id}")
+    public String genBill(@PathVariable long id){
+        return myService.generateBill(id);
+    }
 }
