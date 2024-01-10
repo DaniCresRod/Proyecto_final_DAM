@@ -35,10 +35,10 @@ public class PDFServices {
         }
 
         String myPath=resource.getFile();
-
+        myPath=myPath.replace("%20", " ");
         String dateFolder = String.valueOf(AppoDate.getMonth())+(AppoDate.getYear());
 
-        File folder = new File(myPath+ "/Desktop/" + dateFolder + "/" + AppoId);
+        File folder = new File(myPath+ "/bills/" + dateFolder + "/" + AppoId);
         if (!folder.exists()) {
             boolean success = folder.mkdirs();
             if (!success) {

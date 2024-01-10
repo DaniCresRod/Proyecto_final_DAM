@@ -128,7 +128,7 @@ public class appoServices {
         String completePath=null;
         try{
             theAppo=myRepoAppo.findById(id).get();
-            billNumber= myRepoAppo.findBillNumber();
+            billNumber= myRepoAppo.findBillNumber()+1;
 
             completePath=myPDFService.createDocument(id, theAppo.getAppoDate(), billNumber);
             myPDFService.openPDFDocument();
