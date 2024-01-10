@@ -73,8 +73,8 @@ export function closeDialog(){
   myUserStore().msgToUser='';
 }
 
-export function OpenFeedbackDialog(){console.log("hola1");
-  document.getElementById("aside_feedback").classList.remove("invisible");console.log("hola");
+export function OpenFeedbackDialog(){
+  document.getElementById("aside_feedback").classList.remove("invisible");
   document.getElementById("div_darkness").classList.remove("invisible");  
 }
 

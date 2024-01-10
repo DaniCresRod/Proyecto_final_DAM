@@ -1,5 +1,6 @@
 package com.example.mySchedule.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
@@ -31,13 +32,25 @@ public class appointmentModel {
     @Column(name="SessionNotes", columnDefinition = "TEXT")
     private String notes;
 
+    @JsonIgnore
     @Column(name="BillPath")
     private String billPath;
+
+    @Column(name="generated_bill", columnDefinition = "BOOLEAN DEFAULT false")
+    private boolean hasBill;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     @JsonIgnoreProperties("appointmentsList")
     private userModel userID;
+
+    @PreUpdate
+    public void prePersist() {
+        // Si billPath no es nulo, establecer hasBill en true
+        if (billPath != null) {
+            hasBill = true;
+        }
+    }
 
     public enum AppoType
     {

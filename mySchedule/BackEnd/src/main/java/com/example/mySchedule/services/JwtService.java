@@ -21,7 +21,8 @@ import java.util.function.Function;
 @RequiredArgsConstructor
 public class JwtService {
 
-    @Setter(onMethod=@__(@Autowired))
+//    @Setter(onMethod=@__(@Autowired))
+    @Autowired
     private EnvVariablesConfig variablesConfig;
 
     public String getTokenService(UserDetails user){

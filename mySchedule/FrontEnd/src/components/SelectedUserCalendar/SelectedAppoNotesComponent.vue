@@ -24,7 +24,7 @@ watchEffect(() => {
             myStore.appo.appoDate = myNote.value.appoDate;
             myStore.appo.appoStart = myNote.value.appoStart;
             myStore.appo.notes = myNote.value.notes;
-            myStore.appo.billPath= myNote.value.billPath;
+            myStore.appo.hasBill= myNote.value.hasBill;
             myStore.appo.userID.id = myStore.user.id;
         }
     }
@@ -37,7 +37,7 @@ watchEffect(()=> myStore.user.id, () => {
     myStore.appo.appoDate=null;
     myStore.appo.appoStart=null;
     myStore.appo.notes=null;
-    myStore.appo.billPath=null;
+    myStore.appo.hasBill=false;
     myStore.appo.userID.id=null;
 }),
 

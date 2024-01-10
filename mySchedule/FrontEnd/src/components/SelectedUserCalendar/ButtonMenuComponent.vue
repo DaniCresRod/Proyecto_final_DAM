@@ -27,7 +27,7 @@ async function upgradeAppoNotes(){
         appoDate: myStore.appo.appoDate,
         appoStart: myStore.appo.appoStart,
         notes: myStore.appo.notesAdd,
-        billPath: myStore.appo.billPath,
+        hasBill: myStore.appo.hasBill,
         userID:{
             id: myStore.appo.userID.id}
         }
@@ -142,6 +142,9 @@ async function generateBill(){
     let response = await DataServices.generateBill(myStore.appo.id);
     console.log(response);
     myStore.msgToUser=response.data;
+    if(response.data.startsWith("Se generó")){
+        myStore.appo.hasBill=true;
+    }
     OpenFeedbackDialog();
 }
 
@@ -152,8 +155,8 @@ async function generateBill(){
         <div>
         <button v-if="!myStore.onChanging && myStore.appo.id!==null"  @click="modifyAppoNotes" title="Modificar Notas de Sesión">Modificar Notas de esta cita</button>
 
-        <button v-if="!myStore.onChanging && myStore.appo.id!==null  && myStore.appo.billPath===null" title="Generar Factura para esta cita" @click="generateBill">Generar Factura</button>
-        <button v-if="!myStore.onChanging && myStore.appo.id!==null  && myStore.appo.billPath!==null" title="ver Factura de esta cita">Ver Factura</button>
+        <button v-if="!myStore.onChanging && myStore.appo.id!==null  && myStore.appo.hasBill===false" title="Generar Factura para esta cita" @click="generateBill">Generar Factura</button>
+        <button v-if="!myStore.onChanging && myStore.appo.id!==null  && myStore.appo.hasBill===true" title="ver Factura de esta cita">Ver Factura</button>
 
         <button v-if="myStore.onChanging && myStore.appo.id!==null" @click="cancelChanges" title="Cancelar Cambios">Cancelar Cambios</button>
         <button v-if="myStore.onChanging && myStore.appo.id!==null" @click="upgradeAppoNotes" title="Guardar Cambios">Guardar Cambios</button>

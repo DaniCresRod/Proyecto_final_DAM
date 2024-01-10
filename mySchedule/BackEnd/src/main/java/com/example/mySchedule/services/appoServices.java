@@ -8,19 +8,14 @@ package com.example.mySchedule.services;
 // @Date: sept'23
 //-------------------------->o<----------------------
 
+
 import com.example.mySchedule.models.appointmentModel;
-import com.example.mySchedule.models.userModel;
 import com.example.mySchedule.repositories.RepoAppointment;
-import com.itextpdf.text.DocumentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.io.FileNotFoundException;
-import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -29,6 +24,7 @@ public class appoServices {
     RepoAppointment myRepoAppo;
     @Autowired
     PDFServices myPDFService;
+
 
     //Devuelve todas las citas de ese dia
     public List<appointmentModel> readAppoints(LocalDate date){
@@ -129,8 +125,12 @@ public class appoServices {
         try{
             theAppo=myRepoAppo.findById(id).get();
             billNumber= myRepoAppo.findBillNumber()+1;
+            long userId=theAppo.getUserID().getId();
+            String folderName=userId+"_"
+                    +theAppo.getUserID().getName().replaceAll("\\s+", "").trim()
+                    +theAppo.getUserID().getSurname1().replaceAll("\\s+", "").trim();
 
-            completePath=myPDFService.createDocument(id, theAppo.getAppoDate(), billNumber);
+            completePath=myPDFService.createDocument(folderName, theAppo.getAppoDate(), billNumber);
             myPDFService.openPDFDocument();
 
             String billTitle="Factura número "+billNumber+" para "+theAppo.getUserID().getName();
@@ -138,15 +138,26 @@ public class appoServices {
 
             myPDFService.addLineBreak();
 
-            String billBody="Se expende esta fatura de "+theAppo.getUserID().getPrice()+"€"+
+            myPDFService.addBillData(billNumber, LocalDate.now().toString());
+            myPDFService.addEnterpriseData();
+
+            myPDFService.addLineBreak();
+
+            String billBody="Se expende esta factura de "+theAppo.getUserID().getPrice()+"€"+
                     " por los servicios de terapia del día "+theAppo.getAppoDate();
             myPDFService.addPDFParagraph(billBody);
 
             myPDFService.addLineBreak();
             myPDFService.closePDFDocument();
 
+            feedbackMsg="Se generó la factura para "+theAppo.getUserID().getName()
+                    +" "+theAppo.getUserID().getSurname1()+" "+theAppo.getUserID().getSurname2()
+                    +" con nif: "+theAppo.getUserID().getNif()
+                    +", con número "+billNumber;
 
-            feedbackMsg="Se generó la factura para "+theAppo.getUserID().getName()+" con número "+billNumber;
+            theAppo.setNotes(theAppo.getNotes()+
+                    "\n"+
+                    feedbackMsg+" el día "+LocalDate.now()+":\n");
         }
         catch(Exception e){
             completePath=null;
