@@ -1,6 +1,7 @@
 package com.example.mySchedule.services;
 
 import com.example.mySchedule.config.EnvVariablesConfig;
+import com.example.mySchedule.models.userModel;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPRow;
@@ -9,9 +10,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.*;
 import java.net.URL;
 import java.time.LocalDate;
 
@@ -29,6 +28,9 @@ public class PDFServices {
 
     //Fuente para Parrafos
     Font paragFont=FontFactory.getFont(FontFactory.HELVETICA, 12);
+    Font paragFontBold=FontFactory.getFont(FontFactory.HELVETICA, 12, Font.BOLD);
+
+
 
     public String createFolders(String folderName, LocalDate AppoDate, int billNumber) throws DocumentException{
         //String myPath=System.getProperty("user.home");
@@ -55,7 +57,7 @@ public class PDFServices {
     }
 
     public String createDocument(String folderName, LocalDate AppoDate, int billNumber) throws FileNotFoundException, DocumentException {
-        myDocument=new Document(PageSize.A4, 35,30,50,50);
+        myDocument=new Document(PageSize.A4, 50,50,50,50);
 
         //ruta para los pdf. Iran guardados en en servidor en carpetas por cada cliente
         LocalDate myDate= LocalDate.now();
@@ -73,18 +75,22 @@ public class PDFServices {
         myDocument.open();
     }
 
-    public void addPDFTitle(String myTitle) throws DocumentException {
-        PdfPTable titleTable=new PdfPTable(1);
+    public void addPDFTitle(String myTitle) throws DocumentException, IOException {
+        PdfPTable titleTable=new PdfPTable(2);
         PdfPCell titleCell=new PdfPCell(new Phrase(myTitle, titleFont));
-        titleCell.setColspan(5);
+//        titleCell.setColspan(5);
         titleCell.setBorderColor(BaseColor.WHITE);
         titleCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        PdfPCell logoCell=new PdfPCell();
+        logoCell.addElement(addLogo("src/main/resources/static/brainLogo.png"));
+        logoCell.setBorderColor(BaseColor.WHITE);
 
+        titleTable.addCell(logoCell);
         titleTable.addCell(titleCell);
         myDocument.add(titleTable);
     }
 
-    public void addEnterpriseData() throws DocumentException {
+    public PdfPTable addEnterpriseData() throws DocumentException {
         PdfPTable enterpriseDataTable=new PdfPTable(2);
 
         PdfPCell nameCell=new PdfPCell(new Phrase(variablesConfig.getE_NAME().toString(), paragFont));
@@ -108,7 +114,7 @@ public class PDFServices {
         enterpriseDataTable.addCell(emailCell);
         enterpriseDataTable.addCell(cifCell);
 
-        enterpriseDataTable.setWidthPercentage(40);
+        enterpriseDataTable.setWidthPercentage(100);
         enterpriseDataTable.setHorizontalAlignment(Element.ALIGN_LEFT);
 
         //Quitar bordes de la tabla
@@ -120,26 +126,81 @@ public class PDFServices {
             }
         }
 
-        myDocument.add(enterpriseDataTable);
+//        myDocument.add(enterpriseDataTable);
+        return enterpriseDataTable;
     }
 
-    public void addBillData(int billNumber, String ExpDate) throws DocumentException {
+    public PdfPTable addBillData(int billNumber, String ExpDate) throws DocumentException {
         PdfPTable billDataTable=new PdfPTable(2);
 
         PdfPCell billNumCell=new PdfPCell(new Phrase("Numero de factura: "+billNumber, paragFont));
         billNumCell.setColspan(2);
+        billNumCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         PdfPCell dateCell=new PdfPCell(new Phrase("Fecha de expedición: "+ExpDate, paragFont));
         dateCell.setColspan(2);
+        dateCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
 
         billDataTable.addCell(billNumCell);
         billDataTable.addCell(dateCell);
 
-        billDataTable.setWidthPercentage(40);
+        billDataTable.setWidthPercentage(80);
         billDataTable.setHorizontalAlignment(Element.ALIGN_RIGHT);
 
-        myDocument.add(billDataTable);
+//        myDocument.add(billDataTable);
+        return billDataTable;
     }
 
+    public void addBillHeader(int billNumber, String ExpDate) throws DocumentException {
+        PdfPTable billHeaderTable=new PdfPTable(2);
+
+        PdfPCell addEnterpriseDataCell=new PdfPCell();
+        addEnterpriseDataCell.addElement(this.addEnterpriseData());
+        addEnterpriseDataCell.setBorderColor(BaseColor.WHITE);
+        PdfPCell billDataTableCell=new PdfPCell();
+        billDataTableCell.addElement(this.addBillData(billNumber, ExpDate));
+        billDataTableCell.setBorderColor(BaseColor.WHITE);
+
+        billHeaderTable.addCell(addEnterpriseDataCell);
+        billHeaderTable.addCell(billDataTableCell);
+
+        billHeaderTable.setWidthPercentage(100);
+
+        myDocument.add(billHeaderTable);
+    }
+
+    public void addCustomerData(userModel theUser) throws DocumentException {
+        PdfPTable customerTable=new PdfPTable(1);
+
+        PdfPCell headerCell=new PdfPCell(new Phrase("Datos de Cliente: ", paragFontBold));
+        PdfPCell nameCell=new PdfPCell(new Phrase("Nombre: "+theUser.getName(), paragFont));
+        PdfPCell surNameCell=new PdfPCell(new Phrase("Apellidos: "+theUser.getSurname1()
+                +" "+theUser.getSurname2(), paragFont));
+        PdfPCell nifCell=new PdfPCell(new Phrase("Con NIF/CIF: "+theUser.getNif(), paragFont));
+        PdfPCell phoneCell=new PdfPCell(new Phrase("Telefono: "+theUser.getPhone(), paragFont));
+        PdfPCell EmailCell=new PdfPCell(new Phrase("Email: "+theUser.getEmail(), paragFont));
+
+
+        customerTable.addCell(headerCell);
+        customerTable.addCell(nameCell);
+        customerTable.addCell(surNameCell);
+        customerTable.addCell(nifCell);
+        customerTable.addCell(phoneCell);
+        customerTable.addCell(EmailCell);
+
+        customerTable.setWidthPercentage(50);
+        customerTable.setHorizontalAlignment(Element.ALIGN_RIGHT);
+
+        //Quitar bordes de la tabla
+        for (PdfPRow row : customerTable.getRows()) {
+            for (PdfPCell cell : row.getCells()) {
+                if(cell!=null){
+                    cell.setBorderColor(BaseColor.WHITE);
+                }
+            }
+        }
+
+        myDocument.add(customerTable);
+    }
     public void addPDFParagraph(String myText) throws DocumentException {
         Paragraph myParagr=new Paragraph();
         myParagr.add(new Phrase(myText, paragFont ));
@@ -151,6 +212,38 @@ public class PDFServices {
         myParagr.add(new Phrase(Chunk.NEWLINE));
         myParagr.add(new Phrase(Chunk.NEWLINE));
         myDocument.add(myParagr);
+    }
+
+    public Image addLogo(String imagePath) throws BadElementException, IOException {
+        ClassLoader classLoader = getClass().getClassLoader();
+        InputStream inputStream = classLoader.getResourceAsStream("static/brainLogo.png");
+
+        byte[] imageBytes = readBytesFromInputStream(inputStream);
+        Image myImage = Image.getInstance(imageBytes);
+
+        myImage.scalePercent(10f);
+
+        return myImage;
+    }
+
+    //No se pueden leer directamente los datos de la imagen, hay que transformarla en un array de Bytes
+    //Este metodo recoge del Stream los datos de la imagen, y los transforma en un array de Bytes a traves
+    //del array data
+    //data es como una cuchara, recoge datos del stream con read, y los carga en el stream de salida (buffer)
+    //que si es puede interpretar
+    private byte[] readBytesFromInputStream(InputStream inputStream) throws IOException {
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+
+        int nRead;
+        byte[] data = new byte[1024];
+
+        while ((nRead = inputStream.read(data, 0, data.length)) != -1) {
+            buffer.write(data, 0, nRead);   //Escribe lo que hay en data en buffer
+        }
+
+        buffer.flush();
+
+        return buffer.toByteArray();
     }
 
     public void closePDFDocument(){

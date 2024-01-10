@@ -11,6 +11,7 @@ package com.example.mySchedule.services;
 
 import com.example.mySchedule.models.appointmentModel;
 import com.example.mySchedule.repositories.RepoAppointment;
+import com.itextpdf.text.pdf.PdfPTable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +25,8 @@ public class appoServices {
     RepoAppointment myRepoAppo;
     @Autowired
     PDFServices myPDFService;
+    @Autowired
+    DateFormatServices myDateServices;
 
 
     //Devuelve todas las citas de ese dia
@@ -133,21 +136,20 @@ public class appoServices {
             completePath=myPDFService.createDocument(folderName, theAppo.getAppoDate(), billNumber);
             myPDFService.openPDFDocument();
 
-            String billTitle="Factura número "+billNumber+" para "+theAppo.getUserID().getName();
+            String billTitle="Factura";
             myPDFService.addPDFTitle(billTitle);
 
             myPDFService.addLineBreak();
-
-            myPDFService.addBillData(billNumber, LocalDate.now().toString());
-            myPDFService.addEnterpriseData();
+            myPDFService.addBillHeader(billNumber, myDateServices.formatMyDate(LocalDate.now()));
 
             myPDFService.addLineBreak();
+            myPDFService.addCustomerData(theAppo.getUserID());
 
+            myPDFService.addLineBreak();
             String billBody="Se expende esta factura de "+theAppo.getUserID().getPrice()+"€"+
-                    " por los servicios de terapia del día "+theAppo.getAppoDate();
+                    " por los servicios de terapia del día "+myDateServices.formatMyDate(theAppo.getAppoDate());
             myPDFService.addPDFParagraph(billBody);
 
-            myPDFService.addLineBreak();
             myPDFService.closePDFDocument();
 
             feedbackMsg="Se generó la factura para "+theAppo.getUserID().getName()
@@ -157,7 +159,7 @@ public class appoServices {
 
             theAppo.setNotes(theAppo.getNotes()+
                     "\n"+
-                    feedbackMsg+" el día "+LocalDate.now()+":\n");
+                    feedbackMsg+" el día "+myDateServices.formatMyDate(LocalDate.now())+":\n");
         }
         catch(Exception e){
             completePath=null;
