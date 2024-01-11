@@ -153,7 +153,7 @@ async function generateBill(){
 <template>
     <section>
         <div>
-        <button v-if="!myStore.onChanging && myStore.appo.id!==null"  @click="modifyAppoNotes" title="Modificar Notas de Sesión">Modificar Notas de esta cita</button>
+        <button v-if="!myStore.onChanging && myStore.appo.id!==null"  @click="modifyAppoNotes" title="Añadir Notas de Sesión">Añadir Notas para esta cita</button>
 
         <button v-if="!myStore.onChanging && myStore.appo.id!==null  && myStore.appo.hasBill===false" title="Generar Factura para esta cita" @click="generateBill">Generar Factura</button>
         <button v-if="!myStore.onChanging && myStore.appo.id!==null  && myStore.appo.hasBill===true" title="ver Factura de esta cita">Ver Factura</button>

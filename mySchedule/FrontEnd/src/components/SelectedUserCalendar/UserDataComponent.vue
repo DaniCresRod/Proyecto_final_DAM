@@ -35,7 +35,7 @@ function showWrongFields(event){
             <input type="text" id="input_userAlias" v-model="props.userData.alias" title="Alias del usuario">  
         </section>
         <section>
-            <label for="input_userSurName">Apellido: </label>
+            <label for="input_userSurName">Apellido 1º: </label>
             <input type="text" id="input_userSurName" v-model="props.userData.surname1" title="Primer apellido del usuario">  
         </section>
         <section>

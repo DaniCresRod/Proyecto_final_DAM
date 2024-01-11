@@ -202,27 +202,27 @@ public class PDFServices {
         myDocument.add(customerTable);
     }
 
-    public void addBillDetailTable(int sessionPrice, String billConcept, LocalDate appoDate){
-        PdfTable billDetailTable=new PdfTable(5);
+    public void addBillDetailTable(int sessionPrice, String billConcept, LocalDate appoDate) throws DocumentException {
+        PdfPTable billDetailTable=new PdfPTable(5);
 
-        PdfCell headerQuantity=new PdfCell(new Phrase("Cantidad", paragFontBold));
-        PdfCell headerConcept=new PdfCell(new Phrase("Concepto", paragFontBold));
+        PdfPCell headerQuantity=new PdfPCell(new Phrase("Cantidad", paragFontBold));
+        PdfPCell headerConcept=new PdfPCell(new Phrase("Concepto", paragFontBold));
         headerConcept.setColspan(2);
-        PdfCell headerPrice=new PdfCell(new Phrase("Precio", paragFontBold));
-        PdfCell headerTotal=new PdfCell(new Phrase("Total", paragFontBold));
+        PdfPCell headerPrice=new PdfPCell(new Phrase("Precio", paragFontBold));
+        PdfPCell headerTotal=new PdfPCell(new Phrase("Total", paragFontBold));
 
-        PdfCell headerQuantityData=new PdfCell(new Phrase("1", paragFont));
-        PdfCell headerConceptData=new PdfCell(new Phrase(billConcept +" del día "+ appoDate.toString(), paragFont));
+        PdfPCell headerQuantityData=new PdfPCell(new Phrase("1", paragFont));
+        PdfPCell headerConceptData=new PdfPCell(new Phrase(billConcept +" del día "+ appoDate.toString(), paragFont));
         headerConcept.setColspan(2);
-        PdfCell headerPriceData=new PdfCell(new Phrase(sessionPrice, paragFont));
-        PdfCell headerTotalData=new PdfCell(new Phrase(sessionPrice, paragFontBold));
+        PdfPCell headerPriceData=new PdfPCell(new Phrase(String.valueOf(sessionPrice), paragFont));
+        PdfPCell headerTotalData=new PdfPCell(new Phrase(String.valueOf(sessionPrice), paragFontBold));
 
-        PdfCell blankCell=new PdfCell();
+        PdfPCell blankCell=new PdfPCell();
         blankCell.setBorderColor(BaseColor.WHITE);
 
-        PdfCell vatCell=new PdfCell(new Phrase("IVA 21%"), paragFont);
-        int vatTotal=sessionPrice/1.21;
-        PdfCell vatTotalCell=new PdfCell(new Phrase(vatTotal), paragFont);
+        PdfPCell vatCell=new PdfPCell(new Phrase("IVA 21%", paragFont));
+        float vatTotal=sessionPrice/1.21f;
+        PdfPCell vatTotalCell=new PdfPCell(new Phrase(String.valueOf(vatTotal), paragFont));
 
         billDetailTable.addCell(headerQuantity);
         billDetailTable.addCell(headerConcept);
