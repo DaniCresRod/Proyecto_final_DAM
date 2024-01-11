@@ -201,6 +201,57 @@ public class PDFServices {
 
         myDocument.add(customerTable);
     }
+
+    public void addBillDetailTable(int sessionPrice, String billConcept, LocalDate appoDate){
+        PdfTable billDetailTable=new PdfTable(5);
+
+        PdfCell headerQuantity=new PdfCell(new Phrase("Cantidad", paragFontBold));
+        PdfCell headerConcept=new PdfCell(new Phrase("Concepto", paragFontBold));
+        headerConcept.setColspan(2);
+        PdfCell headerPrice=new PdfCell(new Phrase("Precio", paragFontBold));
+        PdfCell headerTotal=new PdfCell(new Phrase("Total", paragFontBold));
+
+        PdfCell headerQuantityData=new PdfCell(new Phrase("1", paragFont));
+        PdfCell headerConceptData=new PdfCell(new Phrase(billConcept +" del día "+ appoDate.toString(), paragFont));
+        headerConcept.setColspan(2);
+        PdfCell headerPriceData=new PdfCell(new Phrase(sessionPrice, paragFont));
+        PdfCell headerTotalData=new PdfCell(new Phrase(sessionPrice, paragFontBold));
+
+        PdfCell blankCell=new PdfCell();
+        blankCell.setBorderColor(BaseColor.WHITE);
+
+        PdfCell vatCell=new PdfCell(new Phrase("IVA 21%"), paragFont);
+        int vatTotal=sessionPrice/1.21;
+        PdfCell vatTotalCell=new PdfCell(new Phrase(vatTotal), paragFont);
+
+        billDetailTable.addCell(headerQuantity);
+        billDetailTable.addCell(headerConcept);
+        billDetailTable.addCell(headerPrice);
+        billDetailTable.addCell(headerTotal);
+        billDetailTable.addCell(headerQuantityData);
+        billDetailTable.addCell(headerConceptData);
+        billDetailTable.addCell(headerPriceData);
+        billDetailTable.addCell(headerTotalData);
+
+        billDetailTable.addCell(blankCell);
+        billDetailTable.addCell(blankCell);
+        billDetailTable.addCell(blankCell);
+        billDetailTable.addCell(vatCell);
+        billDetailTable.addCell(vatTotalCell);
+        
+        billDetailTable.addCell(blankCell);
+        billDetailTable.addCell(blankCell);
+        billDetailTable.addCell(blankCell);
+        billDetailTable.addCell(headerTotal);
+        billDetailTable.addCell(headerTotalData);
+
+        billDetailTable.setHorizontalAlignment(Element.ALIGN_CENTER);
+        
+        myDocument.add(billDetailTable);        
+    }
+
+    
+    
     public void addPDFParagraph(String myText) throws DocumentException {
         Paragraph myParagr=new Paragraph();
         myParagr.add(new Phrase(myText, paragFont ));
