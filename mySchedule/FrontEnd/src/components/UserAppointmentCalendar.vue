@@ -116,10 +116,10 @@ function showContextMenu(event){
     }
     
     const target = event.target;
-    const parentNode = target.parentNode;
+    const targetParentNode = target.parentNode;
 
     if ((target.firstElementChild !== null && target.__vnode.key && target.__vnode.key.userId) ||
-        (target.firstElementChild === null && parentNode && parentNode.__vnode.key && parentNode.__vnode.key.userId)
+        (target.firstElementChild === null && targetParentNode && targetParentNode.__vnode.key && targetParentNode.__vnode.key.userId)
     ) {        
         popUpMenu.classList.toggle("invisible");
 
@@ -146,7 +146,7 @@ function showContextMenu(event){
 
         if(typeof(event.touches)!=='undefined'){
             popUpMenu.style.top = event.touches[0].clientY + "px";
-            popUpMenu.style.left = event.touches[0].clientX + "px";
+            popUpMenu.style.left = event.touches[0].clientX +10+ "px";
 
             document.addEventListener("touchmove", hideMenuOnTouchMove, {passive: true});
         
@@ -338,8 +338,7 @@ section:last-of-type{
 p{border:1px solid black;
     font-size: smaller;
     font-weight: bold;
-    text-align: center;
-    word-wrap: none;
+    text-align: center;    
     overflow: hidden;
     
     color: var(--color-text);
@@ -348,6 +347,15 @@ p{border:1px solid black;
     display:grid;
     border-radius: 2px;
     
+}
+
+p:hover{
+    overflow: visible;
+}
+
+p:hover span{
+    background-color: var(--color-background);
+    align-self: center;
 }
 
 #div_calendar p:not(:empty){
@@ -402,6 +410,12 @@ p{border:1px solid black;
     #div_calendar p{
         height: 4vh;
     }
+
+    #div_calendar p span{
+        font-size: x-small !important;
+    }
+
+
 }
 
 .p_outOfSchedule{

@@ -66,7 +66,7 @@ public class appoServices {
                         "\n"+
                         "Se cambia la cita del "+oldDate+" a las "+oldTime+
                         " al "+newAppo.getAppoDate()+" a las "+newAppo.getAppoStart()+
-                        " el día "+LocalDate.now()+
+                        " el día "+myDateServices.formatMyDate(LocalDate.now())+
                         newAppo.getNotes());
                 myRepoAppo.save(oldAppo);
                 myList.add(oldAppo);
@@ -83,7 +83,14 @@ public class appoServices {
             //verificar que existe la tarea
             appointmentModel theAppo=myRepoAppo.findById(id).get();
 
-            myRepoAppo.deleteById(id);
+            //myRepoAppo.deleteById(id);
+            //Borrado Logico:
+            theAppo.setDeleted(true);
+            theAppo.setNotes(theAppo.getNotes()+
+                    "\n"+
+                    "Se borra la cita el día "+myDateServices.formatMyDate(LocalDate.now()));
+            myRepoAppo.save(theAppo);
+
 
             return "La cita de "+theAppo.getUserID().getAlias()+
                     " para el "+theAppo.getAppoDate()+
@@ -106,7 +113,7 @@ public class appoServices {
                 //Hacer los cambios
                 oldAppo.setNotes(oldAppo.getNotes()+
                         "\n"+
-                        "Se hacen anotaciones el día "+LocalDate.now()+":\n"+
+                        "Se hacen anotaciones el día "+myDateServices.formatMyDate(LocalDate.now())+":\n"+
                         newAppo.getNotes());
                 myRepoAppo.save(oldAppo);
             }
@@ -131,7 +138,7 @@ public class appoServices {
             long userId=theAppo.getUserID().getId();
             String folderName=userId+"_"
                     +theAppo.getUserID().getName().replaceAll("\\s+", "").trim()
-                    +theAppo.getUserID().getSurname1().replaceAll("\\s+", "").trim();
+                    +(theAppo.getUserID().getSurname1()!=null ? theAppo.getUserID().getSurname1().replaceAll("\\s+", "").trim(): "");
 
             completePath=myPDFService.createDocument(folderName, theAppo.getAppoDate(), billNumber);
             myPDFService.openPDFDocument();
@@ -150,10 +157,21 @@ public class appoServices {
                     " por los servicios de terapia del día "+myDateServices.formatMyDate(theAppo.getAppoDate());
             myPDFService.addPDFParagraph(billBody);
 
+            myPDFService.addLineBreak();
+            String billConcept="Servicios terapeuticos";
+            String expeditionDate=myDateServices.formatMyDate(theAppo.getAppoDate());
+            myPDFService.addBillDetailTable(theAppo.getUserID().getPrice(), billConcept, expeditionDate);
+
+            myPDFService.addLineBreak();
+            myPDFService.addPDFParagraph("Sello y firma: ");
+
             myPDFService.closePDFDocument();
 
             feedbackMsg="Se generó la factura para "+theAppo.getUserID().getName()
-                    +" "+theAppo.getUserID().getSurname1()+" "+theAppo.getUserID().getSurname2()
+                    +" "
+                    +(theAppo.getUserID().getSurname1()!=null ? theAppo.getUserID().getSurname1():"")
+                    +" "
+                    +(theAppo.getUserID().getSurname2()!=null ? theAppo.getUserID().getSurname2():"")
                     +" con nif: "+theAppo.getUserID().getNif()
                     +", con número "+billNumber;
 

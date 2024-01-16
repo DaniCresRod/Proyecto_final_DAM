@@ -39,13 +39,15 @@ public class userServices{
                 long appoId=-1;
 
                 for (appointmentModel eachAppo: eachUser.getAppointmentsList()){
-                    LocalDateTime candidateAppo=LocalDateTime.of(eachAppo.getAppoDate(), eachAppo.getAppoStart());
+                    if(!eachAppo.isDeleted()){
+                        LocalDateTime candidateAppo=LocalDateTime.of(eachAppo.getAppoDate(), eachAppo.getAppoStart());
 
-                    if((!candidateAppo.isBefore(LocalDateTime.now())) && (DAYS.between(eachAppo.getAppoDate(),LocalDate.now())>difference)){
-                        difference=DAYS.between(eachAppo.getAppoDate(),LocalDate.now());
-                        nextDate=eachAppo.getAppoDate();
-                        nextDateStart=eachAppo.getAppoStart();
-                        appoId= eachAppo.getId();
+                        if((!candidateAppo.isBefore(LocalDateTime.now())) && (DAYS.between(eachAppo.getAppoDate(),LocalDate.now())>difference)){
+                            difference=DAYS.between(eachAppo.getAppoDate(),LocalDate.now());
+                            nextDate=eachAppo.getAppoDate();
+                            nextDateStart=eachAppo.getAppoStart();
+                            appoId= eachAppo.getId();
+                        }
                     }
                 }
 
@@ -144,7 +146,18 @@ public class userServices{
 
     public userModel readAUser(long id) {
         if(myRepo.existsById(id)){
-            return myRepo.findById(id).orElse(null);
+            userModel myUser=myRepo.findById(id).orElse(null);
+            List<appointmentModel> newList= new ArrayList<>();
+
+            for(appointmentModel eachAppo : myUser.getAppointmentsList()){
+                if(!eachAppo.isDeleted()){
+                    newList.add(eachAppo);
+                }
+            }
+            myUser.setAppointmentsList(newList);
+            return myUser;
+//            return myRepo.findById(id).orElse(null);
+//            return myRepo.findByIdWDeleted(id).orElse(null);
         }
         return null;
     }
@@ -157,10 +170,12 @@ public class userServices{
         List<appointmentModel> miArray= AppoRepo.findAppoBetweenDates(startDate, finishDate);
 
         for (appointmentModel eachAppo : miArray){
-            userModel theUser=myRepo.findById(eachAppo.getUserID().getId()).orElse(null);
+            if(!eachAppo.isDeleted()){
+                userModel theUser=myRepo.findById(eachAppo.getUserID().getId()).orElse(null);
 
-            DTOBasicInfo userBasicInfo=new DTOBasicInfo(theUser.getId(),theUser.getName(), theUser.getAlias(), theUser.getPhone(), eachAppo.getId(), eachAppo.getAppoDate(), eachAppo.getAppoStart(), false, null );
-            basicInfo.add(userBasicInfo);
+                DTOBasicInfo userBasicInfo=new DTOBasicInfo(theUser.getId(),theUser.getName(), theUser.getAlias(), theUser.getPhone(), eachAppo.getId(), eachAppo.getAppoDate(), eachAppo.getAppoStart(), false, null );
+                basicInfo.add(userBasicInfo);
+            }
         }
         return basicInfo;
     }

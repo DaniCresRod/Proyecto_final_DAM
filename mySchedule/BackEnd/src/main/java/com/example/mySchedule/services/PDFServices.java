@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 
 @Service
@@ -78,7 +79,6 @@ public class PDFServices {
     public void addPDFTitle(String myTitle) throws DocumentException, IOException {
         PdfPTable titleTable=new PdfPTable(2);
         PdfPCell titleCell=new PdfPCell(new Phrase(myTitle, titleFont));
-//        titleCell.setColspan(5);
         titleCell.setBorderColor(BaseColor.WHITE);
         titleCell.setHorizontalAlignment(Element.ALIGN_CENTER);
         PdfPCell logoCell=new PdfPCell();
@@ -173,8 +173,14 @@ public class PDFServices {
 
         PdfPCell headerCell=new PdfPCell(new Phrase("Datos de Cliente: ", paragFontBold));
         PdfPCell nameCell=new PdfPCell(new Phrase("Nombre: "+theUser.getName(), paragFont));
-        PdfPCell surNameCell=new PdfPCell(new Phrase("Apellidos: "+theUser.getSurname1()
-                +" "+theUser.getSurname2(), paragFont));
+
+        PdfPCell surNameCell=new PdfPCell();
+        if(theUser.getSurname1()!=null){
+            surNameCell.setPhrase(new Phrase("Apellidos: "+
+                    (theUser.getSurname2() != null ? theUser.getSurname1() + " " + theUser.getSurname2() : theUser.getSurname1()), paragFont));
+
+        }
+
         PdfPCell nifCell=new PdfPCell(new Phrase("Con NIF/CIF: "+theUser.getNif(), paragFont));
         PdfPCell phoneCell=new PdfPCell(new Phrase("Telefono: "+theUser.getPhone(), paragFont));
         PdfPCell EmailCell=new PdfPCell(new Phrase("Email: "+theUser.getEmail(), paragFont));
@@ -202,7 +208,7 @@ public class PDFServices {
         myDocument.add(customerTable);
     }
 
-    public void addBillDetailTable(int sessionPrice, String billConcept, LocalDate appoDate) throws DocumentException {
+    public void addBillDetailTable(int sessionPrice, String billConcept, String appoDate) throws DocumentException {
         PdfPTable billDetailTable=new PdfPTable(5);
 
         PdfPCell headerQuantity=new PdfPCell(new Phrase("Cantidad", paragFontBold));
@@ -213,16 +219,18 @@ public class PDFServices {
 
         PdfPCell headerQuantityData=new PdfPCell(new Phrase("1", paragFont));
         PdfPCell headerConceptData=new PdfPCell(new Phrase(billConcept +" del día "+ appoDate.toString(), paragFont));
-        headerConcept.setColspan(2);
-        PdfPCell headerPriceData=new PdfPCell(new Phrase(String.valueOf(sessionPrice), paragFont));
-        PdfPCell headerTotalData=new PdfPCell(new Phrase(String.valueOf(sessionPrice), paragFontBold));
+        headerConceptData.setColspan(2);
+        PdfPCell headerPriceData=new PdfPCell(new Phrase(String.valueOf(sessionPrice)+"€", paragFont));
+        PdfPCell headerTotalData=new PdfPCell(new Phrase(String.valueOf(sessionPrice)+"€", paragFontBold));
 
         PdfPCell blankCell=new PdfPCell();
-        blankCell.setBorderColor(BaseColor.WHITE);
+//        blankCell.setBorderColor(BaseColor.WHITE);
+        blankCell.setBorder(Rectangle.NO_BORDER);
 
         PdfPCell vatCell=new PdfPCell(new Phrase("IVA 21%", paragFont));
-        float vatTotal=sessionPrice/1.21f;
-        PdfPCell vatTotalCell=new PdfPCell(new Phrase(String.valueOf(vatTotal), paragFont));
+        float vatTotal=sessionPrice-(sessionPrice/1.21f);
+        DecimalFormat df=new DecimalFormat("#.00");
+        PdfPCell vatTotalCell=new PdfPCell(new Phrase(df.format(vatTotal)+"€", paragFont));
 
         billDetailTable.addCell(headerQuantity);
         billDetailTable.addCell(headerConcept);
@@ -245,13 +253,11 @@ public class PDFServices {
         billDetailTable.addCell(headerTotal);
         billDetailTable.addCell(headerTotalData);
 
-        billDetailTable.setHorizontalAlignment(Element.ALIGN_CENTER);
+        billDetailTable.setHorizontalAlignment(Element.ALIGN_LEFT);
         
         myDocument.add(billDetailTable);        
     }
 
-    
-    
     public void addPDFParagraph(String myText) throws DocumentException {
         Paragraph myParagr=new Paragraph();
         myParagr.add(new Phrase(myText, paragFont ));

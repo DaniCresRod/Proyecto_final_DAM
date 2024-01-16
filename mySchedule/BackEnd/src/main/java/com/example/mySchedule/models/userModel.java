@@ -66,6 +66,10 @@ public class userModel implements UserDetails {
     @OrderBy("appoDate DESC, appoStart DESC")
     private List<appointmentModel> appointmentsList;
 
+    @JsonIgnore
+    @Column(name="deleted", columnDefinition = "BOOLEAN DEFAULT false")
+    private boolean deleted;
+
     //Si el usuario no tiene un rol asignado previamente, se le asigna el rol "Usuario" por defecto
     @JsonIgnore
     @Override

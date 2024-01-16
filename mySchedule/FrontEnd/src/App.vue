@@ -32,15 +32,15 @@ onBeforeMount(async () => {
     <div class="wrapper">
 
       <nav v-if="isAdmin && isLogged">
-        <RouterLink to="/AdminView">Home</RouterLink>
+        <RouterLink to="/AdminView">Inicio</RouterLink>
         <RouterLink to="/newAppointment">Nuevo usuario</RouterLink>
         <RouterLink to="/allApointment">Próximas citas</RouterLink>
-        <RouterLink to="/allApointment">LogOut</RouterLink>
+        <RouterLink to="/allApointment">Salir</RouterLink>
       </nav>      
       <nav v-else-if="isLogged">
         <RouterLink to="/UserView">Mi Cita</RouterLink>
         <RouterLink to="/newAppointment">Mis Facturas</RouterLink>
-        <RouterLink to="/allApointment">LogOut</RouterLink>
+        <RouterLink to="/allApointment">Salir</RouterLink>
       </nav>
       <nav v-else>
         

@@ -39,6 +39,10 @@ public class appointmentModel {
     @Column(name="generated_bill", columnDefinition = "BOOLEAN DEFAULT false")
     private boolean hasBill;
 
+    //@JsonIgnore
+    @Column(name="deleted", columnDefinition = "BOOLEAN DEFAULT false")
+    private boolean deleted;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     @JsonIgnoreProperties("appointmentsList")

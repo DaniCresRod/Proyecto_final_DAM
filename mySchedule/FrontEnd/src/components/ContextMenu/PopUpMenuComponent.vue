@@ -35,6 +35,7 @@ async function deleteAppo(){
 <template>
     <div>
         <ul>
+            <li>{{ myStore.whatsAppUser.name }}</li>
             <li @click="changingAppoMode">Mover la cita</li>
             <li @click="deleteAppo">Borrar la cita</li>
         </ul>
@@ -51,10 +52,18 @@ ul{
     padding: 0;
     background-color: var(--color-background-text);
 }
+
 li{
     border:1px solid var(--color-border);
     padding: 0.5vh 0.5vw;
     cursor: pointer;
+}
+
+ul li:first-child{
+    font-weight: bold;
+    background-color: var(--color-background);
+    text-align: center;
+    color:var(--color-text);
 }
 
 </style>

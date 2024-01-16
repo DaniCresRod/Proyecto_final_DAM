@@ -1,5 +1,4 @@
 import DateServices from "./DateServices";
-import { myUserStore } from './PiniaServices';
 import moment from 'moment';
 
 //Define un array rellenado con los dias de la semana y los horarios

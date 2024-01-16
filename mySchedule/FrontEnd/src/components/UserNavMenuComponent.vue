@@ -13,7 +13,7 @@ async function LoadSelectedUser(event, user){
         selectedUser.value = (await axiosConnection.getUserById(user)).data;
         myStore.user=selectedUser.value;
         myStore.onChanging=false;
-
+console.log(selectedUser.value);
         myStore.appo.id=null;
         myStore.appo.appoDate=null;
         myStore.appo.appoStart=null;
@@ -50,7 +50,7 @@ watch(()=> myStore.AllUsers, ()=>{
 
 <template>
     <section>
-        <p v-if="myStore.user.id===''">Listado:</p>
+        <p v-if="myStore.user.id===''">Usuarios:</p>
         <p v-else @click="deleteMyStoreUser()"><span>X</span> Ver Todos</p> 
         
         <ul>
