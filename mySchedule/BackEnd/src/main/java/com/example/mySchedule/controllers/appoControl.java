@@ -2,6 +2,8 @@ package com.example.mySchedule.controllers;
 
 import com.example.mySchedule.models.appointmentModel;
 import com.example.mySchedule.services.appoServices;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -52,5 +54,11 @@ public class appoControl {
     @PostMapping(path="/genBill/{id}")
     public String genBill(@PathVariable long id){
         return myService.generateBill(id);
+    }
+
+    //Descargar factura
+    @GetMapping(path="/genBill/download/{id}")
+    public byte[] downloadBill(@PathVariable long id, HttpServletRequest response){
+        return myService.getPDFDocument(id, response );
     }
 }

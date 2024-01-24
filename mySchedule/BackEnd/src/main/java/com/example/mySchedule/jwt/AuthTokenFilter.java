@@ -24,9 +24,6 @@ import java.io.IOException;
 public class AuthTokenFilter extends OncePerRequestFilter{
 
     @Autowired
-    RepoUser userRepository;
-
-    @Autowired
     JwtService jwtService;
 
     @Autowired

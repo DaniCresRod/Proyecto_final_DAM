@@ -12,6 +12,9 @@ import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 
@@ -305,5 +308,24 @@ public class PDFServices {
 
     public void closePDFDocument(){
         myDocument.close();
+    }
+
+    /**
+     * Convierte el documento almacenado en la base de datos en un array de Bytes
+     * para poder devolverlo
+     * @param myPDFPath es la direccion donde se almacena el archivo
+     * @return
+     */
+    public byte[] getPDFbytes(String myPDFPath){
+        //Crear la instancia en memoria donde se escribira el archivo
+        try{
+            Path pdfPath = Paths.get(myPDFPath);
+            byte[] pdfByteArray= Files.readAllBytes(pdfPath);
+
+            return pdfByteArray;
+        }
+        catch(Exception e){
+            return null;
+        }
     }
 }

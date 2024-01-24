@@ -9,15 +9,22 @@ package com.example.mySchedule.services;
 //-------------------------->o<----------------------
 
 
+import ch.qos.logback.core.net.SyslogOutputStream;
+import com.example.mySchedule.jwt.AuthTokenFilter;
 import com.example.mySchedule.models.appointmentModel;
+import com.example.mySchedule.models.userModel;
 import com.example.mySchedule.repositories.RepoAppointment;
+import com.example.mySchedule.repositories.RepoUser;
 import com.itextpdf.text.pdf.PdfPTable;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class appoServices {
@@ -27,6 +34,12 @@ public class appoServices {
     PDFServices myPDFService;
     @Autowired
     DateFormatServices myDateServices;
+    @Autowired
+    JwtService tokenService;
+    @Autowired
+    AuthTokenFilter authTokenFilter;
+    @Autowired
+    RepoUser myUserRepo;
 
 
     //Devuelve todas las citas de ese dia
@@ -205,5 +218,34 @@ public class appoServices {
             myRepoAppo.save(theAppo);
             return feedbackMsg;
         }
+    }
+
+    public byte[] getPDFDocument(long appoId, HttpServletRequest request){
+
+        try{
+            appointmentModel myAppo=myRepoAppo.findById(appoId).get();
+            final String token = authTokenFilter.getTokenFromRequest(request);
+            final String requesterNIF = tokenService.getUsernameFromToken(token);   //Devuelve el NIF de la persona que lo solicita
+
+            userModel requesterUser=myUserRepo.findByUserNif(requesterNIF).orElse(null);
+
+            if(requesterUser.getRol()!= userModel.UserType.Admin){
+
+                if(requesterNIF==myAppo.getUserID().getNif()){
+
+                }
+                else{
+                    return null;
+                }
+            }
+
+        }
+        catch(Exception e){
+            e.getStackTrace();
+        }
+        finally{
+            return null;
+        }
+
     }
 }
