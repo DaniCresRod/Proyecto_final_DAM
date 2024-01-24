@@ -78,24 +78,41 @@ public class appoServices {
         }
     }
 
+    /**
+     * Borra de la bd aquellas citas que sucedan en el futuro.
+     * Si ya han sucedido, el borrado será logico.
+     * @param id es el id de la cita (AppoModel) que queremos borrar
+     * @return Devuelve un mensaje indicando la resolución
+     */
     public String deleteAppo(long id) {
+        String message;
         try{
             //verificar que existe la tarea
             appointmentModel theAppo=myRepoAppo.findById(id).get();
 
-            //myRepoAppo.deleteById(id);
-            //Borrado Logico:
-            theAppo.setDeleted(true);
-            theAppo.setNotes(theAppo.getNotes()+
-                    "\n"+
-                    "Se borra la cita el día "+myDateServices.formatMyDate(LocalDate.now()));
-            myRepoAppo.save(theAppo);
+            if(theAppo.getAppoDate().isAfter(LocalDate.now())){
+                myRepoAppo.deleteById(id);
 
+                message="La cita de "+theAppo.getUserID().getAlias()+
+                        " para el "+theAppo.getAppoDate()+
+                        " a las "+theAppo.getAppoStart()+
+                        " se ha borrado definitivamente.";
+            }
+            else{
+                //Borrado Logico:
+                theAppo.setDeleted(true);
+                theAppo.setNotes(theAppo.getNotes()+
+                        "\n"+
+                        "Se borra la cita el día "+myDateServices.formatMyDate(LocalDate.now()));
+                myRepoAppo.save(theAppo);
 
-            return "La cita de "+theAppo.getUserID().getAlias()+
-                    " para el "+theAppo.getAppoDate()+
-                    " a las "+theAppo.getAppoStart()+
-                    " se ha borrado satisfactoriamente.";
+                message="La cita de "+theAppo.getUserID().getAlias()+
+                        " para el "+theAppo.getAppoDate()+
+                        " a las "+theAppo.getAppoStart()+
+                        " se ha borrado satisfactoriamente.";
+            }
+
+            return message;
 
         }
         catch(Exception e){

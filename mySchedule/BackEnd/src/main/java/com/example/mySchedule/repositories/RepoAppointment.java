@@ -16,6 +16,7 @@ public interface RepoAppointment extends JpaRepository<appointmentModel, Long> {
     List<appointmentModel> findAppoByDate(@Param("targetDate") LocalDate targetDate);
 
     @Query(value = "SELECT * FROM appointments WHERE date=:#{#myAppo.getAppoDate()} " +
+            "AND deleted=false "+
             "AND start BETWEEN DATE_ADD(STR_TO_DATE(:#{#myAppo.getAppoStart()}, '%H:%i:%s'), INTERVAL -75 MINUTE) " +
             "AND DATE_ADD(STR_TO_DATE(:#{#myAppo.getAppoStart()}, '%H:%i:%s'), INTERVAL 75 MINUTE)", nativeQuery = true)
     List<appointmentModel> findRepeatedAppoHour(@Param("myAppo")appointmentModel targetAppo);
