@@ -170,6 +170,7 @@ function changeWeekAppointment(event){
             let newIndex=getChildIndex(event.target);
             let oldIndex=myUserStore().whatsAppUser.indexOfArray;
         
+            // eslint-disable-next-line no-unused-vars
             let [newHourIndex, draggedDayIndex, newDayIndex]=getNewDayAndHour(newIndex, oldIndex);
             let [newHour, newDay]=[myWeeklyArray.value[newHourIndex].tag, datesInWeekArray.value[newDayIndex-2]];
             

@@ -232,20 +232,29 @@ public class appoServices {
             if(requesterUser.getRol()!= userModel.UserType.Admin){
 
                 if(requesterNIF==myAppo.getUserID().getNif()){
-
+                    byte[] pdfByteArray=myPDFService.getPDFbytes(myAppo.getBillPath());
+                    return pdfByteArray;
                 }
                 else{
                     return null;
                 }
             }
+            else if(requesterUser.getRol()== userModel.UserType.Admin){
+                byte[] pdfByteArray=myPDFService.getPDFbytes(myAppo.getBillPath());
+
+                myPDFService.openPDF(pdfByteArray);
+                return pdfByteArray;
+            }
+            else{
+                return null;
+            }
 
         }
         catch(Exception e){
             e.getStackTrace();
-        }
-        finally{
             return null;
         }
+
 
     }
 }

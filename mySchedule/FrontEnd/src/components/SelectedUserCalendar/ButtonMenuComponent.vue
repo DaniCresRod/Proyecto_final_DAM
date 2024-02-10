@@ -4,6 +4,7 @@ import DataServices from '../../services/DataServices';
 import { OpenFeedbackDialog } from '../../services/UserFeedbackService';
 import areYouSure from '../AreYouSureComponent.vue'
 import { turnToSetUserAppo } from '../../services/SelectUserAppo';
+import PDFServices from '../../services/PDFServices'
 
 const myStore=myUserStore();
 let originalData;
@@ -123,8 +124,7 @@ async function dareToDelete(valor){
         let myDeletedUser=myStore.AllUsers.indexOf(userToDelete);
         myStore.AllUsers.splice(myDeletedUser, 1);
 
-        myStore.user.id='';        
-        // myStore.AllUsers = (await DataServices.getAllUsers()).data;        
+        myStore.user.id='';   
     }    
 }
 
@@ -138,16 +138,6 @@ function newAppo(){console.log("hola");
     myStore.user.id='';
 }
 
-async function generateBill(){
-    let response = await DataServices.generateBill(myStore.appo.id);
-    console.log(response);
-    myStore.msgToUser=response.data;
-    if(response.data.startsWith("Se generó")){
-        myStore.appo.hasBill=true;
-    }
-    OpenFeedbackDialog();
-}
-
 </script>
 
 <template>
@@ -155,13 +145,13 @@ async function generateBill(){
         <div>
         <button v-if="!myStore.onChanging && myStore.appo.id!==null"  @click="modifyAppoNotes" title="Añadir Notas de Sesión">Añadir Notas para esta cita</button>
 
-        <button v-if="!myStore.onChanging && myStore.appo.id!==null  && myStore.appo.hasBill===false" title="Generar Factura para esta cita" @click="generateBill">Generar Factura</button>
-        <button v-if="!myStore.onChanging && myStore.appo.id!==null  && myStore.appo.hasBill===true" title="ver Factura de esta cita">Ver Factura</button>
+        <button v-if="!myStore.onChanging && myStore.appo.id!==null  && myStore.appo.hasBill===false" title="Generar Factura para esta cita" @click="PDFServices.generateBill">Generar Factura</button>
+        <button v-if="!myStore.onChanging && myStore.appo.id!==null  && myStore.appo.hasBill===true" title="ver Factura de esta cita" @click="PDFServices.downloadBill">Ver Factura</button>
 
         <button v-if="myStore.onChanging && myStore.appo.id!==null" @click="cancelChanges" title="Cancelar Cambios">Cancelar Cambios</button>
         <button v-if="myStore.onChanging && myStore.appo.id!==null" @click="upgradeAppoNotes" title="Guardar Cambios">Guardar Cambios</button>
         <button @click="newAppo()" title="Nueva Cita">Nueva cita</button>
-
+        
     </div>
     <div>
         <button id="button_changeUserData" @click="changeUserData" title="Editar">Editar Datos Personales</button>

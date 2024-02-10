@@ -73,5 +73,16 @@ export default({
 
     async generateBill(id){
         return await axiosConnection.post('appo/genBill/'+id);
-    }
+    },
+
+    async downloadBill(id){
+        return await axiosConnection.get('appo/genBill/download/'+id, {
+            responseType: 'arraybuffer',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/pdf'
+            }
+        });
+    },
+
 })

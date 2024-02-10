@@ -3,10 +3,8 @@ package com.example.mySchedule.services;
 import com.example.mySchedule.config.EnvVariablesConfig;
 import com.example.mySchedule.models.userModel;
 import com.itextpdf.text.*;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPRow;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.pdf.*;
+import com.itextpdf.text.pdf.parser.PdfTextExtractor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -188,7 +186,6 @@ public class PDFServices {
         PdfPCell phoneCell=new PdfPCell(new Phrase("Telefono: "+theUser.getPhone(), paragFont));
         PdfPCell EmailCell=new PdfPCell(new Phrase("Email: "+theUser.getEmail(), paragFont));
 
-
         customerTable.addCell(headerCell);
         customerTable.addCell(nameCell);
         customerTable.addCell(surNameCell);
@@ -196,7 +193,7 @@ public class PDFServices {
         customerTable.addCell(phoneCell);
         customerTable.addCell(EmailCell);
 
-        customerTable.setWidthPercentage(50);
+        customerTable.setWidthPercentage(40);
         customerTable.setHorizontalAlignment(Element.ALIGN_RIGHT);
 
         //Quitar bordes de la tabla
@@ -256,7 +253,7 @@ public class PDFServices {
         billDetailTable.addCell(headerTotal);
         billDetailTable.addCell(headerTotalData);
 
-        billDetailTable.setHorizontalAlignment(Element.ALIGN_LEFT);
+        billDetailTable.setHorizontalAlignment(Element.ALIGN_CENTER);
         
         myDocument.add(billDetailTable);        
     }
@@ -316,16 +313,34 @@ public class PDFServices {
      * @param myPDFPath es la direccion donde se almacena el archivo
      * @return
      */
-    public byte[] getPDFbytes(String myPDFPath){
+    public byte[] getPDFbytes(String myPDFPath) {
         //Crear la instancia en memoria donde se escribira el archivo
         try{
             Path pdfPath = Paths.get(myPDFPath);
             byte[] pdfByteArray= Files.readAllBytes(pdfPath);
+
+            //openPDF(pdfByteArray); //visualiza el contenido del array de bytes
 
             return pdfByteArray;
         }
         catch(Exception e){
             return null;
         }
+    }
+
+    public void openPDF(byte[] pdfByteArray) throws IOException, DocumentException {
+        // Crear un PdfReader desde el array de bytes
+        PdfReader reader = new PdfReader(new ByteArrayInputStream(pdfByteArray));
+
+        // Extraer el texto del PDF (opcional)
+        StringBuilder text = new StringBuilder();
+        for (int i = 1; i <= reader.getNumberOfPages(); i++) {
+            text.append(PdfTextExtractor.getTextFromPage(reader, i));
+        }
+        System.out.println("Texto del PDF:");
+        System.out.println(text.toString());
+
+        // Cerrar el PdfReader
+        reader.close();
     }
 }
