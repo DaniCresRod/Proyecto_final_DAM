@@ -54,6 +54,9 @@ export default({
         return SpanishDays[index];
     },
 
+    /***
+     * Upgraded to highlight current day in calendar.
+     */
     getWeekDaysArray(date){
         let rangeDown;
         let weekArray=[];
@@ -82,11 +85,16 @@ export default({
             break;
         }
 
-        for(let i=0;i<7;i++){
+        let highlightMe;
+        for(let i=0;i<7;i++){            
             let theDay=this.sumDays(date, -rangeDown+i);
             weekArray[i]=(theDay.getDate().toString().padStart(2, "0")+" / "
                         +(theDay.getMonth()+1).toString().padStart(2, "0"));
+            if(-rangeDown+i===0){
+                highlightMe=i;
+            }
         }
+        weekArray.push(highlightMe);
         return weekArray;
     },
 

@@ -15,6 +15,7 @@ const changedDateArray=ref([]);
 const datesInWeekArray=ref([]);
 const whatsAppMsj=ref();
 let draggedStartInfo;
+const indexToHighlight=ref();
 
 const dateNow = new Date(Date.now());
 const dateFilter = ref(dateNow.getFullYear() + "-" 
@@ -33,11 +34,13 @@ async function buildCalendarArray(theDate){
         myWeeklyArray.value=defineCalendarBasics(sessionMinutes, timeWindows, null);
         datesInWeekArray.value=DateServices.getWeekDaysArray(dateFilter.value);
 
+        //Modificacion posterior para marcar el dia actual
+        indexToHighlight.value=datesInWeekArray.value.pop();
+        
         let arrayOfUsers=await DataServices.getAllUsersInTheWeekOf(theDate);
         
         arrayOfUsers.data.forEach((eachUser)=>{    
             let isInWeek=appoIsInRange(dateFilter.value,eachUser.nextAppoDate);
-
             if (isInWeek){
                 let myIndex=getIndexInMyWeeklyArray(eachUser, myWeeklyArray.value);
                 let userWithAppoThisWeek = new CalendarDayBooked(myIndex,eachUser.nextAppoDate, eachUser.nextAppoStart, eachUser.id, eachUser.name, eachUser.alias, eachUser.appoId, eachUser.phone);
@@ -50,10 +53,20 @@ async function buildCalendarArray(theDate){
                 }          
             }              
         });
+            
+        highlight(indexToHighlight.value);
+        
     }
     catch{
         console.log("Se produjo un error al crear el calendario");
     }    
+}
+
+function highlight(indexToHighlight){
+    const cuadro=document.querySelectorAll("#div_calendar>p");
+        cuadro.forEach(eachP=>eachP.classList.remove('highlight'))
+        
+        cuadro[indexToHighlight+2].classList.add('highlight');
 }
 
 function resetDate(){
@@ -215,10 +228,6 @@ async function executeNewAppo(dataToSend){
     buildCalendarArray(dateFilter.value);
 
     cancelAppoMove();
-
-    console.log(dataToSend);
-    console.log(changedDateArray.value[0]);
-
     
     whatsAppMsj.value=`Hola ${myStore.whatsAppUser.name}, recuerda que hemos quedado en vernos `
     +` el día *${DateServices.changeFormatToDate(myStore.whatsAppUser.newAppoDate)} a las ${DateServices.removeSeconds(myStore.whatsAppUser.newAppoStart)}*. Un saludo!`;
@@ -466,6 +475,11 @@ p:hover span{
     padding: 1vw 2vh;
     text-align: center;
     color:var(--color-text2);
+}
+
+.highlight{
+    box-shadow: 1px 1px 1px var(--color-text);
+    background-color: var(--color-background-text2);
 }
 
 
