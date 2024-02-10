@@ -146,7 +146,7 @@ function newAppo(){console.log("hola");
         <button v-if="!myStore.onChanging && myStore.appo.id!==null"  @click="modifyAppoNotes" title="Añadir Notas de Sesión">Añadir Notas para esta cita</button>
 
         <button v-if="!myStore.onChanging && myStore.appo.id!==null  && myStore.appo.hasBill===false" title="Generar Factura para esta cita" @click="PDFServices.generateBill">Generar Factura</button>
-        <button v-if="!myStore.onChanging && myStore.appo.id!==null  && myStore.appo.hasBill===true" title="ver Factura de esta cita" @click="PDFServices.downloadBill">Ver Factura</button>
+        <button v-if="!myStore.onChanging && myStore.appo.id!==null  && myStore.appo.hasBill===true" title="ver Factura de esta cita" @click="PDFServices.downloadBill(myStore.appo.id)">Ver Factura</button>
 
         <button v-if="myStore.onChanging && myStore.appo.id!==null" @click="cancelChanges" title="Cancelar Cambios">Cancelar Cambios</button>
         <button v-if="myStore.onChanging && myStore.appo.id!==null" @click="upgradeAppoNotes" title="Guardar Cambios">Guardar Cambios</button>
