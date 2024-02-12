@@ -1,7 +1,5 @@
 package com.example.mySchedule.controllers;
 
-
-import com.example.mySchedule.DTOs.AuthResponse;
 import com.example.mySchedule.DTOs.LoginRequest;
 import com.example.mySchedule.services.AuthService;
 import jakarta.servlet.http.HttpServletRequest;

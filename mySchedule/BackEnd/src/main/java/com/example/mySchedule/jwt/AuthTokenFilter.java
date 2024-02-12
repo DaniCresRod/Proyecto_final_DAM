@@ -1,6 +1,5 @@
 package com.example.mySchedule.jwt;
 
-import com.example.mySchedule.repositories.RepoUser;
 import com.example.mySchedule.services.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;

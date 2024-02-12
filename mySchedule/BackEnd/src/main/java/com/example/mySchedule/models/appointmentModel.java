@@ -48,19 +48,15 @@ public class appointmentModel {
     @JsonIgnoreProperties("appointmentsList")
     private userModel userID;
 
+    /**
+     * Antes de realizar un guardado en la base de datos, revisa si hay un path
+     * en el que se guarda la factura. Si es asi, establece el valor de hasBill en true
+     */
     @PreUpdate
     public void prePersist() {
         // Si billPath no es nulo, establecer hasBill en true
         if (billPath != null) {
             hasBill = true;
         }
-    }
-
-    public enum AppoType
-    {
-        Terapia,
-        Formacion,
-        Grupos,
-        Otros
     }
 }

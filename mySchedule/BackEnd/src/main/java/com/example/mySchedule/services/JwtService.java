@@ -7,7 +7,6 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -20,13 +19,15 @@ import java.util.function.Function;
 @Service
 @RequiredArgsConstructor
 public class JwtService {
-
-//    @Setter(onMethod=@__(@Autowired))
     @Autowired
     private EnvVariablesConfig variablesConfig;
 
+    /**
+     * En este metodo se pueden definir las claims si fuera necesario
+     * @param user
+     * @return
+     */
     public String getTokenService(UserDetails user){
-        System.out.println("Traigo usuario: "+user.getUsername());
         return getToken(new HashMap<>(),user);
     }
 
@@ -34,11 +35,11 @@ public class JwtService {
     public String getToken(Map<String, Object> claims, UserDetails user){
         return Jwts
                 .builder()
-                .setClaims(claims)
-                .setSubject(user.getUsername())
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
-                .signWith(getKey(), SignatureAlgorithm.HS256)
+                .setClaims(claims)      //Aqui se podria haber metido informacion adicional
+                .setSubject(user.getUsername())     //Creador del token
+                .setIssuedAt(new Date(System.currentTimeMillis()))  //Creacion del token
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))  //Cuando deja de ser valido el token
+                .signWith(getKey(), SignatureAlgorithm.HS256)       //Codificacion
                 .compact();
     }
 
@@ -48,7 +49,8 @@ public class JwtService {
     }
 
     public String getUsernameFromToken(String token) {
-        return getClaim(token, Claims::getSubject);
+        return getClaim(token, (Claims claims)->claims.getSubject());
+//        return getClaim(token, Claims::getSubject);
     }
 
     public <T> T getClaim(String token, Function<Claims, T> claimsResolver) {
