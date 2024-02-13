@@ -17,7 +17,7 @@ export function ShowLogInErrorMessage(message){
   document.getElementById("logInError").classList.remove("invisible");
 }
 
-export async function LogIn(userName, userPass){
+export async function LogIn(userName, userPass){console.log("paso por la funcion login");
   window.localStorage.clear();
   document.getElementById("logInError").classList.add("invisible");             
 

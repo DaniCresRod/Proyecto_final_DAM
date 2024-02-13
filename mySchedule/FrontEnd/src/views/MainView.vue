@@ -2,9 +2,6 @@
 import { onBeforeMount } from 'vue'
 import router from '../router/index.js';
 
-
-
-
 onBeforeMount(() => {
   const userRol = window.localStorage.getItem("userRol"); 
   if (userRol === "Admin") {
@@ -15,7 +12,6 @@ onBeforeMount(() => {
   else{
     console.log("Error");
   }
-
 })
 
 </script>
@@ -24,7 +20,7 @@ onBeforeMount(() => {
   <main>    
     <RouterView/>       
   </main>
-  
+
 </template>
 
 <style scoped>

@@ -4,8 +4,7 @@ import { ref, watch, onBeforeMount } from 'vue'
 import {LogIn, checkLogIn, closeDialog} from '../src/services/UserFeedbackService'
 import { myUserStore } from './services/PiniaServices';
 import InputServices from './services/InputServices';
-
-//window.localStorage.clear();
+import router from './router/index.js';
 
 const isLogged=ref(false);
 const isAdmin=ref(window.localStorage.getItem("userRol")==="Admin");
@@ -19,12 +18,18 @@ watch(logType, async ()=>{
 })
 
 onBeforeMount(async () => {
+  router.push('/');
   //Revisa si hay almacenado un valor valido en el token
-  isLogged.value=await checkLogIn();  
+  isLogged.value=await checkLogIn(); 
 })
 
 function logOut(){
-  window.localStorage.clear();
+  window.localStorage.setItem("userEmail", '');
+  window.localStorage.setItem("userToken", '');
+  window.localStorage.setItem("userId", '');
+  window.localStorage.setItem("userName", '');
+  window.localStorage.setItem("userRol", '');
+  router.push('/');
 }
 
 </script>
@@ -54,7 +59,7 @@ function logOut(){
   </header>
 
   <!-- En funcion del estado del login tendremos una pagina de inicio u otra -->
-  <mainView v-if="isLogged" />
+  <mainView v-if="isLogged"/>
 
   <form class="logInForm" v-else>
     <fieldset>

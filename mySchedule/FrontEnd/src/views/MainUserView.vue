@@ -24,8 +24,8 @@ async function userNextAppo(){
         }        
     }
 }
-onBeforeMount(() => {
-    userNextAppo();
+onBeforeMount(async () => {
+    await userNextAppo();
 })
 
 </script>
@@ -40,7 +40,7 @@ onBeforeMount(() => {
 
     <div class="moreAppos" v-if="nextAppos.length > 0">
         <p>Tus otras citas: </p>
-        <ul>
+        <ul v-if="nextAppos.length > 0">
             <li v-for="appo of nextAppos" :key="appo">
                 <p>{{ DateServices.changeFormatToDate(appo.appoDate)}}
                  ({{ DateServices.getDayFromDate(appo.appoDate) }}), 
@@ -48,8 +48,6 @@ onBeforeMount(() => {
             </li>
         </ul>
     </div>
-
-
 </template>
 
 <style scoped>
