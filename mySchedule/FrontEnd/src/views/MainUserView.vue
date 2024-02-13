@@ -1,7 +1,7 @@
 <script setup>
 import DataServices from '../services/DataServices';
 import DateServices from '../services/DateServices';
-import { ref } from 'vue'
+import { ref, onBeforeMount } from 'vue'
 import { myUserStore } from '../services/PiniaServices';
 
 const nextAppo=ref();
@@ -24,7 +24,10 @@ async function userNextAppo(){
         }        
     }
 }
-userNextAppo();
+onBeforeMount(() => {
+    userNextAppo();
+})
+
 </script>
 
 <template>

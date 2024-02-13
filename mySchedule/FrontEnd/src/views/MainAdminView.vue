@@ -12,7 +12,9 @@ const myStore = myUserStore();
 //Recoge el DTO de los datos abreviados de usuario y los guarda en Pinia
 //asi estarán disponibles para todos los hijos
 onBeforeMount(async() => {
-    myStore.AllUsers = (await axiosConnection.getAllUsers()).data;      
+    if(window.localStorage.getItem("userRol")==="Usuario"){
+        myStore.AllUsers = (await axiosConnection.getAllUsers()).data;
+    }          
 })
 
 </script>
