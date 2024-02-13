@@ -103,5 +103,4 @@ export default({
         newDate.setDate(newDate.getDate() + howManyDays);
         return newDate;
     }
-
 })

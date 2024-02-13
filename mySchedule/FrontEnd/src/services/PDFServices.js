@@ -15,7 +15,7 @@ export default{
     },
 
     async downloadBill(id){
-        let response = await DataServices.downloadBill(id, { responseType: 'arraybuffer' });
+        let response = await DataServices.downloadBill(id, { responseType: 'arraybuffer' });console.log(response);
         let file = new Blob([response.data], { type: 'application/pdf' });
         let fileURL = URL.createObjectURL(file);
         window.open(fileURL);

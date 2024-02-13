@@ -11,6 +11,7 @@ package com.example.mySchedule.controllers;
 import com.example.mySchedule.DTOs.DTOBasicInfo;
 import com.example.mySchedule.models.userModel;
 import com.example.mySchedule.services.userServices;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,8 +34,8 @@ public class userControl{
 
     //Devuelve el usuario seleccionado con sus citas
     @GetMapping(path="/{id}")
-    public userModel readAUser(@PathVariable long id){
-        return myService.readAUser(id);
+    public userModel readAUser(@PathVariable long id, HttpServletRequest request){
+        return myService.readAUser(id, request);
     }
 
     //Salva un nuevo usuario

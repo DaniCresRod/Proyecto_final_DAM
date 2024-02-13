@@ -227,9 +227,11 @@ public class appoServices {
             userModel requesterUser=myUserRepo.findByUserNif(requesterNIF).orElse(null);
 
             if(requesterUser.getRol()!= userModel.UserType.Admin){
-
-                if(requesterNIF==myAppo.getUserID().getNif()){
+                String nif1=myAppo.getUserID().getNif();
+                String nif2=requesterNIF;
+                if(requesterNIF.equals(myAppo.getUserID().getNif())){
                     byte[] pdfByteArray=myPDFService.getPDFbytes(myAppo.getBillPath());
+                    //myPDFService.openPDF(pdfByteArray);
                     return pdfByteArray;
                 }
                 else{
@@ -239,19 +241,16 @@ public class appoServices {
             else if(requesterUser.getRol()== userModel.UserType.Admin){
                 byte[] pdfByteArray=myPDFService.getPDFbytes(myAppo.getBillPath());
 
-                myPDFService.openPDF(pdfByteArray);
+                //myPDFService.openPDF(pdfByteArray);
                 return pdfByteArray;
             }
             else{
                 return null;
             }
-
         }
         catch(Exception e){
             e.getStackTrace();
             return null;
         }
-
-
     }
 }

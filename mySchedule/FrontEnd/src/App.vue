@@ -43,7 +43,7 @@ function logOut(){
       </nav>      
       <nav v-else-if="isLogged">
         <RouterLink to="/UserView">Mi Cita</RouterLink>
-        <RouterLink to="/newAppointment">Mis Facturas</RouterLink>
+        <RouterLink to="/billView">Mis Facturas</RouterLink>
         <a href="" @click="logOut()">Salir</a>
       </nav>
       <nav v-else>

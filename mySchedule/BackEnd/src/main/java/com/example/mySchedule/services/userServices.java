@@ -2,10 +2,12 @@ package com.example.mySchedule.services;
 
 
 import com.example.mySchedule.DTOs.DTOBasicInfo;
+import com.example.mySchedule.jwt.AuthTokenFilter;
 import com.example.mySchedule.models.appointmentModel;
 import com.example.mySchedule.models.userModel;
 import com.example.mySchedule.repositories.RepoAppointment;
 import com.example.mySchedule.repositories.RepoUser;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,6 +28,10 @@ public class userServices{
     RepoAppointment AppoRepo;
     @Autowired
     PasswordEncoder passwordEncoder;
+    @Autowired
+    JwtService tokenService;
+    @Autowired
+    AuthTokenFilter authTokenFilter;
 
     //Devuelve los detalles basicos (primera cita) de todos los usuarios
     public ArrayList<DTOBasicInfo> readUsers() {
@@ -144,20 +150,26 @@ public class userServices{
         }
     }
 
-    public userModel readAUser(long id) {
-        if(myRepo.existsById(id)){
-            userModel myUser=myRepo.findById(id).orElse(null);
-            List<appointmentModel> newList= new ArrayList<>();
+    public userModel readAUser(long id, HttpServletRequest request) {
 
-            for(appointmentModel eachAppo : myUser.getAppointmentsList()){
-                if(!eachAppo.isDeleted()){
-                    newList.add(eachAppo);
+        String incomNif=tokenService.getUsernameFromToken(authTokenFilter.getTokenFromRequest(request));
+        userModel incomUser=myRepo.findByUserNif(incomNif).orElse(null);
+
+        if((incomUser.getRol() == userModel.UserType.Admin) || (incomUser.getId()==id)){
+            if(myRepo.existsById(id)){
+                userModel myUser=myRepo.findById(id).orElse(null);
+                List<appointmentModel> newList= new ArrayList<>();
+
+                for(appointmentModel eachAppo : myUser.getAppointmentsList()){
+                    if(!eachAppo.isDeleted()){
+                        newList.add(eachAppo);
+                    }
                 }
-            }
-            myUser.setAppointmentsList(newList);
-            return myUser;
+                myUser.setAppointmentsList(newList);
+                return myUser;
 //            return myRepo.findById(id).orElse(null);
 //            return myRepo.findByIdWDeleted(id).orElse(null);
+            }
         }
         return null;
     }

@@ -31,6 +31,9 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests((authz) -> authz
                         .requestMatchers(HttpMethod.OPTIONS).permitAll()
                         .requestMatchers(HttpMethod.POST,"/auth").permitAll()
+                        .requestMatchers(HttpMethod.POST).hasRole("Admin")
+                        .requestMatchers(HttpMethod.PUT).hasRole("Admin")
+                        .requestMatchers(HttpMethod.DELETE).hasRole("Admin")
                         //.anyRequest().permitAll()
                         .anyRequest().authenticated()
                 )
