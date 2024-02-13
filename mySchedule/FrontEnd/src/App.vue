@@ -82,6 +82,8 @@ function logOut(){
   </form>
 
   <footer>
+    <p>Daniel Crespo Rodr&iacute;guez</p>
+    <p>Proyecto Desarrollo de Aplicaciones Multiplataforma</p>
 
   </footer>
 
@@ -249,6 +251,10 @@ footer{
   height: 4vh;
   width: 100%;
   z-index: 2;
+
+  color:var(--color-background-text);
+  display:flex;
+  justify-content: space-evenly;
 }
 
 #aside_feedback{border:1px solid black;
