@@ -23,6 +23,10 @@ onBeforeMount(async () => {
   isLogged.value=await checkLogIn();  
 })
 
+function logOut(){
+  window.localStorage.clear();
+}
+
 </script>
 
 <template>
@@ -35,12 +39,12 @@ onBeforeMount(async () => {
         <RouterLink to="/AdminView">Inicio</RouterLink>
         <RouterLink to="/newAppointment">Nuevo usuario</RouterLink>
         <RouterLink to="/allApointment">Próximas citas</RouterLink>
-        <RouterLink to="/allApointment">Salir</RouterLink>
+        <a href="" @click="logOut()">Salir</a>
       </nav>      
       <nav v-else-if="isLogged">
         <RouterLink to="/UserView">Mi Cita</RouterLink>
         <RouterLink to="/newAppointment">Mis Facturas</RouterLink>
-        <RouterLink to="/allApointment">Salir</RouterLink>
+        <a href="" @click="logOut()">Salir</a>
       </nav>
       <nav v-else>
         
