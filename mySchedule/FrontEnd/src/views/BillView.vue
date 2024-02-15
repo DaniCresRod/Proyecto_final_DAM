@@ -53,8 +53,7 @@ hr{
     width: 100%;
     margin: 1vh auto;
 }
-p{
-    
+p{    
     margin-top:0.3vh;
 }
 ul{
@@ -68,8 +67,19 @@ ul li{
     justify-content: space-between;
     align-items: center;
     border-bottom: 1px dashed var(--color-text);
+    height: 4.5vh;
 }
 img{
     max-height: 4vh;
 }
+
+@media screen and (max-width: 450px) {
+  li{
+    font-size: smaller;
+  }  
+  div{
+    width:90vw;
+  }
+}
+
 </style>

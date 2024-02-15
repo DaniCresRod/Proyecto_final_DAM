@@ -257,6 +257,15 @@ footer{
   justify-content: space-evenly;
 }
 
+@media screen and (max-width: 450px) {
+  footer{
+    font-size: 0.65rem;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+  }  
+}
+
 #aside_feedback{border:1px solid black;
     position: absolute;
     top:calc(50% - 20vh / 2);
