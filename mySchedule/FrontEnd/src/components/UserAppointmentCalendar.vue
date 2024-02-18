@@ -6,6 +6,7 @@ import DateServices from '../services/DateServices';
 import {defineCalendarBasics, appoIsInRange, getIndexInMyWeeklyArray, CalendarDayBooked, getChildIndex, getNewDayAndHour} from '../services/GraphCalendarServices';
 import {sendWhatsApp, sendReminder} from '../services/WhatsAppService';
 import PopUpMenuComponent from './ContextMenu/PopUpMenuComponent.vue';
+import { OpenFeedbackDialog } from '../services/UserFeedbackService';
 
 const myStore=myUserStore();
 
@@ -112,7 +113,9 @@ function dragEnd(event){
     else if(event.target.innerText!==""){
         myStore.whatsAppUser={};
         myStore.onChanging=false;
-        window.alert("No puedes asignar una cita ahi");
+        // window.alert("No puedes asignar una cita ahi");
+        myStore.msgToUser="No puedes asignar una cita ahi";
+        OpenFeedbackDialog();
     }
         // console.log(getChildIndex(event.target));
 }
@@ -224,20 +227,34 @@ function changeWeekAppointment(event){
 
 async function executeNewAppo(dataToSend){
     let response=await DataServices.saveAppo(JSON.stringify(dataToSend));
-    changedDateArray.value=response.data;
-    buildCalendarArray(dateFilter.value);
-
-    cancelAppoMove();
+    console.log(response);
+    if(response.data.length==0){
+        myStore.msgToUser="No puedes seleccionar fechas pasadas!";
+        OpenFeedbackDialog();
+        cancelAppoMove();
+    }
+    else{
+        changedDateArray.value=response.data;
+        buildCalendarArray(dateFilter.value);
+        cancelAppoMove();
     
-    whatsAppMsj.value=`Hola ${myStore.whatsAppUser.name}, recuerda que hemos quedado en vernos `
-    +` el día *${DateServices.changeFormatToDate(myStore.whatsAppUser.newAppoDate)} a las ${DateServices.removeSeconds(myStore.whatsAppUser.newAppoStart)}*. Un saludo!`;
-    sendReminder(changedDateArray.value[0]);
+        whatsAppMsj.value=`Hola ${myStore.whatsAppUser.name}, recuerda que hemos quedado en vernos `
+        +` el día *${DateServices.changeFormatToDate(myStore.whatsAppUser.newAppoDate)} a las ${DateServices.removeSeconds(myStore.whatsAppUser.newAppoStart)}*. Un saludo!`;
+        sendReminder(changedDateArray.value[0]);
+    }    
 }
 
 async function executeAppoChange(dataToSend){
     let response=await DataServices.updateAppo(JSON.stringify(dataToSend));
-    changedDateArray.value=response.data;
-    buildCalendarArray(dateFilter.value);
+
+    if(response.data.length==0){
+        myStore.msgToUser="No puedes seleccionar fechas pasadas";
+        OpenFeedbackDialog();
+    }
+    else{
+        changedDateArray.value=response.data;
+        buildCalendarArray(dateFilter.value);
+    }  
 
     cancelAppoMove();
 
@@ -460,7 +477,7 @@ p:hover span{
     position: absolute;
     z-index:3;
     width: min-content;
-    overflow: hidden;
+    /* overflow: hidden; */
     padding: 0;
     margin:0;    
 }

@@ -128,7 +128,7 @@ async function dareToDelete(valor){
     }    
 }
 
-function newAppo(){console.log("hola");
+function newAppo(){
     let dataToSend={
         id:myStore.user.id,
         name: myStore.user.name,

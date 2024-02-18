@@ -28,7 +28,7 @@ onBeforeMount(() => {
 main{
   width: 80vw;
   height: 80vh;  
-  overflow-y: hidden;
+  /* overflow-y: hidden; */
 }
 
 @media screen and (max-width: 500px) {

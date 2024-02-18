@@ -5,20 +5,6 @@ import DateServices from '../../services/DateServices';
 
 const myStore=myUserStore();
 
-// onUpdated(() => {
-//   document.querySelectorAll("#fieldset_Appos li").forEach((eachAppoContainer, index)=>{
-//     let dateText=eachAppoContainer.innerText.split(" ",1)[0].split("/", 3);
-
-//     let myDate=new Date(dateText[2]+"-"+dateText[1]+"-"+dateText[0]);
-
-//     if(myDate >= Date.now()){
-//         console.log(index);
-//     }
-
-//     // console.log(myDate);
-//   })  
-// })
-
 </script>
 
 <template>

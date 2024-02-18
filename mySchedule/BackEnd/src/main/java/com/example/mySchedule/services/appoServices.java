@@ -46,6 +46,10 @@ public class appoServices {
 
     //Salvar una cita nueva, si no hay otra ya
     public List<appointmentModel> setAppoint(appointmentModel newAppo){
+        //Revisar que no se ha seleccionado una fecha pasada
+        if(newAppo.getAppoDate().isBefore(LocalDate.now())){
+            return null;
+        }
         List<appointmentModel> myList = myRepoAppo.findRepeatedAppoHour(newAppo);
         if(myList.size()==0){
             myRepoAppo.save(newAppo);
@@ -59,8 +63,18 @@ public class appoServices {
     //Si no esta libre el horario, devuelve una lista con las citas ya establecidas y que evitan el cambio
     public List<appointmentModel> updateAppoint(appointmentModel newAppo){
         try{
+            //Revisar que no se ha seleccionado una fecha pasada
+            if(newAppo.getAppoDate().isBefore(LocalDate.now())){
+                return null;
+            }
+
             //verificar que existe la cita
             appointmentModel oldAppo=myRepoAppo.findById(newAppo.getId()).get();
+
+            //Verificar que no se está moviendo una cita que ya se celebró
+            if(oldAppo.getAppoDate().isBefore(LocalDate.now())){
+                return null;
+            }
 
             //Recoger la lista de citas con horario incompatible con la nueva cita
             List<appointmentModel> myList = myRepoAppo.findRepeatedAppoHour(newAppo);
