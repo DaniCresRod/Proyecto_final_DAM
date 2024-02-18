@@ -90,7 +90,7 @@ public class userServices{
                             retrievedUser.getPhone(),
                             -1, null, null,
                             true,
-                            "El usuario "+retrievedUser.getAlias()+"se añadió con éxito");
+                            "El usuario "+retrievedUser.getName()+" "+retrievedUser.getAlias()+" se añadió con éxito");
 
                     return sendUserBasicInfo;
                 }
