@@ -68,7 +68,7 @@ public class userServices{
 
     public DTOBasicInfo saveUser(userModel newUser) {
         String feedbackMsg;
-        //Se revisa si ya existe el usuario en la base de datos (Por Email)
+        //Se revisa si ya existe el usuario en la base de datos (Por E-mail)
         userModel retrievedUser=myRepo.findByEmail(newUser.getEmail());
         if(retrievedUser==null){
             //Se revisa si ya existe el usuario en la base de datos (Por NIF)
