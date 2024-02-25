@@ -1,0 +1,38 @@
+version: '3'
+
+services:
+
+  mysql_container:
+    image: mysql:latest
+    environment:
+      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_DATABASE=db_myschedule
+    ports:
+      - 13306:3306
+    networks:
+      - my-net
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  myapp-main:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - DATABASE_HOST=mysql_container
+      - DATABASE_USER=root
+      - DATABASE_PASSWORD=secret
+      - DATABASE_NAME=db_myschedule
+      - DATABASE_PORT=13306
+    ports:
+      - 8080:8080
+    depends_on:
+      - mysql_container
+    networks:
+      - my-net
+
+networks:
+  my-net:
+
+volumes:
+  mysql_data:

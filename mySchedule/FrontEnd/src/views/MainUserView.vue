@@ -10,32 +10,41 @@ const nextAppos=ref([]);
 async function userNextAppo(){
     let response = await DataServices.getUserById(window.localStorage.getItem("userId"));
     myUserStore().user=response.data;    
-    
+    console.log(response.data);
     if(response.data.appointmentsList.length >0){
 
         nextAppos.value=response.data.appointmentsList.filter(eachDate=>{
             return (new Date(eachDate.appoDate+" "+eachDate.appoStart) > Date.now());            
         });
-        if(nextAppos.value.length==0){
-            nextAppo.value="No tienes una cita concertada"
+        if(nextAppos.value.length===0){
+            nextAppo.value="Aún no tienes una nueva cita concertada"
         }
         else{
             nextAppo.value=nextAppos.value.pop();
         }        
     }
+    else{
+        nextAppo.value="Aún no tienes una nueva cita concertada"
+    }
 }
 onBeforeMount(async () => {
     await userNextAppo();
+    console.log(nextAppo.value);
 })
 
 </script>
 
 <template>
-    <div class="logInForm">        
+    <div class="logInForm" v-if="nextAppo!=='Aún no tienes una nueva cita concertada'">        
         <p class="p_title">Mi pr&oacute;xima cita:</p>
         <span>{{ DateServices.changeFormatToDate(nextAppo.appoDate)}}</span>
         <p>({{ DateServices.getDayFromDate(nextAppo.appoDate) }}), 
         a las {{ DateServices.removeSeconds(nextAppo.appoStart) }}h.</p> 
+    </div>
+
+    <div class="logInForm" v-else>        
+        <p class="p_title">Mi pr&oacute;xima cita:</p>
+        <span>{{ nextAppo}}</span> 
     </div>
 
     <div class="moreAppos" v-if="nextAppos.length > 0">

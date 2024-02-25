@@ -1,0 +1,34 @@
+
+version: '3'
+
+services:
+
+  mysql_container:
+    image: mysql:8.0
+    environment:
+      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_DATABASE=db_myschedule
+
+    ports:
+      - 13306:3306
+    networks:
+      - my-net
+
+  myapp-main:
+    image: hansleolml/spring_docker:latest
+    networks:
+      - my-net
+    restart: on-failure
+    depends_on:
+      - mysql_container
+    ports:
+      - 8080:8080
+    environment:
+      - DATABASE_HOST=mysql_container
+      - DATABASE_USER=root
+      - DATABASE_PASSWORD=secret
+      - DATABASE_NAME=db_myschedule
+      - DATABASE_PORT=13306
+
+networks:
+  my-net:

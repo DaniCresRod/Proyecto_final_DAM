@@ -64,13 +64,17 @@ function logOut(){
   <form class="logInForm" v-else>
     <fieldset>
       <label for="logInEmail">Email <abbr title="Campo Requerido" aria-label="required">*</abbr></label>
-      <input type="text" name="logInEmail" id="logInEmail" autocomplete="username" v-model="userName">
+      <input type="text" name="logInEmail" id="logInEmail" autocomplete="username" 
+      v-model="userName"
+      @keyup.enter="logType=LogIn(userName,userPass)">
     </fieldset>
 
     <fieldset>
       <label for="logInPassword">Contraseña <abbr title="Campo Requerido" aria-label="required">*</abbr></label>
       <div class="passwordBound">
-        <input type="password" name="logInPassword" id="logInPassword" autocomplete="current-password" v-model="userPass">
+        <input type="password" name="logInPassword" id="logInPassword" autocomplete="current-password" 
+        v-model="userPass"
+        @keyup.enter="logType=LogIn(userName,userPass)">
         <img id="imgModePassword_1" class="hideShowPass" src="@/assets/Images/iconoOculto.png" alt="Mostrar u ocultar contraseña" @click="InputServices.ToggleImg('logInPassword', 'imgModePassword_1')"/>
       </div>      
     </fieldset>
