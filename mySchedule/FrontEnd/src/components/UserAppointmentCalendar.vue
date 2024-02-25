@@ -3,7 +3,7 @@ import { ref, watch, onBeforeMount } from 'vue';
 import { myUserStore } from '../services/PiniaServices';
 import DataServices from '../services/DataServices';
 import DateServices from '../services/DateServices';
-import {defineCalendarBasics, appoIsInRange, getIndexInMyWeeklyArray, CalendarDayBooked, getChildIndex, getNewDayAndHour} from '../services/GraphCalendarServices';
+import {defineCalendarBasics, getIndexInMyWeeklyArray, CalendarDayBooked, getChildIndex, getNewDayAndHour} from '../services/GraphCalendarServices';
 import {sendWhatsApp, sendReminder} from '../services/WhatsAppService';
 import PopUpMenuComponent from './ContextMenu/PopUpMenuComponent.vue';
 import { OpenFeedbackDialog } from '../services/UserFeedbackService';
@@ -33,16 +33,16 @@ async function buildCalendarArray(theDate){
         let timeWindows=["08:00", "21:00"];
 
         myWeeklyArray.value=defineCalendarBasics(sessionMinutes, timeWindows, null);
-        datesInWeekArray.value=DateServices.getWeekDaysArray(dateFilter.value);
-
+        
         //Modificacion posterior para marcar el dia actual
+        datesInWeekArray.value=DateServices.getWeekDaysArray(dateFilter.value);
         indexToHighlight.value=datesInWeekArray.value.pop();
         
         let arrayOfUsers=await DataServices.getAllUsersInTheWeekOf(theDate);
         
         arrayOfUsers.data.forEach((eachUser)=>{    
-            let isInWeek=appoIsInRange(dateFilter.value,eachUser.nextAppoDate);
-            if (isInWeek){
+            //let isInWeek=appoIsInRange(dateFilter.value,eachUser.nextAppoDate);
+            //if (isInWeek){
                 let myIndex=getIndexInMyWeeklyArray(eachUser, myWeeklyArray.value);
                 let userWithAppoThisWeek = new CalendarDayBooked(myIndex,eachUser.nextAppoDate, eachUser.nextAppoStart, eachUser.id, eachUser.name, eachUser.alias, eachUser.appoId, eachUser.phone);
 
@@ -52,7 +52,7 @@ async function buildCalendarArray(theDate){
                 else{
                     oddApposArray.value.push(userWithAppoThisWeek);
                 }          
-            }              
+            //}              
         });
             
         highlight(indexToHighlight.value);
@@ -60,6 +60,8 @@ async function buildCalendarArray(theDate){
     }
     catch{
         console.log("Se produjo un error al crear el calendario");
+        myStore.msgToUser="No se pudo generar el calendario";
+        OpenFeedbackDialog();
     }    
 }
 

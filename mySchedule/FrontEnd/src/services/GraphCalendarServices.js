@@ -1,5 +1,5 @@
 import DateServices from "./DateServices";
-import moment from 'moment';
+//import moment from 'moment';
 
 //Define un array rellenado con los dias de la semana y los horarios
 export function defineCalendarBasics(sessionMinutes, timeWindows, customTimeArray){    
@@ -74,55 +74,50 @@ export class CalendarDayBooked extends CalendarDay{
 }
 
 //Uso por primera vez la libreria moment.js (https://momentjs.com/)
-export function appoIsInRange(dateFilter, userAppoDate){
-    const weekDayName = DateServices.getDayFromDate(dateFilter);
-    let rangeUp;
-    let rangeDown;
+// export function appoIsInRange(dateFilter, userAppoDate){
+//     const weekDayName = DateServices.getDayFromDate(dateFilter);
+//     let rangeUp;
+//     let rangeDown;
 
-    switch (weekDayName){
-        case "Lunes": 
-            rangeUp=6;
-            rangeDown=0;
-            break;
-        case "Martes":
-            rangeUp=5;
-            rangeDown=1;
-            break;
-        case "Miercoles":
-            rangeUp=4;
-            rangeDown=2;
-            break;
-        case "Jueves":
-            rangeUp=3;
-            rangeDown=3;
-            break;
-        case "Viernes":
-            rangeUp=2;
-            rangeDown=4;
-            break;
-        case "Sabado":
-            rangeUp=1;
-            rangeDown=5;
-            break;
-        case "Domingo":
-            rangeUp=0;
-            rangeDown=6;
-            break;
-    }
-    let userDate=moment(userAppoDate);
-    let selectedDate=moment(dateFilter);
-    // console.log(selectedDate.format('YYYY-MM-DD'));
-    // console.log(userDate.format('YYYY-MM-DD'));
-    // console.log(rangeUp);
-    // console.log(selectedDate.add(rangeUp,'days').format('YYYY-MM-DD'));
-    // console.log(selectedDate.subtract(rangeDown, 'days').format('YYYY-MM-DD'));
+//     switch (weekDayName){
+//         case "Lunes": 
+//             rangeUp=6;
+//             rangeDown=0;
+//             break;
+//         case "Martes":
+//             rangeUp=5;
+//             rangeDown=1;
+//             break;
+//         case "Miercoles":
+//             rangeUp=4;
+//             rangeDown=2;
+//             break;
+//         case "Jueves":
+//             rangeUp=3;
+//             rangeDown=3;
+//             break;
+//         case "Viernes":
+//             rangeUp=2;
+//             rangeDown=4;
+//             break;
+//         case "Sabado":
+//             rangeUp=1;
+//             rangeDown=5;
+//             break;
+//         case "Domingo":
+//             rangeUp=0;
+//             rangeDown=6;
+//             break;
+//     }
+//     let userDate=moment(userAppoDate);
+//     let selectedDate=moment(dateFilter);
 
-    if(userDate.isBetween(selectedDate.clone().subtract(rangeDown, 'days').format('YYYY-MM-DD'), selectedDate.clone().add(rangeUp,'days').format('YYYY-MM-DD'), null, [])){
+//     if(userDate.isBetween(selectedDate.clone().subtract(rangeDown, 'days').format('YYYY-MM-DD'), selectedDate.clone().add(rangeUp,'days').format('YYYY-MM-DD'), null, [])){
        
-        return true;
-    } 
-    else return false;
-}
+//         return true;
+//     } 
+//     else return false;
+// }
 
 //Esta funcion asigna indice en el array que formara el calendario a un usuario
 export function getIndexInMyWeeklyArray(userWithAppo, theArray){
