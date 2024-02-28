@@ -131,51 +131,45 @@ function showContextMenu(event){
     function hideMenuOnTouchMove() {
         popUpMenu.classList.add("invisible");
         document.removeEventListener("touchmove", hideMenuOnTouchMove, {passive: true});
-    }
+    }    
     
-    const target = event.target;
-    const targetParentNode = target.parentNode;
+    popUpMenu.classList.toggle("invisible");
 
-    if ((target.firstElementChild !== null && target.__vnode.key && target.__vnode.key.userId) ||
-        (target.firstElementChild === null && targetParentNode && targetParentNode.__vnode.key && targetParentNode.__vnode.key.userId)
-    ) {        
-        popUpMenu.classList.toggle("invisible");
+    //No ha habido forma de evitar que el span dentro del p no aparezca como target del evento, asi que lo reviso
+    //para acceder siempre al <p> padre.
+    let myClickedNode = getChildIndex(event.target.childElementCount === 0 ? event.target.parentNode : event.target);
 
-        //No ha habido forma de evitar que el span dentro del p no aparezca como target del evento, asi que lo reviso
-        //para acceder siempre al <p> padre.
-        let myClickedNode = getChildIndex(event.target.childElementCount===0 ? event.target.parentNode : event.target);
+    //Se resalta el elemento seleccionado
+    let myDocument = document.querySelector(':root');
+    let myColor = getComputedStyle(myDocument).getPropertyValue('--color-border');
+    document.querySelector(`#div_calendar p:nth-of-type(${myClickedNode + 1})`).style.border = `3px solid ${myColor}`;
 
-        //Se resalta el elemento seleccionado
-        let myDocument=document.querySelector(':root');
-        let myColor=getComputedStyle(myDocument).getPropertyValue('--color-border');
-        document.querySelector(`#div_calendar p:nth-of-type(${myClickedNode+1})`).style.border=`3px solid ${myColor}`;
-        
-        //Obtengo los datos del usuario y los almaceno en pinia
-        document.getElementById("div_whatsapp").classList.add("invisible");
-        
-        myStore.whatsAppUser={};
-        myStore.whatsAppUser.name=myWeeklyArray.value[myClickedNode].user;
-        myStore.whatsAppUser.oldAppoDate=myWeeklyArray.value[myClickedNode].appoDay;
-        myStore.whatsAppUser.oldAppoStart=myWeeklyArray.value[myClickedNode].appoTime;
-        myStore.whatsAppUser.phone=myWeeklyArray.value[myClickedNode].phone;
-        myStore.whatsAppUser.userId=myWeeklyArray.value[myClickedNode].userId;
-        myStore.whatsAppUser.appoId=myWeeklyArray.value[myClickedNode].appoId; 
-        myStore.whatsAppUser.indexOfArray=myClickedNode;
+    //Obtengo los datos del usuario y los almaceno en pinia
+    document.getElementById("div_whatsapp").classList.add("invisible");
 
-        if(typeof(event.touches)!=='undefined'){
-            popUpMenu.style.top = event.touches[0].clientY + "px";
-            popUpMenu.style.left = event.touches[0].clientX +10+ "px";
+    myStore.whatsAppUser = {};
+    myStore.whatsAppUser.name = myWeeklyArray.value[myClickedNode].user;
+    myStore.whatsAppUser.oldAppoDate = myWeeklyArray.value[myClickedNode].appoDay;
+    myStore.whatsAppUser.oldAppoStart = myWeeklyArray.value[myClickedNode].appoTime;
+    myStore.whatsAppUser.phone = myWeeklyArray.value[myClickedNode].phone;
+    myStore.whatsAppUser.userId = myWeeklyArray.value[myClickedNode].userId;
+    myStore.whatsAppUser.appoId = myWeeklyArray.value[myClickedNode].appoId;
+    myStore.whatsAppUser.indexOfArray = myClickedNode;
 
-            document.addEventListener("touchmove", hideMenuOnTouchMove, {passive: true});
-        
-        }
-        else{
-            popUpMenu.style.top=event.clientY+"px";
-            popUpMenu.style.left=event.clientX+"px";
-            popUpMenu.addEventListener("mouseleave", ()=>{
-                popUpMenu.classList.add("invisible");});
-        }        
-    }      
+    if (typeof (event.touches) !== 'undefined') {
+        popUpMenu.style.top = event.touches[0].clientY + "px";
+        popUpMenu.style.left = event.touches[0].clientX + 10 + "px";
+
+        document.addEventListener("touchmove", hideMenuOnTouchMove, { passive: true });
+
+    }
+    else {
+        popUpMenu.style.top = event.clientY + "px";
+        popUpMenu.style.left = event.clientX + "px";
+        popUpMenu.addEventListener("mouseleave", () => {
+            popUpMenu.classList.add("invisible");
+        });
+    }             
 }
 
 function changeWeekAppointment(event){
@@ -311,7 +305,9 @@ onBeforeMount(() => {
             @drop="dragEnd" @dragstart="dragStart" @dragover.prevent @dragenter.prevent 
             @touchstart.passive="showContextMenu"
             @contextmenu.prevent.stop="showContextMenu"            
-            @pointerdown="changeWeekAppointment">
+            @pointerdown="changeWeekAppointment"
+            class="noMouse"
+            :class="{'okMouse': item && item.userId}">
                 <span v-if="myWeeklyArray[index]" >{{ myWeeklyArray[index].tag }}</span>
             </p>                      
         </div>
@@ -499,6 +495,14 @@ p:hover span{
 .highlight{
     box-shadow: 1px 1px 1px var(--color-text);
     background-color: var(--color-background-text2);
+}
+
+.noMouse{    
+    pointer-events: none;
+}
+
+.okMouse{    
+    pointer-events: all;
 }
 
 
