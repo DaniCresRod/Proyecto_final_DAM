@@ -80,15 +80,16 @@ function resetDate(){
 
 //Define lo que pasa cuando cogemos un elemento para arrastrarlo
 function dragStart(event){
+    document.getElementById("div_whatsapp").classList.add("invisible");
     //Filtramos solo los elementos que tengan datos de usuarios
-    if((event.target.firstElementChild!==null) && (event.target.__vnode.key).userId ){
+    if(event.target.firstElementChild!==null){
         
-        draggedStartInfo=event.target.__vnode.key;
+        draggedStartInfo=event.target.id;
 
-        myStore.whatsAppUser.name=draggedStartInfo.user;
-        myStore.whatsAppUser.oldAppoDate=draggedStartInfo.appoDay;
-        myStore.whatsAppUser.oldAppoStart=draggedStartInfo.appoTime;
-        myStore.whatsAppUser.phone=draggedStartInfo.phone;      
+        myStore.whatsAppUser.name=myWeeklyArray.value[draggedStartInfo].user;
+        myStore.whatsAppUser.oldAppoDate=myWeeklyArray.value[draggedStartInfo].appoDay;
+        myStore.whatsAppUser.oldAppoStart=myWeeklyArray.value[draggedStartInfo].appoTime;
+        myStore.whatsAppUser.phone=myWeeklyArray.value[draggedStartInfo].phone;      
     }
     else{
         event.preventDefault();
@@ -99,17 +100,18 @@ function dragEnd(event){
     //El lugar de aterrizaje debe estar vacio
     if((event.target.firstElementChild===null) && (event.target.innerText==="") ){
         let newIndex=getChildIndex(event.target);
-        let [newHourIndex, draggedDayIndex, newDayIndex]=getNewDayAndHour(newIndex, draggedStartInfo.index);
-        let [newHour, newDay]=[myWeeklyArray.value[newHourIndex].tag, DateServices.sumDays(myWeeklyArray.value[draggedStartInfo.index].appoDay,newDayIndex-draggedDayIndex).toISOString().split('T')[0]]
+        let [newHourIndex, draggedDayIndex, newDayIndex]=getNewDayAndHour(newIndex, draggedStartInfo);
+        let [newHour, newDay]=[myWeeklyArray.value[newHourIndex].tag, DateServices.sumDays(myWeeklyArray.value[draggedStartInfo].appoDay,newDayIndex-draggedDayIndex).toISOString().split('T')[0]]
 
         let dataToSend={
-            id: draggedStartInfo.appoId,
+            id: myWeeklyArray.value[draggedStartInfo].appoId,
             appoDate: newDay,
             appoStart: newHour,
             notes: "",
             userID:{
-                id: draggedStartInfo.userId}
+                id: myWeeklyArray.value[draggedStartInfo].userId}
         }
+
         executeAppoChange(dataToSend);
     }
     else if(event.target.innerText!==""){
@@ -125,51 +127,53 @@ function dragEnd(event){
 function showContextMenu(event){
     // event.stopPropagation();
     cancelAppoMove();
-
+    document.getElementById("div_whatsapp").classList.add("invisible");
     let popUpMenu=document.getElementById("div_contextMenu");
 
     function hideMenuOnTouchMove() {
         popUpMenu.classList.add("invisible");
         document.removeEventListener("touchmove", hideMenuOnTouchMove, {passive: true});
-    }    
+    }  
     
-    popUpMenu.classList.toggle("invisible");
+    if(event.target.id==="" || event.target.firstElementChild!==null){
+        popUpMenu.classList.toggle("invisible");
 
-    //No ha habido forma de evitar que el span dentro del p no aparezca como target del evento, asi que lo reviso
-    //para acceder siempre al <p> padre.
-    let myClickedNode = getChildIndex(event.target.childElementCount === 0 ? event.target.parentNode : event.target);
+        //No ha habido forma de evitar que el span dentro del p no aparezca como target del evento, asi que lo reviso
+        //para acceder siempre al <p> padre.
+        let myClickedNode = getChildIndex(event.target.childElementCount === 0 ? event.target.parentNode : event.target);
 
-    //Se resalta el elemento seleccionado
-    let myDocument = document.querySelector(':root');
-    let myColor = getComputedStyle(myDocument).getPropertyValue('--color-border');
-    document.querySelector(`#div_calendar p:nth-of-type(${myClickedNode + 1})`).style.border = `3px solid ${myColor}`;
+        //Se resalta el elemento seleccionado
+        let myDocument = document.querySelector(':root');
+        let myColor = getComputedStyle(myDocument).getPropertyValue('--color-border');
+        document.querySelector(`#div_calendar p:nth-of-type(${myClickedNode + 1})`).style.border = `3px solid ${myColor}`;
 
-    //Obtengo los datos del usuario y los almaceno en pinia
-    document.getElementById("div_whatsapp").classList.add("invisible");
+        //Obtengo los datos del usuario y los almaceno en pinia
+        document.getElementById("div_whatsapp").classList.add("invisible");
 
-    myStore.whatsAppUser = {};
-    myStore.whatsAppUser.name = myWeeklyArray.value[myClickedNode].user;
-    myStore.whatsAppUser.oldAppoDate = myWeeklyArray.value[myClickedNode].appoDay;
-    myStore.whatsAppUser.oldAppoStart = myWeeklyArray.value[myClickedNode].appoTime;
-    myStore.whatsAppUser.phone = myWeeklyArray.value[myClickedNode].phone;
-    myStore.whatsAppUser.userId = myWeeklyArray.value[myClickedNode].userId;
-    myStore.whatsAppUser.appoId = myWeeklyArray.value[myClickedNode].appoId;
-    myStore.whatsAppUser.indexOfArray = myClickedNode;
+        myStore.whatsAppUser = {};
+        myStore.whatsAppUser.name = myWeeklyArray.value[myClickedNode].user;
+        myStore.whatsAppUser.oldAppoDate = myWeeklyArray.value[myClickedNode].appoDay;
+        myStore.whatsAppUser.oldAppoStart = myWeeklyArray.value[myClickedNode].appoTime;
+        myStore.whatsAppUser.phone = myWeeklyArray.value[myClickedNode].phone;
+        myStore.whatsAppUser.userId = myWeeklyArray.value[myClickedNode].userId;
+        myStore.whatsAppUser.appoId = myWeeklyArray.value[myClickedNode].appoId;
+        myStore.whatsAppUser.indexOfArray = myClickedNode;
 
-    if (typeof (event.touches) !== 'undefined') {
-        popUpMenu.style.top = event.touches[0].clientY + "px";
-        popUpMenu.style.left = event.touches[0].clientX + 10 + "px";
+        if (typeof (event.touches) !== 'undefined') {
+            popUpMenu.style.top = event.touches[0].clientY + "px";
+            popUpMenu.style.left = event.touches[0].clientX + 10 + "px";
 
-        document.addEventListener("touchmove", hideMenuOnTouchMove, { passive: true });
+            document.addEventListener("touchmove", hideMenuOnTouchMove, { passive: true });
 
-    }
-    else {
-        popUpMenu.style.top = event.clientY + "px";
-        popUpMenu.style.left = event.clientX + "px";
-        popUpMenu.addEventListener("mouseleave", () => {
-            popUpMenu.classList.add("invisible");
-        });
-    }             
+        }
+        else {
+            popUpMenu.style.top = event.clientY + "px";
+            popUpMenu.style.left = event.clientX + "px";
+            popUpMenu.addEventListener("mouseleave", () => {
+                popUpMenu.classList.add("invisible");
+            });
+        }        
+    }                   
 }
 
 function changeWeekAppointment(event){
@@ -223,7 +227,6 @@ function changeWeekAppointment(event){
 
 async function executeNewAppo(dataToSend){
     let response=await DataServices.saveAppo(JSON.stringify(dataToSend));
-    console.log(response);
     if(response.data.length==0){
         myStore.msgToUser="No puedes seleccionar fechas pasadas!";
         OpenFeedbackDialog();
@@ -307,7 +310,7 @@ onBeforeMount(() => {
             @contextmenu.prevent.stop="showContextMenu"            
             @pointerdown="changeWeekAppointment"
             class="noMouse"
-            :class="{'okMouse': item && item.userId}">
+            :class="{'okMouse': (item && item.userId) || !item}">
                 <span v-if="myWeeklyArray[index]" >{{ myWeeklyArray[index].tag }}</span>
             </p>                      
         </div>
@@ -499,10 +502,12 @@ p:hover span{
 
 .noMouse{    
     pointer-events: none;
+    
 }
 
 .okMouse{    
     pointer-events: all;
+    
 }
 
 
